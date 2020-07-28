@@ -1,5 +1,3 @@
-"use strict";
-
 const TRIPS_COUNT = 3;
 
 const tripMaiNode = document.querySelector(".trip-main");
