@@ -1,9 +1,11 @@
+"use strict";
+
 const TRIPS_COUNT = 3;
 
-const tripMaiNode = document.querySelector(".trip-main");
-const menuTitleNode = tripMaiNode.querySelector(".trip-main__menu-title");
-const filterTitleNode = tripMaiNode.querySelector(".trip-main__filter-title");
-const eventsContainerNode = document.querySelector(".trip-events");
+const tripMaiNode = document.querySelector(`.trip-main`);
+const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
+const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
+const eventsContainerNode = document.querySelector(`.trip-events`);
 
 const renderTemplate = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -426,19 +428,19 @@ const createEventInfoTemplate = () => `
   </li>
 `;
 
-renderTemplate(tripMaiNode, createTotalPriceTemplate(), "afterbegin");
-renderTemplate(menuTitleNode, createSiteMenuTemplate(), "afterend");
-renderTemplate(filterTitleNode, createFilterTemplate(), "afterend");
-renderTemplate(eventsContainerNode, createFormSortTemplate(), "beforeend");
-renderTemplate(eventsContainerNode, createFormEventTemplate(), "beforeend");
-renderTemplate(eventsContainerNode, createTripDaysTemplate(), "beforeend");
+renderTemplate(tripMaiNode, createTotalPriceTemplate(), `afterbegin`);
+renderTemplate(menuTitleNode, createSiteMenuTemplate(), `afterend`);
+renderTemplate(filterTitleNode, createFilterTemplate(), `afterend`);
+renderTemplate(eventsContainerNode, createFormSortTemplate(), `beforeend`);
+renderTemplate(eventsContainerNode, createFormEventTemplate(), `beforeend`);
+renderTemplate(eventsContainerNode, createTripDaysTemplate(), `beforeend`);
 
 const eventListNode = eventsContainerNode.querySelector(
-  ".trip-days .trip-events__list"
+    `.trip-days .trip-events__list`
 );
 
 for (let i = 0; i < TRIPS_COUNT; i++) {
-  renderTemplate(eventListNode, createEventTemplate(), "beforeend");
+  renderTemplate(eventListNode, createEventTemplate(), `beforeend`);
 }
 
-renderTemplate(eventListNode, createEventInfoTemplate(), "beforeend");
+renderTemplate(eventListNode, createEventInfoTemplate(), `beforeend`);
