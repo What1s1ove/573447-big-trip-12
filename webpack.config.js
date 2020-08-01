@@ -8,7 +8,7 @@ module.exports = {
     path: path.join(__dirname, "public/js"),
   },
   resolve: {
-    extensions: [`.js`, `.ts`],
+    extensions: [".js"],
     alias: {
       "~": path.resolve(__dirname, "src/"),
     },
