@@ -10,6 +10,7 @@ Thumbs.db
 # Вспомогательные файлы
 *.log*
 node_modules/
+jsconfig.json
 
-# Папка с собранными файлами проекта
-build/
+# Собранные JS-файлы (бандл)
+public/js
