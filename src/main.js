@@ -1,15 +1,16 @@
-import {createTotalPriceTemplate} from '~/view/total-price';
-import {createSiteMenuTemplate} from '~/view/site-menu';
-import {createFilterTemplate} from '~/view/filter';
-import {createFormSortTemplate} from '~/view/form-sort';
-import {createFormEventTemplate} from '~/view/form-event';
-import {createTripDaysTemplate} from '~/view/trip-days';
-import {createEventTemplate} from '~/view/event';
-import {createEventInfoTemplate} from '~/view/event-info';
-import {renderTemplate} from '~/helpers';
+import {createTotalPriceTemplate} from '~/view/total-price/total-price';
+import {createSiteMenuTemplate} from '~/view/site-menu/site-menu';
+import {createFilterTemplate} from '~/view/filter/filter';
+import {createFormSortTemplate} from '~/view/form-sort/form-sort';
+import {createFormEventTemplate} from '~/view/form-event/form-event';
+import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
+import {createEventTemplate} from '~/view/event/event';
+import {createEventInfoTemplate} from '~/view/event-info/event-info';
+import {renderTemplate, generateEvents} from '~/helpers';
 import {AdjacentHTMLPlace} from '~/common/enums';
 
-const TRIPS_COUNT = 3;
+const TRIPS_COUNT = 20;
+const events = generateEvents(TRIPS_COUNT);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -54,7 +55,7 @@ const eventListNode = eventsContainerNode.querySelector(
 for (let i = 0; i < TRIPS_COUNT; i++) {
   renderTemplate(
       eventListNode,
-      createEventTemplate(),
+      createEventTemplate(events[i]),
       AdjacentHTMLPlace.BEFORE_END
   );
 }

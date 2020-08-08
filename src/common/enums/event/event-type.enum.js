@@ -6,7 +6,7 @@ const EventType = {
   TRANSPORT: `transport`,
   DRIVE: `drive`,
   FLIGHT: `flight`,
-  CHECK: `check`,
+  CHECK_IN: `check-in`,
   SIGHTSEEING: `sightseeing`,
   RESTAURANT: `restaurant`,
 };

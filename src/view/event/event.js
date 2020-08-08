@@ -1,6 +1,8 @@
 import {getDestinationLabel} from '~/helpers/event';
 import {eventTypeToTextMap} from '~/common/map';
 import {createListOffersTemplate} from './list-offers/list-offers';
+import {getFormattedTime} from '~/helpers/date/get-formatted-time/get-formatted-time.helpers';
+import {TimeFormatType} from '~/common/enums';
 
 const createEventTemplate = (event) => {
   const {city, type, price, start, end, offers} = event;
@@ -18,15 +20,13 @@ const createEventTemplate = (event) => {
         </h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${start.toISOString()}">${start.toLocaleTimeString(
-    [],
-    {timeStyle: 'short'}
-  )}</time>
+            <time class="event__start-time" datetime="${start.toISOString()}">
+              ${getFormattedTime(TimeFormatType.SHORT, start)}
+            </time>
             —
-            <time class="event__end-time" datetime="${end.toISOString()}">${end.toLocaleString(
-    `en-US`,
-    {hour: `numeric`}
-  )}</time>
+            <time class="event__end-time" datetime="${end.toISOString()}">
+              ${getFormattedTime(TimeFormatType.SHORT, end)}
+            </time>
           </p>
           <p class="event__duration">30M</p>
         </div>
