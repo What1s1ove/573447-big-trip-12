@@ -17,50 +17,50 @@ const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
 renderTemplate(
-  tripMaiNode,
-  createTotalPriceTemplate(),
-  AdjacentHTMLPlace.AFTER_BEGIN
+    tripMaiNode,
+    createTotalPriceTemplate(),
+    AdjacentHTMLPlace.AFTER_BEGIN
 );
 renderTemplate(
-  menuTitleNode,
-  createSiteMenuTemplate(),
-  AdjacentHTMLPlace.AFTER_END
+    menuTitleNode,
+    createSiteMenuTemplate(),
+    AdjacentHTMLPlace.AFTER_END
 );
 renderTemplate(
-  filterTitleNode,
-  createFilterTemplate(),
-  AdjacentHTMLPlace.AFTER_END
+    filterTitleNode,
+    createFilterTemplate(),
+    AdjacentHTMLPlace.AFTER_END
 );
 renderTemplate(
-  eventsContainerNode,
-  createFormSortTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    eventsContainerNode,
+    createFormSortTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
 );
 renderTemplate(
-  eventsContainerNode,
-  createFormEventTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    eventsContainerNode,
+    createFormEventTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
 );
 renderTemplate(
-  eventsContainerNode,
-  createTripDaysTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    eventsContainerNode,
+    createTripDaysTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
 );
 
 const eventListNode = eventsContainerNode.querySelector(
-  `.trip-days .trip-events__list`
+    `.trip-days .trip-events__list`
 );
 
 for (let i = 0; i < TRIPS_COUNT; i++) {
   renderTemplate(
-    eventListNode,
-    createEventTemplate(),
-    AdjacentHTMLPlace.BEFORE_END
+      eventListNode,
+      createEventTemplate(),
+      AdjacentHTMLPlace.BEFORE_END
   );
 }
 
 renderTemplate(
-  eventListNode,
-  createEventInfoTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    eventListNode,
+    createEventInfoTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
 );
