@@ -1,23 +1,23 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/main.js",
+  mode: 'development',
+  entry: './src/main.js',
   output: {
-    filename: "bundle.js",
-    path: path.join(__dirname, "public/js"),
+    filename: 'bundle.js',
+    path: path.join(__dirname, 'public'),
   },
   resolve: {
-    extensions: [".js"],
+    extensions: ['.js'],
     alias: {
-      "~": path.resolve(__dirname, "src/"),
+      '~': path.resolve(__dirname, 'src/'),
     },
   },
   devServer: {
-    contentBase: path.join(__dirname, "public"),
+    contentBase: path.join(__dirname, 'public'),
     hot: true,
     port: 1337,
     watchContentBase: true,
   },
-  devtool: "source-map",
+  devtool: 'source-map',
 };
