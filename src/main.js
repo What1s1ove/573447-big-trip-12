@@ -12,7 +12,7 @@ import {AdjacentHTMLPlace, DateFormatType} from '~/common/enums';
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
 const days = Array.from(new Set(events.map((it) => getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, it.start))));
-const sortedDays = days.sort((a, b) => new Date(b) - new Date(b));
+const sortedDays = days.sort((a, b) => new Date(a) - new Date(b));
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
