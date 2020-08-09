@@ -1,4 +1,5 @@
-import {createTotalPriceTemplate} from '~/view/total-price/total-price';
+import {createDestinationInfoTemplate} from '~/view/destination-info/destination-info';
+import {createTripPriceTemplate} from '~/view/trip-price/trip-price';
 import {createSiteMenuTemplate} from '~/view/site-menu/site-menu';
 import {createFilterTemplate} from '~/view/filter/filter';
 import {createFormSortTemplate} from '~/view/form-sort/form-sort';
@@ -21,8 +22,16 @@ const eventsContainerNode = document.querySelector(`.trip-events`);
 
 renderTemplate(
     tripMaiNode,
-    createTotalPriceTemplate(),
+    createDestinationInfoTemplate([]),
     AdjacentHTMLPlace.AFTER_BEGIN
+);
+
+const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
+
+renderTemplate(
+    tripInfoNode,
+    createTripPriceTemplate(11),
+    AdjacentHTMLPlace.BEFORE_END
 );
 
 renderTemplate(
