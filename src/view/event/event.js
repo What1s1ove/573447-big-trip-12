@@ -1,7 +1,7 @@
 import {
   getDurationTime,
   getFormattedTime,
-  getDestinationLabel,
+  getPathLabel,
 } from '~/helpers';
 import {eventTypeToTextMap} from '~/common/map';
 import {createListOffersTemplate} from './list-offers/list-offers';
@@ -10,7 +10,7 @@ import {TimeFormatType} from '~/common/enums';
 const createEventTemplate = (event) => {
   const {city, type, price, start, end, offers} = event;
 
-  const destinationLabel = getDestinationLabel(type);
+  const pathLabel = getPathLabel(type);
   const duration = getDurationTime(start, end);
 
   return `
@@ -20,7 +20,7 @@ const createEventTemplate = (event) => {
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">
-          ${eventTypeToTextMap[type]} ${destinationLabel} ${city}
+          ${eventTypeToTextMap[type]} ${pathLabel} ${city}
         </h3>
         <div class="event__schedule">
           <p class="event__time">

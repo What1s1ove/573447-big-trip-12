@@ -1,1 +1,1 @@
-export * from './get-destination-label/get-destination-label.helper';
+export * from './get-path-label/get-path-label.helper';

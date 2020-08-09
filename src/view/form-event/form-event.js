@@ -1,10 +1,32 @@
-import {EventType} from '~/common/enums';
+import {getPathLabel, getFormattedDate} from '~/helpers';
+import {EVENT_CITIES} from '~/common/constants';
+import {EventType, DateFormatType} from '~/common/enums';
+import {eventTypeToTextMap} from '~/common/map';
 import {createEventTypeTemplate} from './templates/event-type/event-type';
+import {createEventOffersTemplate} from './templates/event-offers/event-offers';
+import { createEventPhotosTemplate } from './templates/event-photos/event-photos';
+
+const EVENT_DEFAULT_CITY = EVENT_CITIES[0];
 
 const createFormEventTemplate = (event) => {
-  const {type = EventType.TAXI} = event;
+  const {
+    type = EventType.TAXI,
+    city = EVENT_DEFAULT_CITY,
+    description = ``,
+    price = ``,
+    start = ``,
+    end = ``,
+    offers = [],
+    photos = [],
+  } = event;
+
+  const pathLabel = getPathLabel(type);
+  const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
+  const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
 
   const eventTypeTemplate = createEventTypeTemplate(type);
+  const eventOffersTemplate = createEventOffersTemplate(offers);
+  const eventPhotosTemplate = createEventPhotosTemplate(photos);
 
   return `
     <form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -19,95 +41,50 @@ const createFormEventTemplate = (event) => {
         </div>
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${event.type} to
+            ${eventTypeToTextMap[event.type]} ${pathLabel}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Geneva" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
-            <option value="Saint Petersburg"></option>
+            ${EVENT_CITIES.map((it) => `<option value="${it}" />`).join(``)}
           </datalist>
         </div>
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 00:00">
+          <input
+            value="${eventStartDate}"
+            class="event__input  event__input--time"
+            id="event-start-time-1" type="text"
+            name="event-start-time"
+          >
           —
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 00:00">
+          <input
+            value="${eventEndDate}"
+            class="event__input  event__input--time"
+            id="event-end-time-1" type="text"
+            name="event-end-time"
+          >
         </div>
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
             €
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          <div class="event__available-offers">
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked="">
-              <label class="event__offer-label" for="event-offer-luggage-1">
-                <span class="event__offer-title">Add luggage</span>
-                +
-                €&nbsp;<span class="event__offer-price">30</span>
-              </label>
-            </div>
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked="">
-              <label class="event__offer-label" for="event-offer-comfort-1">
-                <span class="event__offer-title">Switch to comfort class</span>
-                +
-                €&nbsp;<span class="event__offer-price">100</span>
-              </label>
-            </div>
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-              <label class="event__offer-label" for="event-offer-meal-1">
-                <span class="event__offer-title">Add meal</span>
-                +
-                €&nbsp;<span class="event__offer-price">15</span>
-              </label>
-            </div>
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-              <label class="event__offer-label" for="event-offer-seats-1">
-                <span class="event__offer-title">Choose seats</span>
-                +
-                €&nbsp;<span class="event__offer-price">5</span>
-              </label>
-            </div>
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-              <label class="event__offer-label" for="event-offer-train-1">
-                <span class="event__offer-title">Travel by train</span>
-                +
-                €&nbsp;<span class="event__offer-price">40</span>
-              </label>
-            </div>
-          </div>
-        </section>
+        ${offers.length ? eventOffersTemplate : ``}
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-              <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-            </div>
-          </div>
+          <p class="event__destination-description">${description}</p>
+          ${photos.length ? eventPhotosTemplate : ``}
         </section>
       </section>
     </form>

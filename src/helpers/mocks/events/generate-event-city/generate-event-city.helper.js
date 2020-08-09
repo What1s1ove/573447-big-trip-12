@@ -1,9 +1,8 @@
 import {getRandomItem} from '~/helpers/array';
-
-const CITIES = [`San Francisco`, `London`, `Paris`, `Berlin`, `Miami`];
+import {EVENT_CITIES} from '~/common/constants';
 
 const generateEventCity = () => {
-  const eventCity = getRandomItem(CITIES);
+  const eventCity = getRandomItem(EVENT_CITIES);
 
   return eventCity;
 };

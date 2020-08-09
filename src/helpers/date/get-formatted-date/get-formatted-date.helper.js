@@ -1,4 +1,5 @@
-import {DateFormatType} from '~/common/enums';
+import {DateFormatType, TimeFormatType} from '~/common/enums';
+import { getFormattedTime } from '../get-formatted-time/get-formatted-time.helpers';
 
 const getFormattedDate = (type, date) => {
   const localDate = new Date(date);
@@ -17,6 +18,19 @@ const getFormattedDate = (type, date) => {
         month: `short`,
         day: `numeric`,
       });
+      break;
+    case DateFormatType.FULL_YEAR:
+      formattedDate = localDate.toLocaleDateString(`en-US`, {
+        year: `numeric`,
+        month: `numeric`,
+        day: `numeric`,
+      });
+      break;
+    case DateFormatType.FULL_YEAR_TIME:
+      formattedDate = `${getFormattedDate(
+          DateFormatType.FULL_YEAR,
+          localDate
+      )} ${getFormattedTime(TimeFormatType.SHORT, localDate)}`;
       break;
   }
 

@@ -1,11 +1,9 @@
 import {eventKindToTypeMap, eventKindToPathLabelMap} from '~/common/map';
 
-const getDestinationLabel = (eventType) => {
+const getPathLabel = (eventType) => {
   let label = null;
 
-  for (const [kind, types] of Object.entries(
-      eventKindToTypeMap
-  )) {
+  for (const [kind, types] of Object.entries(eventKindToTypeMap)) {
     const isSuitable = types.some((type) => type === eventType);
 
     if (isSuitable) {
@@ -18,4 +16,4 @@ const getDestinationLabel = (eventType) => {
   return label;
 };
 
-export {getDestinationLabel};
+export {getPathLabel};
