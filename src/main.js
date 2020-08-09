@@ -7,12 +7,13 @@ import {createFormEventTemplate} from '~/view/form-event/form-event';
 import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
 import {createTripDayTemplate} from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
-import {renderTemplate, generateEvents, getFormattedDate} from '~/helpers';
+import {renderTemplate, generateEvents, getFormattedDate, getUniqueCities} from '~/helpers';
 import {AdjacentHTMLPlace, DateFormatType} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
 const days = Array.from(new Set(events.map((it) => getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, it.start))));
+const cities = getUniqueCities(events);
 const sortedDays = days.sort((a, b) => new Date(a) - new Date(b));
 
 const tripMaiNode = document.querySelector(`.trip-main`);
@@ -22,7 +23,7 @@ const eventsContainerNode = document.querySelector(`.trip-events`);
 
 renderTemplate(
     tripMaiNode,
-    createDestinationInfoTemplate([]),
+    createDestinationInfoTemplate(cities),
     AdjacentHTMLPlace.AFTER_BEGIN
 );
 
