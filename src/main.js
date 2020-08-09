@@ -7,12 +7,18 @@ import {createFormEventTemplate} from '~/view/form-event/form-event';
 import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
 import {createTripDayTemplate} from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
-import {renderTemplate, generateEvents, getFormattedDate, getUniqueCities} from '~/helpers';
-import {AdjacentHTMLPlace, DateFormatType} from '~/common/enums';
+import {
+  renderTemplate,
+  generateEvents,
+  getUniqueCities,
+  getUniqueDays,
+  getFixedDate,
+} from '~/helpers';
+import {AdjacentHTMLPlace} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
-const days = Array.from(new Set(events.map((it) => getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, it.start))));
+const days = getUniqueDays(events);
 const cities = getUniqueCities(events);
 const sortedDays = days.sort((a, b) => new Date(a) - new Date(b));
 
@@ -80,8 +86,9 @@ sortedDays.forEach((day, idx) => {
 
   events
     .slice(1)
-    .filter((event) =>
-      getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, event.start) === day
+    .filter(
+        (event) =>
+          getFixedDate(event.start).getTime() === getFixedDate(day).getTime()
     )
     .forEach((it) =>
       renderTemplate(

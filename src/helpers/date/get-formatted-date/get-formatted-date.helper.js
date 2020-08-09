@@ -12,13 +12,6 @@ const getFormattedDate = (type, date) => {
         day: `numeric`,
       });
       break;
-    case DateFormatType.SHORT_MONTH_DAY_YEAR:
-      formattedDate = localDate.toLocaleDateString(`en-US`, {
-        year: `numeric`,
-        month: `short`,
-        day: `numeric`,
-      });
-      break;
     case DateFormatType.FULL_YEAR:
       formattedDate = localDate.toLocaleDateString(`en-US`, {
         year: `numeric`,
