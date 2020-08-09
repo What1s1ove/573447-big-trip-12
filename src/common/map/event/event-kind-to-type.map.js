@@ -1,7 +1,7 @@
-import {EventType, EventDestinationLabel} from '~/common/enums';
+import {EventType, EventKind} from '~/common/enums';
 
-const eventTypeToDestinationLabelMap = {
-  [EventDestinationLabel.TO]: [
+const eventKindToTypeMap = {
+  [EventKind.TRANSFER]: [
     EventType.TAXI,
     EventType.BUS,
     EventType.TRAIN,
@@ -10,11 +10,11 @@ const eventTypeToDestinationLabelMap = {
     EventType.DRIVE,
     EventType.FLIGHT,
   ],
-  [EventDestinationLabel.IN]: [
+  [EventKind.ACTIVITY]: [
     EventType.CHECK_IN,
     EventType.SIGHTSEEING,
     EventType.RESTAURANT,
   ],
 };
 
-export {eventTypeToDestinationLabelMap};
+export {eventKindToTypeMap};

@@ -1,4 +1,8 @@
-import {getDurationTime, getFormattedTime, getDestinationLabel} from '~/helpers';
+import {
+  getDurationTime,
+  getFormattedTime,
+  getDestinationLabel,
+} from '~/helpers';
 import {eventTypeToTextMap} from '~/common/map';
 import {createListOffersTemplate} from './list-offers/list-offers';
 import {TimeFormatType} from '~/common/enums';
@@ -8,8 +12,6 @@ const createEventTemplate = (event) => {
 
   const destinationLabel = getDestinationLabel(type);
   const duration = getDurationTime(start, end);
-
-  // console.log(start, end, duration);
 
   return `
     <li class="trip-events__item">

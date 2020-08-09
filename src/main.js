@@ -4,13 +4,15 @@ import {createFilterTemplate} from '~/view/filter/filter';
 import {createFormSortTemplate} from '~/view/form-sort/form-sort';
 import {createFormEventTemplate} from '~/view/form-event/form-event';
 import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
+import {createTripDayTemplate} from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
-import {createEventInfoTemplate} from '~/view/event-info/event-info';
-import {renderTemplate, generateEvents} from '~/helpers';
-import {AdjacentHTMLPlace} from '~/common/enums';
+import {renderTemplate, generateEvents, getFormattedDate} from '~/helpers';
+import {AdjacentHTMLPlace, DateFormatType} from '~/common/enums';
 
-const TRIPS_COUNT = 20;
-const events = generateEvents(TRIPS_COUNT);
+const EVENTS_COUNT = 20;
+const events = generateEvents(EVENTS_COUNT);
+const days = Array.from(new Set(events.map((it) => getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, it.start))));
+const sortedDays = days.sort((a, b) => new Date(b) - new Date(b));
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -22,46 +24,60 @@ renderTemplate(
     createTotalPriceTemplate(),
     AdjacentHTMLPlace.AFTER_BEGIN
 );
+
 renderTemplate(
     menuTitleNode,
     createSiteMenuTemplate(),
     AdjacentHTMLPlace.AFTER_END
 );
+
 renderTemplate(
     filterTitleNode,
     createFilterTemplate(),
     AdjacentHTMLPlace.AFTER_END
 );
+
 renderTemplate(
     eventsContainerNode,
     createFormSortTemplate(),
     AdjacentHTMLPlace.BEFORE_END
 );
+
 renderTemplate(
     eventsContainerNode,
-    createFormEventTemplate(),
+    createFormEventTemplate(events[0]),
     AdjacentHTMLPlace.BEFORE_END
 );
+
 renderTemplate(
     eventsContainerNode,
     createTripDaysTemplate(),
     AdjacentHTMLPlace.BEFORE_END
 );
 
-const eventListNode = eventsContainerNode.querySelector(
-    `.trip-days .trip-events__list`
-);
+const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
 
-for (let i = 0; i < TRIPS_COUNT; i++) {
+sortedDays.forEach((day, idx) => {
+  const tripDaysNumber = idx + 1;
+
   renderTemplate(
-      eventListNode,
-      createEventTemplate(events[i]),
+      tripDaysNode,
+      createTripDayTemplate(new Date(day), tripDaysNumber),
       AdjacentHTMLPlace.BEFORE_END
   );
-}
 
-renderTemplate(
-    eventListNode,
-    createEventInfoTemplate(),
-    AdjacentHTMLPlace.BEFORE_END
-);
+  const eventListNode = tripDaysNode.querySelectorAll(`.trip-events__list`);
+
+  events
+    .slice(1)
+    .filter((event) =>
+      getFormattedDate(DateFormatType.SHORT_MONTH_DAY_YEAR, event.start) === day
+    )
+    .forEach((it) =>
+      renderTemplate(
+          eventListNode[idx],
+          createEventTemplate(it),
+          AdjacentHTMLPlace.BEFORE_END
+      )
+    );
+});
