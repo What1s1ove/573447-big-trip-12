@@ -1,5 +1,5 @@
 const createEventOffersTemplate = (offers) => {
-  const offerTemplates = offers.map((it) => `
+  const offerTemplates = offers.reduce((acc, it) => (acc += `
     <div class="event__offer-selector">
       <input
         id="event-offer-${it.type}-1"
@@ -13,7 +13,7 @@ const createEventOffersTemplate = (offers) => {
         €&nbsp;<span class="event__offer-price">${it.price}</span>
       </label>
     </div>
-  `).join(``);
+  `), ``);
 
   return `
     <section class="event__section  event__section--offers">

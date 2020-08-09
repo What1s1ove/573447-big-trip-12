@@ -1,9 +1,10 @@
 const createEventPhotosTemplate = (photos) => `
   <div class="event__photos-container">
     <div class="event__photos-tape">
-      ${photos
-        .map((it) => `<img class="event__photo" src="${it}" alt="Event photo">`)
-        .join(``)}
+      ${photos.reduce(
+      (acc, it) => (acc += `
+        <img class="event__photo" src="${it}" alt="Event photo">
+      `), ``)}
     </div>
   </div>
 `;

@@ -2,9 +2,9 @@ import {getPathLabel, getFormattedDate} from '~/helpers';
 import {EVENT_CITIES} from '~/common/constants';
 import {EventType, DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
-import {createEventTypeTemplate} from './templates/event-type/event-type';
+import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
-import { createEventPhotosTemplate } from './templates/event-photos/event-photos';
+import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
 
 const EVENT_DEFAULT_CITY = EVENT_CITIES[0];
 
@@ -24,7 +24,7 @@ const createFormEventTemplate = (event) => {
   const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
   const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
 
-  const eventTypeTemplate = createEventTypeTemplate(type);
+  const eventTypeTemplate = createEventKindsTemplate(type);
   const eventOffersTemplate = createEventOffersTemplate(offers);
   const eventPhotosTemplate = createEventPhotosTemplate(photos);
 
@@ -45,7 +45,7 @@ const createFormEventTemplate = (event) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${EVENT_CITIES.map((it) => `<option value="${it}" />`).join(``)}
+            ${EVENT_CITIES.reduce((acc, it) => (acc += `<option value="${it}" />`), ``)}
           </datalist>
         </div>
         <div class="event__field-group  event__field-group--time">

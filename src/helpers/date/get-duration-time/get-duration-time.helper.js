@@ -31,9 +31,11 @@ const getDurationTime = (start, end) => {
     {label: `M`, time: getMinutesDiff(diffInSeconds)},
   ];
 
-  return times
-    .map(({time, label}) => (time ? `${getTwoDigitalTime(time)}${label} ` : ``))
-    .join(``);
+  return times.reduce(
+      (acc, {time, label}) =>
+        time ? (acc += `${getTwoDigitalTime(time)}${label} `) : ``
+      , ``
+  );
 };
 
 export {getDurationTime};
