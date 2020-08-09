@@ -10,18 +10,19 @@ import {createEventTemplate} from '~/view/event/event';
 import {
   renderTemplate,
   generateEvents,
-  getUniqueCities,
-  getUniqueDays,
+  getUniqueTripDays,
   getFixedDate,
   getSortedDates,
+  getUniqueCities,
   getTotalPrice,
 } from '~/helpers';
 import {AdjacentHTMLPlace} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
-const days = getSortedDates(getUniqueDays(events));
+const tripDays = getUniqueTripDays(events);
 const cities = getUniqueCities(events);
+const sortedStartDays = getSortedDates(tripDays.start);
 const totalPrice = getTotalPrice(events);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
@@ -31,7 +32,7 @@ const eventsContainerNode = document.querySelector(`.trip-events`);
 
 renderTemplate(
     tripMaiNode,
-    createDestinationInfoTemplate(cities),
+    createDestinationInfoTemplate(cities, tripDays),
     AdjacentHTMLPlace.AFTER_BEGIN
 );
 
@@ -75,7 +76,7 @@ renderTemplate(
 
 const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
 
-days.forEach((day, idx) => {
+sortedStartDays.forEach((day, idx) => {
   const tripDayNumber = idx + 1;
 
   renderTemplate(

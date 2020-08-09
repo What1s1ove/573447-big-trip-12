@@ -1,4 +1,3 @@
-
 extends: 'htmlacademy/es6'
 
 env:

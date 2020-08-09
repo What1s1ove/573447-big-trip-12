@@ -1,12 +1,27 @@
-import {getFixedDate} from '../../date';
-import {getUniqueItems} from '../../array';
+import {getUniqueDates} from '../../date';
 
-const getUniqueDays = (events) => {
-  const times = events.map((it) => getFixedDate(it.start).getTime());
-  const uniqueTimes = getUniqueItems(times);
-  const uniqueDays = uniqueTimes.map((it) => new Date(it));
+const getTripDates = (events) => {
+  const tripDates = events.reduce(
+      (acc, it) => ({
+        start: [...acc.start, it.start],
+        end: [...acc.end, it.end],
+      }),
+      {
+        start: [],
+        end: [],
+      }
+  );
 
-  return uniqueDays;
+  return tripDates;
 };
 
-export {getUniqueDays};
+const getUniqueTripDays = (events) => {
+  const uniqueTripDates = getTripDates(events);
+
+  return {
+    start: getUniqueDates(uniqueTripDates.start),
+    end: getUniqueDates(uniqueTripDates.end)
+  };
+};
+
+export {getUniqueTripDays};
