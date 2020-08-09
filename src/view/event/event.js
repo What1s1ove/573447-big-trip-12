@@ -1,13 +1,15 @@
-import {getDestinationLabel} from '~/helpers/event';
+import {getDurationTime, getFormattedTime, getDestinationLabel} from '~/helpers';
 import {eventTypeToTextMap} from '~/common/map';
 import {createListOffersTemplate} from './list-offers/list-offers';
-import {getFormattedTime} from '~/helpers/date/get-formatted-time/get-formatted-time.helpers';
 import {TimeFormatType} from '~/common/enums';
 
 const createEventTemplate = (event) => {
   const {city, type, price, start, end, offers} = event;
 
   const destinationLabel = getDestinationLabel(type);
+  const duration = getDurationTime(start, end);
+
+  // console.log(start, end, duration);
 
   return `
     <li class="trip-events__item">
@@ -28,7 +30,7 @@ const createEventTemplate = (event) => {
               ${getFormattedTime(TimeFormatType.SHORT, end)}
             </time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${duration}</p>
         </div>
         <p class="event__price">
           €&nbsp;<span class="event__price-value">${price}</span>
