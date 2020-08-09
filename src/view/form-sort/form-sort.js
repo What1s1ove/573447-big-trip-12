@@ -9,7 +9,7 @@ const createFormSortTemplate = () => `
       .map((it) => `
       <div class="trip-sort__item  trip-sort__item--${it}">
         <input
-          d="sort-${it}"
+          id="sort-${it}"
           value="sort-${it}"
           class="trip-sort__input  visually-hidden"
           type="radio" name="trip-sort"

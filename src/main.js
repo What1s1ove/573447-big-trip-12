@@ -13,14 +13,14 @@ import {
   getUniqueCities,
   getUniqueDays,
   getFixedDate,
+  getSortedDates,
 } from '~/helpers';
 import {AdjacentHTMLPlace} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
-const days = getUniqueDays(events);
+const days = getSortedDates(getUniqueDays(events));
 const cities = getUniqueCities(events);
-const sortedDays = days.sort((a, b) => new Date(a) - new Date(b));
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -73,12 +73,12 @@ renderTemplate(
 
 const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
 
-sortedDays.forEach((day, idx) => {
-  const tripDaysNumber = idx + 1;
+days.forEach((day, idx) => {
+  const tripDayNumber = idx + 1;
 
   renderTemplate(
       tripDaysNode,
-      createTripDayTemplate(new Date(day), tripDaysNumber),
+      createTripDayTemplate(new Date(day), tripDayNumber),
       AdjacentHTMLPlace.BEFORE_END
   );
 
