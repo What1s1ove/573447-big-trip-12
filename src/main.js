@@ -14,6 +14,7 @@ import {
   getUniqueDays,
   getFixedDate,
   getSortedDates,
+  getTotalPrice,
 } from '~/helpers';
 import {AdjacentHTMLPlace} from '~/common/enums';
 
@@ -21,6 +22,7 @@ const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
 const days = getSortedDates(getUniqueDays(events));
 const cities = getUniqueCities(events);
+const totalPrice = getTotalPrice(events);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -37,7 +39,7 @@ const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 
 renderTemplate(
     tripInfoNode,
-    createTripPriceTemplate(11),
+    createTripPriceTemplate(totalPrice),
     AdjacentHTMLPlace.BEFORE_END
 );
 
