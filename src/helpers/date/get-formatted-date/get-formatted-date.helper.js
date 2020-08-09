@@ -1,5 +1,5 @@
 import {DateFormatType, TimeFormatType} from '~/common/enums';
-import { getFormattedTime } from '../get-formatted-time/get-formatted-time.helpers';
+import {getFormattedTime} from '../get-formatted-time/get-formatted-time.helpers';
 
 const getFormattedDate = (type, date) => {
   const localDate = new Date(date);
