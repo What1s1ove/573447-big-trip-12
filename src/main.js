@@ -16,13 +16,13 @@ import {
   getUniqueCities,
   getTotalPrice,
 } from '~/helpers';
-import {AdjacentHTMLPlace} from '~/common/enums';
+import {AdjacentHTMLPlace, SortOrder} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
 const tripDays = getUniqueTripDays(events);
 const cities = getUniqueCities(events);
-const sortedStartDays = getSortedDates(tripDays.start);
+const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
 const totalPrice = getTotalPrice(events);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
