@@ -13,4 +13,5 @@ node_modules/
 jsconfig.json
 
 # Собранные JS-файлы (бандл)
-public/js
+public/bundle.js
+public/bundle.js.map

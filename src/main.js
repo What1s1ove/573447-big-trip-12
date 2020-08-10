@@ -1,15 +1,29 @@
-import {createTotalPriceTemplate} from '~/view/total-price';
-import {createSiteMenuTemplate} from '~/view/site-menu';
-import {createFilterTemplate} from '~/view/filter';
-import {createFormSortTemplate} from '~/view/form-sort';
-import {createFormEventTemplate} from '~/view/form-event';
-import {createTripDaysTemplate} from '~/view/trip-days';
-import {createEventTemplate} from '~/view/event';
-import {createEventInfoTemplate} from '~/view/event-info';
-import {renderTemplate} from '~/helpers';
-import {AdjacentHTMLPlace} from '~/common/enums';
+import {createDestinationInfoTemplate} from '~/view/destination-info/destination-info';
+import {createTripPriceTemplate} from '~/view/trip-price/trip-price';
+import {createSiteMenuTemplate} from '~/view/site-menu/site-menu';
+import {createFilterTemplate} from '~/view/filter/filter';
+import {createFormSortTemplate} from '~/view/form-sort/form-sort';
+import {createFormEventTemplate} from '~/view/form-event/form-event';
+import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
+import {createTripDayTemplate} from '~/view/trip-day/trip-day';
+import {createEventTemplate} from '~/view/event/event';
+import {
+  renderTemplate,
+  generateEvents,
+  getUniqueTripDays,
+  getFixedDate,
+  getSortedDates,
+  getUniqueCities,
+  getTotalPrice,
+} from '~/helpers';
+import {AdjacentHTMLPlace, SortOrder} from '~/common/enums';
 
-const TRIPS_COUNT = 3;
+const EVENTS_COUNT = 20;
+const events = generateEvents(EVENTS_COUNT);
+const tripDays = getUniqueTripDays(events);
+const cities = getUniqueCities(events);
+const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
+const totalPrice = getTotalPrice(events);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -17,50 +31,73 @@ const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
 renderTemplate(
-  tripMaiNode,
-  createTotalPriceTemplate(),
-  AdjacentHTMLPlace.AFTER_BEGIN
-);
-renderTemplate(
-  menuTitleNode,
-  createSiteMenuTemplate(),
-  AdjacentHTMLPlace.AFTER_END
-);
-renderTemplate(
-  filterTitleNode,
-  createFilterTemplate(),
-  AdjacentHTMLPlace.AFTER_END
-);
-renderTemplate(
-  eventsContainerNode,
-  createFormSortTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
-);
-renderTemplate(
-  eventsContainerNode,
-  createFormEventTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
-);
-renderTemplate(
-  eventsContainerNode,
-  createTripDaysTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    tripMaiNode,
+    createDestinationInfoTemplate(cities, tripDays),
+    AdjacentHTMLPlace.AFTER_BEGIN
 );
 
-const eventListNode = eventsContainerNode.querySelector(
-  `.trip-days .trip-events__list`
-);
+const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 
-for (let i = 0; i < TRIPS_COUNT; i++) {
-  renderTemplate(
-    eventListNode,
-    createEventTemplate(),
+renderTemplate(
+    tripInfoNode,
+    createTripPriceTemplate(totalPrice),
     AdjacentHTMLPlace.BEFORE_END
-  );
-}
+);
 
 renderTemplate(
-  eventListNode,
-  createEventInfoTemplate(),
-  AdjacentHTMLPlace.BEFORE_END
+    menuTitleNode,
+    createSiteMenuTemplate(),
+    AdjacentHTMLPlace.AFTER_END
 );
+
+renderTemplate(
+    filterTitleNode,
+    createFilterTemplate(),
+    AdjacentHTMLPlace.AFTER_END
+);
+
+renderTemplate(
+    eventsContainerNode,
+    createFormSortTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
+);
+
+renderTemplate(
+    eventsContainerNode,
+    createFormEventTemplate(events[0]),
+    AdjacentHTMLPlace.BEFORE_END
+);
+
+renderTemplate(
+    eventsContainerNode,
+    createTripDaysTemplate(),
+    AdjacentHTMLPlace.BEFORE_END
+);
+
+const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
+
+sortedStartDays.forEach((day, idx) => {
+  const tripDayNumber = idx + 1;
+
+  renderTemplate(
+      tripDaysNode,
+      createTripDayTemplate(new Date(day), tripDayNumber),
+      AdjacentHTMLPlace.BEFORE_END
+  );
+
+  const eventListNode = tripDaysNode.querySelectorAll(`.trip-events__list`);
+
+  events
+    .slice(1)
+    .filter(
+        (event) =>
+          getFixedDate(event.start).getTime() === getFixedDate(day).getTime()
+    )
+    .forEach((it) =>
+      renderTemplate(
+          eventListNode[idx],
+          createEventTemplate(it),
+          AdjacentHTMLPlace.BEFORE_END
+      )
+    );
+});

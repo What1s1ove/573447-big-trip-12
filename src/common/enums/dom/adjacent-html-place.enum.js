@@ -5,4 +5,4 @@ const AdjacentHTMLPlace = {
   AFTER_END: `afterend`,
 };
 
-export { AdjacentHTMLPlace };
+export {AdjacentHTMLPlace};
