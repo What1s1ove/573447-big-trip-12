@@ -16,7 +16,7 @@ import {
   getUniqueCities,
   getTotalPrice,
 } from '~/helpers';
-import {AdjacentHTMLPlace, SortOrder} from '~/common/enums';
+import {RenderPosition, SortOrder} from '~/common/enums';
 
 const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
@@ -33,7 +33,7 @@ const eventsContainerNode = document.querySelector(`.trip-events`);
 renderTemplate(
     tripMaiNode,
     createDestinationInfoTemplate(cities, tripDays),
-    AdjacentHTMLPlace.AFTER_BEGIN
+    RenderPosition.AFTER_BEGIN
 );
 
 const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
@@ -41,37 +41,37 @@ const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 renderTemplate(
     tripInfoNode,
     createTripPriceTemplate(totalPrice),
-    AdjacentHTMLPlace.BEFORE_END
+    RenderPosition.BEFORE_END
 );
 
 renderTemplate(
     menuTitleNode,
     createSiteMenuTemplate(),
-    AdjacentHTMLPlace.AFTER_END
+    RenderPosition.AFTER_END
 );
 
 renderTemplate(
     filterTitleNode,
     createFilterTemplate(),
-    AdjacentHTMLPlace.AFTER_END
+    RenderPosition.AFTER_END
 );
 
 renderTemplate(
     eventsContainerNode,
     createFormSortTemplate(),
-    AdjacentHTMLPlace.BEFORE_END
+    RenderPosition.BEFORE_END
 );
 
 renderTemplate(
     eventsContainerNode,
     createFormEventTemplate(events[0]),
-    AdjacentHTMLPlace.BEFORE_END
+    RenderPosition.BEFORE_END
 );
 
 renderTemplate(
     eventsContainerNode,
     createTripDaysTemplate(),
-    AdjacentHTMLPlace.BEFORE_END
+    RenderPosition.BEFORE_END
 );
 
 const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
@@ -82,7 +82,7 @@ sortedStartDays.forEach((day, idx) => {
   renderTemplate(
       tripDaysNode,
       createTripDayTemplate(new Date(day), tripDayNumber),
-      AdjacentHTMLPlace.BEFORE_END
+      RenderPosition.BEFORE_END
   );
 
   const eventListNode = tripDaysNode.querySelectorAll(`.trip-events__list`);
@@ -97,7 +97,7 @@ sortedStartDays.forEach((day, idx) => {
       renderTemplate(
           eventListNode[idx],
           createEventTemplate(it),
-          AdjacentHTMLPlace.BEFORE_END
+          RenderPosition.BEFORE_END
       )
     );
 });
