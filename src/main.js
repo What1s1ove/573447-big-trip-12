@@ -21,7 +21,7 @@ import SiteMenuView from '~/view/site-menu/site-menu';
 import FilterView from '~/view/filter/filter';
 import SortView from '~/view/sort/sort';
 import {createFormEventTemplate} from '~/view/form-event/form-event';
-import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
+import TripDaysView from '~/view/trip-days/trip-days';
 import {createTripDayTemplate} from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
 
@@ -41,6 +41,7 @@ const tripPriceNode = new TripPriceView(totalPrice).node;
 const siteMenuNode = new SiteMenuView(siteMenuItems).node;
 const filterNode = new FilterView(filters).node;
 const sortNode = new SortView(sorts).node;
+const tripDaysNode = new TripDaysView().node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -55,20 +56,12 @@ renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuNode, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterNode, RenderPosition.AFTER_END);
 renderElement(eventsContainerNode, sortNode, RenderPosition.BEFORE_END);
-
 renderTemplate(
     eventsContainerNode,
     createFormEventTemplate(events[0]),
     RenderPosition.BEFORE_END
 );
-
-renderTemplate(
-    eventsContainerNode,
-    createTripDaysTemplate(),
-    RenderPosition.BEFORE_END
-);
-
-const tripDaysNode = eventsContainerNode.querySelector(`.trip-days`);
+renderElement(eventsContainerNode, tripDaysNode, RenderPosition.BEFORE_END);
 
 sortedStartDays.forEach((day, idx) => {
   const tripDayNumber = idx + 1;
