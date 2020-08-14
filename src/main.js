@@ -22,7 +22,7 @@ import FilterView from '~/view/filter/filter';
 import SortView from '~/view/sort/sort';
 import FormEventView from '~/view/form-event/form-event';
 import TripDaysView from '~/view/trip-days/trip-days';
-import {createTripDayTemplate} from '~/view/trip-day/trip-day';
+import TripDayView from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
 
 const EVENTS_COUNT = 20;
@@ -63,11 +63,9 @@ renderElement(eventsContainerNode, tripDaysNode, RenderPosition.BEFORE_END);
 sortedStartDays.forEach((day, idx) => {
   const tripDayNumber = idx + 1;
 
-  renderTemplate(
-      tripDaysNode,
-      createTripDayTemplate(new Date(day), tripDayNumber),
-      RenderPosition.BEFORE_END
-  );
+  const tripDayNode = new TripDayView(new Date(day), tripDayNumber).node;
+
+  renderElement(tripDaysNode, tripDayNode, RenderPosition.BEFORE_END);
 
   const eventListNode = tripDaysNode.querySelectorAll(`.trip-events__list`);
 
