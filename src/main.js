@@ -8,10 +8,10 @@ import {
   getUniqueCities,
   getTotalPrice,
 } from '~/helpers';
-import {RenderPosition, SortOrder} from '~/common/enums';
+import {RenderPosition, SortOrder, AppNavigation} from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
-import {createSiteMenuTemplate} from '~/view/site-menu/site-menu';
+import SiteMenuView from '~/view/site-menu/site-menu';
 import {createFilterTemplate} from '~/view/filter/filter';
 import {createFormSortTemplate} from '~/view/form-sort/form-sort';
 import {createFormEventTemplate} from '~/view/form-event/form-event';
@@ -24,11 +24,13 @@ const EVENTS_COUNT = 20;
 const events = generateEvents(EVENTS_COUNT);
 const tripDays = getUniqueTripDays(events);
 const cities = getUniqueCities(events);
+const siteMenuItems = Object.values(AppNavigation);
 const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
 const totalPrice = getTotalPrice(events);
 
 const destinationInfoNode = new DestinationInfoView(cities, tripDays).node;
 const tripPriceNode = new TripPriceView(totalPrice).node;
+const siteMenuNode = new SiteMenuView(siteMenuItems).node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -40,12 +42,7 @@ renderElement(tripMaiNode, destinationInfoNode, RenderPosition.AFTER_BEGIN);
 const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 
 renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
-
-renderTemplate(
-    menuTitleNode,
-    createSiteMenuTemplate(),
-    RenderPosition.AFTER_END
-);
+renderElement(menuTitleNode, siteMenuNode, RenderPosition.AFTER_END);
 
 renderTemplate(
     filterTitleNode,
