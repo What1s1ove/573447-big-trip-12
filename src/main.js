@@ -13,12 +13,13 @@ import {
   SortOrder,
   AppNavigation,
   EventFilerType,
+  EventSortType,
 } from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
 import SiteMenuView from '~/view/site-menu/site-menu';
-import Filter from '~/view/filter/filter';
-import {createFormSortTemplate} from '~/view/form-sort/form-sort';
+import FilterView from '~/view/filter/filter';
+import SortView from '~/view/sort/sort';
 import {createFormEventTemplate} from '~/view/form-event/form-event';
 import {createTripDaysTemplate} from '~/view/trip-days/trip-days';
 import {createTripDayTemplate} from '~/view/trip-day/trip-day';
@@ -31,13 +32,15 @@ const tripDays = getUniqueTripDays(events);
 const cities = getUniqueCities(events);
 const siteMenuItems = Object.values(AppNavigation);
 const filters = Object.values(EventFilerType);
+const sorts = Object.values(EventSortType);
 const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
 const totalPrice = getTotalPrice(events);
 
 const destinationInfoNode = new DestinationInfoView(cities, tripDays).node;
 const tripPriceNode = new TripPriceView(totalPrice).node;
 const siteMenuNode = new SiteMenuView(siteMenuItems).node;
-const filterNode = new Filter(filters).node;
+const filterNode = new FilterView(filters).node;
+const sortNode = new SortView(sorts).node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -51,12 +54,7 @@ const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuNode, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterNode, RenderPosition.AFTER_END);
-
-renderTemplate(
-    eventsContainerNode,
-    createFormSortTemplate(),
-    RenderPosition.BEFORE_END
-);
+renderElement(eventsContainerNode, sortNode, RenderPosition.BEFORE_END);
 
 renderTemplate(
     eventsContainerNode,
