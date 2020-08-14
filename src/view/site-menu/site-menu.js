@@ -3,8 +3,8 @@ import {AppNavigation} from '~/common/enums';
 
 class SiteMenu {
   constructor(menuItems) {
-    this.menuItems = menuItems;
-    this.activeItem = AppNavigation.TABLE;
+    this._menuItems = menuItems;
+    this._activeItem = AppNavigation.TABLE;
     this._element = null;
   }
 
@@ -19,9 +19,9 @@ class SiteMenu {
   get template() {
     return `
       <nav class="trip-controls__trip-tabs  trip-tabs">
-        ${this.menuItems.reduce((acc, it) => (acc.concat(`
+        ${this._menuItems.reduce((acc, it) => (acc.concat(`
           <a
-            class="trip-tabs__btn ${it === this.activeItem ? `trip-tabs__btn--active` : ``}"
+            class="trip-tabs__btn ${it === this._activeItem ? `trip-tabs__btn--active` : ``}"
             href="#"
           >
             ${it}
