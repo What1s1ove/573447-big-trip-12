@@ -20,7 +20,7 @@ import TripPriceView from '~/view/trip-price/trip-price';
 import SiteMenuView from '~/view/site-menu/site-menu';
 import FilterView from '~/view/filter/filter';
 import SortView from '~/view/sort/sort';
-import {createFormEventTemplate} from '~/view/form-event/form-event';
+import FormEventView from '~/view/form-event/form-event';
 import TripDaysView from '~/view/trip-days/trip-days';
 import {createTripDayTemplate} from '~/view/trip-day/trip-day';
 import {createEventTemplate} from '~/view/event/event';
@@ -42,6 +42,7 @@ const siteMenuNode = new SiteMenuView(siteMenuItems).node;
 const filterNode = new FilterView(filters).node;
 const sortNode = new SortView(sorts).node;
 const tripDaysNode = new TripDaysView().node;
+const formEventNode = new FormEventView(events[0], cities).node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -56,11 +57,7 @@ renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuNode, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterNode, RenderPosition.AFTER_END);
 renderElement(eventsContainerNode, sortNode, RenderPosition.BEFORE_END);
-renderTemplate(
-    eventsContainerNode,
-    createFormEventTemplate(events[0]),
-    RenderPosition.BEFORE_END
-);
+renderElement(eventsContainerNode, formEventNode, RenderPosition.BEFORE_END);
 renderElement(eventsContainerNode, tripDaysNode, RenderPosition.BEFORE_END);
 
 sortedStartDays.forEach((day, idx) => {
