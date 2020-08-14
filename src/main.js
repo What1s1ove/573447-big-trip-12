@@ -1,5 +1,4 @@
 import {
-  renderTemplate,
   renderElement,
   generateEvents,
   getUniqueTripDays,
@@ -23,7 +22,7 @@ import SortView from '~/view/sort/sort';
 import FormEventView from '~/view/form-event/form-event';
 import TripDaysView from '~/view/trip-days/trip-days';
 import TripDayView from '~/view/trip-day/trip-day';
-import {createEventTemplate} from '~/view/event/event';
+import EventView from '~/view/event/event';
 
 const EVENTS_COUNT = 20;
 
@@ -71,15 +70,15 @@ sortedStartDays.forEach((day, idx) => {
 
   events
     .slice(1)
-    .filter(
-        (event) =>
-          getFixedDate(event.start).getTime() === getFixedDate(day).getTime()
-    )
-    .forEach((it) =>
-      renderTemplate(
-          eventListNode[idx],
-          createEventTemplate(it),
-          RenderPosition.BEFORE_END
-      )
-    );
+    .filter((event) => {
+      const isMathDate =
+        getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
+
+      return isMathDate;
+    })
+    .forEach((it) => {
+      const eventNode = new EventView(it).node;
+
+      renderElement(eventListNode[idx], eventNode, RenderPosition.BEFORE_END);
+    });
 });
