@@ -10,7 +10,7 @@ import {
 } from '~/helpers';
 import {RenderPosition, SortOrder} from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
-import {createTripPriceTemplate} from '~/view/trip-price/trip-price';
+import TripPriceView from '~/view/trip-price/trip-price';
 import {createSiteMenuTemplate} from '~/view/site-menu/site-menu';
 import {createFilterTemplate} from '~/view/filter/filter';
 import {createFormSortTemplate} from '~/view/form-sort/form-sort';
@@ -28,25 +28,18 @@ const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
 const totalPrice = getTotalPrice(events);
 
 const destinationInfoNode = new DestinationInfoView(cities, tripDays).node;
+const tripPriceNode = new TripPriceView(totalPrice).node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
 const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
-renderElement(
-    tripMaiNode,
-    destinationInfoNode,
-    RenderPosition.AFTER_BEGIN
-);
+renderElement(tripMaiNode, destinationInfoNode, RenderPosition.AFTER_BEGIN);
 
 const tripInfoNode = tripMaiNode.querySelector(`.trip-info`);
 
-renderTemplate(
-    tripInfoNode,
-    createTripPriceTemplate(totalPrice),
-    RenderPosition.BEFORE_END
-);
+renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
 
 renderTemplate(
     menuTitleNode,
