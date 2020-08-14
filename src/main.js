@@ -59,6 +59,23 @@ renderElement(eventsContainerNode, sortNode, RenderPosition.BEFORE_END);
 renderElement(eventsContainerNode, formEventNode, RenderPosition.BEFORE_END);
 renderElement(eventsContainerNode, tripDaysNode, RenderPosition.BEFORE_END);
 
+const renderEvent = (listNode, event) => {
+  const eventNode = new EventView(event).node;
+  const formEventNode = new FormEventView(event, cities).node;
+
+  const replace = (a, b) => a.replaceWith(b);
+
+  eventNode.querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replace(eventNode, formEventNode);
+  });
+
+  formEventNode.addEventListener(`submit`, () => {
+    replace(formEventNode, eventNode);
+  });
+
+  renderElement(listNode, eventNode, RenderPosition.BEFORE_END);
+};
+
 sortedStartDays.forEach((day, idx) => {
   const tripDayNumber = idx + 1;
 
@@ -76,9 +93,5 @@ sortedStartDays.forEach((day, idx) => {
 
       return isMathDate;
     })
-    .forEach((it) => {
-      const eventNode = new EventView(it).node;
-
-      renderElement(eventListNode[idx], eventNode, RenderPosition.BEFORE_END);
-    });
+    .forEach((it) => renderEvent(eventListNode[idx], it));
 });
