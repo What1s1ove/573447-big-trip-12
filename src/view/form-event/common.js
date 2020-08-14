@@ -11,4 +11,9 @@ const EMPTY_EVENT = {
   photos: [],
 };
 
-export {EMPTY_EVENT};
+const EventFormMode = {
+  CREATING: `creating`,
+  EDITING: `editing`,
+};
+
+export {EMPTY_EVENT, EventFormMode};

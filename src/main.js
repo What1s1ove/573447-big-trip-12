@@ -61,7 +61,7 @@ renderElement(eventsContainerNode, tripDaysNode, RenderPosition.BEFORE_END);
 
 const renderEvent = (listNode, event) => {
   const eventNode = new EventView(event).node;
-  const formEventNode = new FormEventView(event, cities).node;
+  const formNode = new FormEventView(event, cities).node;
 
   const replace = (a, b) => a.replaceWith(b);
 
@@ -69,7 +69,9 @@ const renderEvent = (listNode, event) => {
     replace(eventNode, formEventNode);
   });
 
-  formEventNode.addEventListener(`submit`, () => {
+  formNode.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+
     replace(formEventNode, eventNode);
   });
 

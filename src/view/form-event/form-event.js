@@ -1,14 +1,15 @@
 import {getPathLabel, getFormattedDate, createElement} from '~/helpers';
-import {EventType, DateFormatType} from '~/common/enums';
+import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
 import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
 import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
-import {EMPTY_EVENT} from './common';
+import {EMPTY_EVENT, EventFormMode} from './common';
 
 class FormEvent {
-  constructor(event = EMPTY_EVENT, cities) {
-    this._event = event;
+  constructor(event, cities) {
+    this._event = event || EMPTY_EVENT;
+    this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._cities = cities;
     this._element = null;
   }
@@ -23,15 +24,18 @@ class FormEvent {
 
   get template() {
     const {
-      type = EventType.TAXI,
-      city = ``,
-      description = ``,
-      price = ``,
-      start = ``,
-      end = ``,
-      offers = [],
-      photos = [],
+      type,
+      city,
+      description,
+      price,
+      start,
+      end,
+      offers,
+      photos,
+      isFavorite
     } = this._event;
+
+    const isEditMode = this._mode === EventFormMode.EDITING;
 
     const pathLabel = getPathLabel(type);
     const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
@@ -98,6 +102,23 @@ class FormEvent {
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
+          ${isEditMode ? `
+            <input
+              ${isFavorite ? `checked` : ``}
+              class="event__favorite-checkbox  visually-hidden"
+              id="event-favorite-1"
+              type="checkbox"
+              name="event-favorite"
+            >
+            <label class="event__favorite-btn" for="event-favorite-1">
+              <span class="visually-hidden">Add to favorite</span>
+              <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+                <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
+              </svg>
+            </label>
+            <button class="event__rollup-btn" type="button">
+              <span class="visually-hidden">Close event</span>
+            </button>` : ``}
         </header>
         <section class="event__details">
           ${offers.length ? eventOffersTemplate : ``}
