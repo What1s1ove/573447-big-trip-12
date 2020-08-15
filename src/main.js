@@ -13,6 +13,7 @@ import {
   AppNavigation,
   EventFilerType,
   EventSortType,
+  KeyboardKey,
 } from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
@@ -65,14 +66,28 @@ const renderEvent = (listNode, event) => {
 
   const replace = (a, b) => a.replaceWith(b);
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === KeyboardKey.ESCAPE) {
+      evt.preventDefault();
+
+      replace(formNode, eventNode);
+
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   eventNode.querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    replace(eventNode, formEventNode);
+    replace(eventNode, formNode);
+
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   formNode.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
 
-    replace(formEventNode, eventNode);
+    replace(formNode, eventNode);
+
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   renderElement(listNode, eventNode, RenderPosition.BEFORE_END);
