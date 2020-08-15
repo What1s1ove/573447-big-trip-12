@@ -8,13 +8,13 @@ const createListOffersTemplate = (offerList) => {
     .reduce((acc, it) =>
       it.isChecked
         ?
-        (acc += `
-            <li class="event__offer">
-              <span class="event__offer-title">${it.title}</span>
-              +
-              €&nbsp;<span class="event__offer-price">${it.price}</span>
-            </li>
-          `)
+        (acc.concat(`
+          <li class="event__offer">
+            <span class="event__offer-title">${it.title}</span>
+            +
+            €&nbsp;<span class="event__offer-price">${it.price}</span>
+          </li>
+        `))
         : acc, ``)
     .slice(OffersCount.MIN, OffersCount.MAX);
 
