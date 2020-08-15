@@ -41,7 +41,7 @@ const siteMenuNode = new SiteMenuView(siteMenuItems).node;
 const filterNode = new FilterView(filters).node;
 const sortNode = new SortView(sorts).node;
 const tripDaysNode = new TripDaysView().node;
-const formEventNode = new FormEventView(events[0], cities).node;
+const formEventNode = new FormEventView(null, cities).node;
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -90,8 +90,7 @@ sortedStartDays.forEach((day, idx) => {
   events
     .slice(1)
     .filter((event) => {
-      const isMathDate =
-        getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
+      const isMathDate = getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
 
       return isMathDate;
     })
