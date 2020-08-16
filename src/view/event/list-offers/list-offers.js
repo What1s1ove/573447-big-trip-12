@@ -2,8 +2,8 @@ const MAX_OFFER_COUNT = 3;
 
 const createListOffersTemplate = (offerList) => {
   const offers = offerList
-    .reduce((acc, it, idx) => {
-      const isAllow = it.isChecked && (idx + 1 <= MAX_OFFER_COUNT);
+    .reduce((acc, it) => {
+      const isAllow = it.isChecked && (acc.length < MAX_OFFER_COUNT);
 
 
       return isAllow ?
