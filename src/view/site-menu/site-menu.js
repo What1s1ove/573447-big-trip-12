@@ -1,19 +1,11 @@
-import {createElement} from '~/helpers';
+import Abstract from '~/view/abstract/abstract';
 import {AppNavigation} from '~/common/enums';
 
-class SiteMenu {
+class SiteMenu extends Abstract {
   constructor(menuItems) {
+    super();
     this._menuItems = menuItems;
     this._activeItem = AppNavigation.TABLE;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
