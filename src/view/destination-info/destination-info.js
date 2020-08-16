@@ -34,16 +34,14 @@ class DestinationInfo {
       : max.getDate();
 
     return `
-      <section class="trip-main__trip-info  trip-info">
-        <div class="trip-info__main">
-          <h1 class="trip-info__title">${this.cities.join(` — `)}</h1>
-          <p class="trip-info__dates">
-            ${startSideDate}
-            &nbsp;&mdash;&nbsp;
-            ${endSideDate}
-          </p>
-        </div>
-      </section>
+      <div class="trip-info__main">
+        <h1 class="trip-info__title">${this.cities.join(` — `)}</h1>
+        <p class="trip-info__dates">
+          ${startSideDate}
+          &nbsp;&mdash;&nbsp;
+          ${endSideDate}
+        </p>
+      </div>
     `;
   }
 }
