@@ -1,25 +1,14 @@
-import {
-  getDurationTime,
-  getFormattedTime,
-  getPathLabel,
-  createElement
-} from '~/helpers';
-import {eventTypeToTextMap} from '~/common/map';
-import {createListOffersTemplate} from './list-offers/list-offers';
+import {getDurationTime, getFormattedTime, getPathLabel} from '~/helpers';
 import {TimeFormatType} from '~/common/enums';
+import {eventTypeToTextMap} from '~/common/map';
+import Abstract from '~/view/abstract/abstract';
+import {createListOffersTemplate} from './list-offers/list-offers';
 
-class Event {
+class Event extends Abstract {
   constructor(event) {
+    super();
     this._event = event;
     this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
