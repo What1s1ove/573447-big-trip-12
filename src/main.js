@@ -1,5 +1,6 @@
 import {
   renderElement,
+  replaceWithElement,
   generateEvents,
   getUniqueTripDays,
   getFixedDate,
@@ -52,31 +53,29 @@ const renderEvent = (listNode, event) => {
   const eventComponent = new EventView(event);
   const eventFormComponent = new FormEventView(event, cities);
 
-  const replace = (a, b) => a.replaceWith(b);
-
   const onEscKeyDown = (evt) => {
     if (evt.key === KeyboardKey.ESCAPE) {
       evt.preventDefault();
 
-      replace(eventFormComponent.node, eventComponent.node);
+      replaceWithElement(eventFormComponent, eventComponent);
 
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
   eventComponent.setOnEditClick(() => {
-    replace(eventComponent.node, eventFormComponent.node);
+    replaceWithElement(eventComponent, eventFormComponent);
 
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   eventFormComponent.setOnSubmit(() => {
-    replace(eventFormComponent.node, eventComponent.node);
+    replaceWithElement(eventFormComponent, eventComponent);
 
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  renderElement(listNode, eventComponent.node, RenderPosition.BEFORE_END);
+  renderElement(listNode, eventComponent, RenderPosition.BEFORE_END);
 };
 
 const initEvents = (eventsContainer, boardEvents) => {
