@@ -8,6 +8,8 @@ class Event extends Abstract {
   constructor(event) {
     super();
     this._event = event;
+
+    this._onEditClick = this._onEditClick.bind(this);
   }
 
   get template() {
@@ -50,6 +52,20 @@ class Event extends Abstract {
         </div>
       </li>
     `;
+  }
+
+  _onEditClick(evt) {
+    evt.preventDefault();
+
+    this._callbacks.onEditClick();
+  }
+
+  setOnEditClick(callback) {
+    const editBtnNode = this.node.querySelector(`.event__rollup-btn`);
+
+    this._callbacks.onEditClick = callback;
+
+    editBtnNode.addEventListener(`click`, this._onEditClick);
   }
 }
 

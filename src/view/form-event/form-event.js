@@ -13,7 +13,8 @@ class FormEvent extends Abstract {
     this._event = event || EMPTY_EVENT;
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._cities = cities;
-    this._element = null;
+
+    this._onSubmit = this._onSubmit.bind(this);
   }
 
   get template() {
@@ -124,6 +125,20 @@ class FormEvent extends Abstract {
         </section>
       </form>
     `;
+  }
+
+  _onSubmit(evt) {
+    evt.preventDefault();
+
+    this._callbacks.onSubmit();
+  }
+
+  setOnSubmit(callback) {
+    const formNode = this.node;
+
+    this._callbacks.onSubmit = callback;
+
+    formNode.addEventListener(`submit`, this._onSubmit);
   }
 }
 

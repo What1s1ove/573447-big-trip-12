@@ -7,6 +7,7 @@ class Abstract {
     }
 
     this._element = null;
+    this._callbacks = {};
   }
 
   get node() {

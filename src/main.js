@@ -49,8 +49,8 @@ const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
 const renderEvent = (listNode, event) => {
-  const eventNode = new EventView(event).node;
-  const formNode = new FormEventView(event, cities).node;
+  const eventComponent = new EventView(event);
+  const eventFormComponent = new FormEventView(event, cities);
 
   const replace = (a, b) => a.replaceWith(b);
 
@@ -58,27 +58,25 @@ const renderEvent = (listNode, event) => {
     if (evt.key === KeyboardKey.ESCAPE) {
       evt.preventDefault();
 
-      replace(formNode, eventNode);
+      replace(eventFormComponent.node, eventComponent.node);
 
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
-  eventNode.querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-    replace(eventNode, formNode);
+  eventComponent.setOnEditClick(() => {
+    replace(eventComponent.node, eventFormComponent.node);
 
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  formNode.addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
-
-    replace(formNode, eventNode);
+  eventFormComponent.setOnSubmit(() => {
+    replace(eventFormComponent.node, eventComponent.node);
 
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  renderElement(listNode, eventNode, RenderPosition.BEFORE_END);
+  renderElement(listNode, eventComponent.node, RenderPosition.BEFORE_END);
 };
 
 const initEvents = (eventsContainer, boardEvents) => {
