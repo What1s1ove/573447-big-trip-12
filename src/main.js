@@ -38,10 +38,10 @@ const sorts = Object.values(EventSortType);
 const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
 const totalPrice = getTotalPrice(events);
 
-const tripInfoNode = new TripInfoView().node;
-const tripPriceNode = new TripPriceView(totalPrice).node;
-const siteMenuNode = new SiteMenuView(siteMenuItems).node;
-const filterNode = new FilterView(filters).node;
+const tripInfoComponent = new TripInfoView();
+const tripPriceComponent = new TripPriceView(totalPrice);
+const siteMenuComponent = new SiteMenuView(siteMenuItems);
+const filterComponent = new FilterView(filters);
 
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
@@ -83,36 +83,35 @@ const initEvents = (eventsContainer, boardEvents) => {
   const hasEvents = Boolean(events.length);
 
   if (!hasEvents) {
-    const noEventsNode = new NoEventsView().node;
+    const noEventsComponent = new NoEventsView();
 
-    renderElement(eventsContainer, noEventsNode, RenderPosition.BEFORE_END);
+    renderElement(eventsContainer, noEventsComponent, RenderPosition.BEFORE_END);
 
     return;
   }
 
-  const destinationInfoNode = new DestinationInfoView(cities, tripDays).node;
-  const sortNode = new SortView(sorts).node;
-  const tripDaysNode = new TripDaysView().node;
-  const formEventNode = new FormEventView(null, cities).node;
+  const destinationInfoComponent = new DestinationInfoView(cities, tripDays);
+  const sortComponent = new SortView(sorts);
+  const tripDaysComponent = new TripDaysView();
+  const formEventComponent = new FormEventView(null, cities);
 
-  renderElement(tripInfoNode, destinationInfoNode, RenderPosition.AFTER_BEGIN);
-  renderElement(eventsContainer, sortNode, RenderPosition.BEFORE_END);
-  renderElement(eventsContainer, formEventNode, RenderPosition.BEFORE_END);
-  renderElement(eventsContainer, tripDaysNode, RenderPosition.BEFORE_END);
+  renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
+  renderElement(eventsContainer, sortComponent, RenderPosition.BEFORE_END);
+  renderElement(eventsContainer, formEventComponent, RenderPosition.BEFORE_END);
+  renderElement(eventsContainer, tripDaysComponent, RenderPosition.BEFORE_END);
 
   sortedStartDays.forEach((day, idx) => {
     const tripDayNumber = idx + 1;
 
-    const tripDayNode = new TripDayView(new Date(day), tripDayNumber).node;
+    const tripDayComponent = new TripDayView(new Date(day), tripDayNumber);
 
-    renderElement(tripDaysNode, tripDayNode, RenderPosition.BEFORE_END);
+    renderElement(tripDaysComponent, tripDayComponent, RenderPosition.BEFORE_END);
 
-    const eventListNode = tripDaysNode.querySelectorAll(`.trip-events__list`);
+    const eventListNode = tripDaysComponent.node.querySelectorAll(`.trip-events__list`);
 
     boardEvents
       .filter((event) => {
-        const isMathDate =
-          getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
+        const isMathDate = getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
 
         return isMathDate;
       })
@@ -120,9 +119,9 @@ const initEvents = (eventsContainer, boardEvents) => {
   });
 };
 
-renderElement(tripMaiNode, tripInfoNode, RenderPosition.AFTER_BEGIN);
-renderElement(tripInfoNode, tripPriceNode, RenderPosition.BEFORE_END);
-renderElement(menuTitleNode, siteMenuNode, RenderPosition.AFTER_END);
-renderElement(filterTitleNode, filterNode, RenderPosition.AFTER_END);
+renderElement(tripMaiNode, tripInfoComponent, RenderPosition.AFTER_BEGIN);
+renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
+renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
+renderElement(filterTitleNode, filterComponent, RenderPosition.AFTER_END);
 
 initEvents(eventsContainerNode, events);
