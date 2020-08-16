@@ -1,18 +1,6 @@
-import {createElement} from '~/helpers';
+import Abstract from '~/view/abstract/abstract';
 
-class TripDays {
-  constructor() {
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
-  }
-
+class TripDays extends Abstract {
   get template() {
     return `
       <section class="trip-main__trip-info trip-info"></section>
