@@ -1,4 +1,4 @@
-export * from './dom';
+export * from './render';
 export * from './mocks';
 export * from './number';
 export * from './array';

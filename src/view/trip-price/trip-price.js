@@ -1,17 +1,9 @@
-import {createElement} from '~/helpers';
+import Abstract from '~/view/abstract/abstract';
 
-class DestinationInfo {
+class DestinationInfo extends Abstract {
   constructor(price) {
+    super();
     this.price = price;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {

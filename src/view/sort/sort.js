@@ -1,19 +1,11 @@
-import {createElement} from '~/helpers';
 import {EventSortType} from '~/common/enums';
+import Abstract from '~/view/abstract/abstract';
 
-class Sort {
+class Sort extends Abstract {
   constructor(sorts) {
+    super();
     this._sorts = sorts;
     this._activeSort = EventSortType.EVENT;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
