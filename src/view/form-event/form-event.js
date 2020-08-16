@@ -1,25 +1,19 @@
-import {getPathLabel, getFormattedDate, createElement} from '~/helpers';
+import {getPathLabel, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
+import Abstract from '~/view/abstract/abstract';
 import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
 import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
 import {EMPTY_EVENT, EventFormMode} from './common';
 
-class FormEvent {
+class FormEvent extends Abstract {
   constructor(event, cities) {
+    super();
     this._event = event || EMPTY_EVENT;
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._cities = cities;
     this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
