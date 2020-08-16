@@ -28,6 +28,8 @@ class Event {
     const pathLabel = getPathLabel(type);
     const duration = getDurationTime(start, end);
 
+    const offersTemplate = createListOffersTemplate(offers);
+
     return `
       <li class="trip-events__item">
         <div class="event">
@@ -53,7 +55,7 @@ class Event {
             €&nbsp;<span class="event__price-value">${price}</span>
           </p>
           <h4 class="visually-hidden">Offers:</h4>
-          ${createListOffersTemplate(offers)}
+          ${offersTemplate}
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
           </button>
@@ -64,4 +66,3 @@ class Event {
 }
 
 export default Event;
-
