@@ -1,19 +1,11 @@
-import {createElement} from '~/helpers';
 import {EventFilerType} from '~/common/enums';
+import Abstract from '~/view/abstract/abstract';
 
-class Filter {
+class Filter extends Abstract {
   constructor(filters) {
+    super();
     this._filters = filters;
     this._activeFilter = EventFilerType.EVERYTHING;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {

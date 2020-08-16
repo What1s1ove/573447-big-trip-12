@@ -8,7 +8,6 @@ class Event extends Abstract {
   constructor(event) {
     super();
     this._event = event;
-    this._element = null;
   }
 
   get template() {
