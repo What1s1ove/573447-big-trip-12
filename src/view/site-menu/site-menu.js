@@ -1,5 +1,5 @@
-import Abstract from '~/view/abstract/abstract';
 import {AppNavigation} from '~/common/enums';
+import Abstract from '~/view/abstract/abstract';
 
 class SiteMenu extends Abstract {
   constructor(menuItems) {
