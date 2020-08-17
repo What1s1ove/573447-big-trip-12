@@ -1,24 +1,13 @@
 import {SortOrder} from '~/common/enums';
+import {getSortedEntities} from '../../array';
 
-const getOrderCb = (order) => {
-  let orderCb = null;
-
-  switch (order) {
-    case SortOrder.ASC:
-      orderCb = (a, b) => new Date(b) - new Date(a);
-      break;
-    case SortOrder.DESK:
-      orderCb = (a, b) => new Date(a) - new Date(b);
-      break;
-  }
-
-  return orderCb;
+const compareFnMap = {
+  [SortOrder.ASC]: (a, b) => new Date(a) - new Date(b),
+  [SortOrder.DESK]: (a, b) => new Date(b) - new Date(a),
 };
 
-const getSortedDates = (sortOrder, dates) => {
-  const orderCb = getOrderCb(sortOrder);
-
-  const sortedDates = dates.slice().sort(orderCb);
+const getSortedDates = (sortDir, dates) => {
+  const sortedDates = getSortedEntities(dates, compareFnMap[sortDir]);
 
   return sortedDates;
 };
