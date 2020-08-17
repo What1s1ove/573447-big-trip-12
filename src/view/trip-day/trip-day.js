@@ -1,19 +1,12 @@
-import {getFormattedDate, createElement} from '~/helpers';
+import {getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
+import Abstract from '~/view/abstract/abstract';
 
-class TripDay {
+class TripDay extends Abstract {
   constructor(date, number) {
+    super();
     this._date = date;
     this._number = number;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {

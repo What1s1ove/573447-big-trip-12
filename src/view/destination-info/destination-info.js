@@ -1,24 +1,12 @@
-import {
-  getUniqueDates,
-  getSideDates,
-  getFormattedDate,
-  createElement,
-} from '~/helpers';
+import {getUniqueDates, getSideDates, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
+import Abstract from '~/view/abstract/abstract';
 
-class DestinationInfo {
+class DestinationInfo extends Abstract {
   constructor(cities, tripDays) {
+    super();
     this.cities = cities;
     this.tripDays = tripDays;
-    this._element = null;
-  }
-
-  get node() {
-    if (!this._element) {
-      this._element = createElement(this.template);
-    }
-
-    return this._element;
   }
 
   get template() {
@@ -29,9 +17,10 @@ class DestinationInfo {
     const {min, max} = getSideDates(uniquesDates);
 
     const startSideDate = getFormattedDate(DateFormatType.SHORT_MONTH_DAY, min);
-    const endSideDate = min.getMonth() !== max.getMonth()
-      ? getFormattedDate(DateFormatType.SHORT_MONTH_DAY, max)
-      : max.getDate();
+    const endSideDate =
+      min.getMonth() !== max.getMonth()
+        ? getFormattedDate(DateFormatType.SHORT_MONTH_DAY, max)
+        : max.getDate();
 
     return `
       <div class="trip-info__main">
