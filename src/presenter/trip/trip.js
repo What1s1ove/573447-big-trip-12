@@ -4,7 +4,9 @@ import {
   getUniqueTripDays,
   getSortedDates,
   getFixedDate,
-  getUniqueCities
+  getUniqueCities,
+  getSortedEventsByPrice,
+  getSortedEventsByDuration
 } from '~/helpers';
 import {
   RenderPosition,
@@ -24,15 +26,18 @@ const sorts = Object.values(EventSortType);
 class Trip {
   constructor(boardContainerNode) {
     this._boardContainerNode = boardContainerNode;
+    this._currentSortType = EventSortType.EVENT;
 
     this._noEventsComponent = new NoEventsView();
     this._sortComponent = new SortView(sorts);
     this._tripDaysComponent = new TripDaysView();
+
+    this._changeSortType = this._changeSortType.bind(this);
   }
 
-  _renderEvents(events) {
+  _renderTripDays(events) {
     const tripDays = getUniqueTripDays(events);
-    const sortedStartDays = getSortedDates(SortOrder.DESK, tripDays.start);
+    const sortedStartDays = getSortedDates(SortOrder.ASC, tripDays.start);
 
     sortedStartDays.forEach((day, idx) => {
       const tripDayNumber = idx + 1;
@@ -44,6 +49,27 @@ class Trip {
 
       this._renderTripDay(eventsByDay, day, tripDayNumber);
     });
+  }
+
+  _sortEvents(sortType) {
+    switch (sortType) {
+      case EventSortType.TIME: {
+        const sortedEvents = getSortedEventsByDuration(SortOrder.ASC, this._tripEvents);
+
+        this._renderTripDay(sortedEvents);
+        break;
+      }
+      case EventSortType.PRICE: {
+        const sortedEvents = getSortedEventsByPrice(SortOrder.DESK, this._tripEvents);
+
+        this._renderTripDay(sortedEvents);
+        break;
+      }
+      default:
+        this._renderTripDays(this._tripEvents);
+    }
+
+    this._currentSortType = sortType;
   }
 
   _renderEvent(dayNode, event) {
@@ -81,14 +107,20 @@ class Trip {
 
   _renderSorts() {
     renderElement(this._boardContainerNode, this._sortComponent, RenderPosition.BEFORE_END);
+
+    this._sortComponent.setOnSortTypeChange(this._changeSortType);
   }
 
-  _renderTripDays() {
+  _renderTripDaysList() {
     renderElement(this._boardContainerNode, this._tripDaysComponent, RenderPosition.BEFORE_END);
   }
 
+  _clearTripDaysList() {
+    this._tripDaysComponent.node.innerHTML = ``;
+  }
+
   _renderTripDay(events, day, dayNumber) {
-    const tripDayComponent = new TripDayView(new Date(day), dayNumber);
+    const tripDayComponent = new TripDayView(day, dayNumber);
     const eventsListNode = tripDayComponent.node.querySelector(`.trip-events__list`);
 
     renderElement(this._tripDaysComponent, tripDayComponent, RenderPosition.BEFORE_END);
@@ -106,8 +138,17 @@ class Trip {
     }
 
     this._renderSorts();
-    this._renderTripDays();
-    this._renderEvents(this._tripEvents);
+    this._renderTripDaysList();
+    this._renderTripDays(this._tripEvents);
+  }
+
+  _changeSortType(sortType) {
+    if (this.currentSortType === sortType) {
+      return;
+    }
+
+    this._clearTripDaysList();
+    this._sortEvents(sortType);
   }
 
   init(events) {
