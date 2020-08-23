@@ -1,20 +1,25 @@
 import {getPathLabel, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
-import Abstract from '~/view/abstract/abstract';
+import Smart from '~/view/smart/smart';
 import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
 import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
 import {EMPTY_EVENT, EventFormMode} from './common';
 
-class FormEvent extends Abstract {
+class FormEvent extends Smart {
   constructor(event, cities) {
     super();
-    this._event = event || EMPTY_EVENT;
+    this._data = event || EMPTY_EVENT;
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._cities = cities;
 
     this._onSubmit = this._onSubmit.bind(this);
+    this._restoreHandlers = this._restoreHandlers.bind(this);
+    this._initInnerHandlers = this._initInnerHandlers.bind(this);
+    this._onFavoriteChange = this._onFavoriteChange.bind(this);
+
+    this._restoreHandlers();
   }
 
   get template() {
@@ -28,7 +33,7 @@ class FormEvent extends Abstract {
       offers,
       photos,
       isFavorite
-    } = this._event;
+    } = this._data;
 
     const isEditMode = this._mode === EventFormMode.EDITING;
 
@@ -127,10 +132,26 @@ class FormEvent extends Abstract {
     `;
   }
 
+  _restoreHandlers() {
+    this._initInnerHandlers();
+  }
+
+  _initInnerHandlers() {
+    const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
+
+    favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
+  }
+
+  _onFavoriteChange() {
+    this.updateData({
+      isFavorite: !this._data.isFavorite
+    });
+  }
+
   _onSubmit(evt) {
     evt.preventDefault();
 
-    this._callbacks.onSubmit();
+    this._callbacks.onSubmit(this._data);
   }
 
   setOnSubmit(callback) {

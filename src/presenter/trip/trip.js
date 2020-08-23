@@ -1,6 +1,5 @@
 import {
   renderElement,
-  replaceWithElement,
   getUniqueTripDays,
   getSortedDates,
   getFixedDate,
@@ -8,18 +7,13 @@ import {
   getSortedEventsByPrice,
   getSortedEventsByDuration
 } from '~/helpers';
-import {
-  RenderPosition,
-  EventSortType,
-  KeyboardKey,
-  SortOrder,
-} from '~/common/enums';
+import {RenderPosition, EventSortType, SortOrder} from '~/common/enums';
+import EventPresenter from '~/presenter/event/event';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
 import TripDayView from '~/view/trip-day/trip-day';
-import FormEventView from '~/view/form-event/form-event';
-import EventView from '~/view/event/event';
+
 
 const sorts = Object.values(EventSortType);
 
@@ -73,32 +67,9 @@ class Trip {
   }
 
   _renderEvent(dayNode, event) {
-    const eventComponent = new EventView(event);
-    const eventFormComponent = new FormEventView(event, this._tripCities);
+    const eventPresenter = new EventPresenter();
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === KeyboardKey.ESCAPE) {
-        evt.preventDefault();
-
-        replaceWithElement(eventFormComponent, eventComponent);
-
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    eventComponent.setOnEditClick(() => {
-      replaceWithElement(eventComponent, eventFormComponent);
-
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventFormComponent.setOnSubmit(() => {
-      replaceWithElement(eventFormComponent, eventComponent);
-
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    renderElement(dayNode, eventComponent, RenderPosition.BEFORE_END);
+    eventPresenter.init(event, dayNode, this._tripCities);
   }
 
   _renderNoEvents() {
@@ -129,7 +100,7 @@ class Trip {
   }
 
   _renderTrip() {
-    const hasEvents = Boolean(this._initialTasks.length);
+    const hasEvents = Boolean(this._tripEvents.length);
 
     if (!hasEvents) {
       this._renderNoEvents();
@@ -153,7 +124,6 @@ class Trip {
 
   init(events) {
     this._tripEvents = events.slice();
-    this._initialTasks = events.slice();
     this._tripCities = getUniqueCities(events);
 
     this._renderTrip();
