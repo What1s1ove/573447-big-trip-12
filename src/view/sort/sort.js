@@ -1,11 +1,15 @@
 import {EventSortType} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
 
+const SORT_INPUT_NAME = `trip-sort`;
+
 class Sort extends Abstract {
   constructor(sorts) {
     super();
     this._sorts = sorts;
     this._activeSort = EventSortType.EVENT;
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
   }
 
   get template() {
@@ -19,11 +23,11 @@ class Sort extends Abstract {
             <div class="trip-sort__item  trip-sort__item--${it}">
               <input
                 id="sort-${it}"
-                value="sort-${it}"
+                value="${it}"
                 ${it === this._activeSort ? `checked` : ``}
                 class="trip-sort__input  visually-hidden"
                 type="radio"
-                name="trip-sort"
+                name="${SORT_INPUT_NAME}"
               >
               <label class="trip-sort__btn" for="sort-${it}">
                 ${it}
@@ -38,6 +42,23 @@ class Sort extends Abstract {
         </span>
       </form>
     `;
+  }
+
+  _onSortTypeChange({target}) {
+    const {value, name} = target;
+    const isSortChange = name.includes(SORT_INPUT_NAME);
+
+    if (!isSortChange) {
+      return;
+    }
+
+    this._callbacks.changeSortType(value);
+  }
+
+  setOnSortTypeChange(callback) {
+    this._callbacks.changeSortType = callback;
+
+    this.node.addEventListener(`change`, this._onSortTypeChange);
   }
 }
 

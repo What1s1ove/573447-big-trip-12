@@ -5,3 +5,4 @@ export * from './get-fixed-date/get-fixed-date.helper';
 export * from './get-sorted-dates/get-sorted-dates.helper';
 export * from './get-unique-dates/get-unique-dates.helper';
 export * from './get-side-dates/get-side-dates.helper';
+export * from './get-time-diff/get-time-diff.helper';
