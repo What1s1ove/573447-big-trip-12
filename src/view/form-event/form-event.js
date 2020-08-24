@@ -5,6 +5,7 @@ import Smart from '~/view/smart/smart';
 import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
 import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
+import {getDestinationCities, getMatchedDestination, getDestinationsPattern} from './helpers';
 import {EMPTY_EVENT, EventFormMode} from './common';
 
 class FormEvent extends Smart {
@@ -18,32 +19,25 @@ class FormEvent extends Smart {
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
+    this._onDestinationInput = this._onDestinationInput.bind(this);
 
     this._restoreListeners();
   }
 
   get template() {
-    const {
-      type,
-      city,
-      description,
-      price,
-      start,
-      end,
-      offers,
-      photos,
-      isFavorite
-    } = this._data;
+    const {type, price, start, end, offers, destination, isFavorite} = this._data;
 
     const isEditMode = this._mode === EventFormMode.EDITING;
 
     const pathLabel = getPathLabel(type);
+    const destinationCities = getDestinationCities(this._destinations);
+    const destinationPattern = getDestinationsPattern(destinationCities);
     const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
 
     const eventTypeTemplate = createEventKindsTemplate(type);
     const eventOffersTemplate = createEventOffersTemplate(offers);
-    const eventPhotosTemplate = createEventPhotosTemplate(photos);
+    const eventPhotosTemplate = createEventPhotosTemplate(destination.photos);
 
     return `
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -61,7 +55,8 @@ class FormEvent extends Smart {
               ${eventTypeToTextMap[type]} ${pathLabel}
             </label>
             <input
-              value="${city}"
+              value="${destination.city}"
+              pattern="${destinationPattern}"
               class="event__input event__input--destination"
               id="event-destination-1"
               type="text"
@@ -69,7 +64,7 @@ class FormEvent extends Smart {
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
-              ${this._destinations.reduce((acc, it) => (acc.concat(`<option value="${it.city}" />`)), ``)}
+              ${destinationCities.reduce((acc, it) => (acc.concat(`<option value="${it}" />`)), ``)}
             </datalist>
           </div>
           <div class="event__field-group  event__field-group--time">
@@ -124,8 +119,8 @@ class FormEvent extends Smart {
           ${offers.length ? eventOffersTemplate : ``}
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${description}</p>
-            ${photos.length ? eventPhotosTemplate : ``}
+            <p class="event__destination-description">${destination.description}</p>
+            ${destination.photos.length ? eventPhotosTemplate : ``}
           </section>
         </section>
       </form>
@@ -140,13 +135,27 @@ class FormEvent extends Smart {
 
   _initInnerListeners() {
     const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
+    const destinationInput = this.node.querySelector(`.event__input--destination`);
 
     favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
+    destinationInput.addEventListener(`input`, this._onDestinationInput);
   }
 
   _onFavoriteChange() {
     this.updateData({
       isFavorite: !this._data.isFavorite
+    });
+  }
+
+  _onDestinationInput({target}) {
+    const destination = getMatchedDestination(target.value, this._destinations);
+
+    if (!destination) {
+      return;
+    }
+
+    this.updateData({
+      destination
     });
   }
 

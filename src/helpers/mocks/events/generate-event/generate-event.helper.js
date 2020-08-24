@@ -14,9 +14,6 @@ const generateEvent = (destination) => {
 
   return {
     destination,
-    city: destination.city,
-    description: destination.description,
-    photos: destination.photos,
     id: getRandomId(),
     type: generateEventType(),
     price: getRandomNumber(EventPrice.MIN, EventPrice.MAX),
