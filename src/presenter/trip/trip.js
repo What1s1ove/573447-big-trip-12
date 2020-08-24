@@ -4,7 +4,6 @@ import {
   getUniqueTripDays,
   getSortedDates,
   getFixedDate,
-  getUniqueCities,
   getSortedEventsByPrice,
   getSortedEventsByDuration
 } from '~/helpers';
@@ -72,14 +71,14 @@ class Trip {
   _renderEvent(dayNode, event) {
     const eventPresenter = new EventPresenter(dayNode, this._updateEvent);
 
-    eventPresenter.init(event, this._tripCities);
+    eventPresenter.init(event, this._tripDestinations);
 
     this._eventPresenters[event.id] = eventPresenter;
   }
 
   _updateEvent(event) {
     this._tripEvents = updateItem(this._tripEvents, event, `id`);
-    this._eventPresenters[event.id].init(event, this._tripCities);
+    this._eventPresenters[event.id].init(event, this._tripDestinations);
   }
 
   _renderNoEvents() {
@@ -136,9 +135,9 @@ class Trip {
     this._sortEvents(sortType);
   }
 
-  init(events) {
+  init(events, destinations) {
     this._tripEvents = events.slice();
-    this._tripCities = getUniqueCities(events);
+    this._tripDestinations = destinations.slice();
 
     this._renderTrip();
   }

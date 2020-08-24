@@ -8,11 +8,11 @@ import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
 import {EMPTY_EVENT, EventFormMode} from './common';
 
 class FormEvent extends Smart {
-  constructor(event, cities) {
+  constructor(event, destinations) {
     super();
     this._data = event || EMPTY_EVENT;
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
-    this._cities = cities;
+    this._destinations = destinations;
 
     this._onSubmit = this._onSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
@@ -69,7 +69,7 @@ class FormEvent extends Smart {
               list="destination-list-1"
             >
             <datalist id="destination-list-1">
-              ${this._cities.reduce((acc, it) => (acc.concat(`<option value="${it}" />`)), ``)}
+              ${this._destinations.reduce((acc, it) => (acc.concat(`<option value="${it.city}" />`)), ``)}
             </datalist>
           </div>
           <div class="event__field-group  event__field-group--time">

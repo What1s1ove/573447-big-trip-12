@@ -57,14 +57,14 @@ class Event {
     }
   }
 
-  init(event, cities) {
+  init(event, destinations) {
     this.event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventFormComponent = this._eventFormComponent;
 
     this._eventComponent = new EventView(event);
-    this._eventFormComponent = new FormEventView(event, cities);
+    this._eventFormComponent = new FormEventView(event, destinations);
 
     this._initListeners();
 

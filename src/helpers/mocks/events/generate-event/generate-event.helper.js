@@ -1,8 +1,6 @@
 import {getRandomId} from '~/helpers/id';
 import {getRandomNumber} from '~/helpers/number';
 import {generateEventType} from '../generate-event-type/generate-event-type.helper';
-import {generateEventCity} from '../generate-event-city/generate-event-city.helper';
-import {generateEventDestination} from '../generate-event-destination/generate-event-destination.helper';
 import {generateEventDate} from '../generate-event-date/generate-event-date.helper';
 import {generateEventOffers} from '../generate-event-offers/generate-event-offers.helper';
 
@@ -11,14 +9,12 @@ const EventPrice = {
   MAX: 140,
 };
 
-const generateEvent = () => {
-  const city = generateEventCity();
-  const destination = generateEventDestination(city);
+const generateEvent = (destination) => {
   const dates = generateEventDate();
 
   return {
-    city,
     destination,
+    city: destination.city,
     description: destination.description,
     photos: destination.photos,
     id: getRandomId(),
