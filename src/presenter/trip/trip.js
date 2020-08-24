@@ -97,7 +97,11 @@ class Trip {
   }
 
   _clearTripDaysList() {
-    this._tripDaysComponent.node.innerHTML = ``;
+    Object
+    .values(this._eventPresenters)
+    .forEach((it) => it.destroy());
+
+    this._eventPresenters = {};
   }
 
   _renderTripDay(events, day, dayNumber) {

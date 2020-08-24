@@ -15,11 +15,11 @@ class FormEvent extends Smart {
     this._cities = cities;
 
     this._onSubmit = this._onSubmit.bind(this);
-    this._restoreHandlers = this._restoreHandlers.bind(this);
-    this._initInnerHandlers = this._initInnerHandlers.bind(this);
+    this._restoreListeners = this._restoreListeners.bind(this);
+    this._initInnerListeners = this._initInnerListeners.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
 
-    this._restoreHandlers();
+    this._restoreListeners();
   }
 
   get template() {
@@ -132,11 +132,13 @@ class FormEvent extends Smart {
     `;
   }
 
-  _restoreHandlers() {
-    this._initInnerHandlers();
+  _restoreListeners() {
+    this._initInnerListeners();
+
+    this.setOnSubmit(this._callbacks.onSubmit);
   }
 
-  _initInnerHandlers() {
+  _initInnerListeners() {
     const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
 
     favoriteBtn.addEventListener(`change`, this._onFavoriteChange);

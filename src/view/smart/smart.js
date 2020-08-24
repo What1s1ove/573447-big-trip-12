@@ -22,10 +22,10 @@ class Smart extends Abstract {
     replaceWithElement(prevElement, newElement);
     prevElement = null;
 
-    this._restoreHandlers();
+    this._restoreListeners();
   }
 
-  _restoreHandlers() {
+  _restoreListeners() {
     throw new Error(`Abstract method not implemented: resetHandlers`);
   }
 }
