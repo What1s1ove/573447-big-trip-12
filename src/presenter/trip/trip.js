@@ -29,6 +29,7 @@ class Trip {
 
     this._changeSortType = this._changeSortType.bind(this);
     this._updateEvent = this._updateEvent.bind(this);
+    this._changeEventMode = this._changeEventMode.bind(this);
   }
 
   _renderTripDays(events) {
@@ -69,7 +70,7 @@ class Trip {
   }
 
   _renderEvent(dayNode, event) {
-    const eventPresenter = new EventPresenter(dayNode, this._updateEvent);
+    const eventPresenter = new EventPresenter(dayNode, this._updateEvent, this._changeEventMode);
 
     eventPresenter.init(event, this._tripDestinations);
 
@@ -133,6 +134,10 @@ class Trip {
 
     this._clearTripDaysList();
     this._sortEvents(sortType);
+  }
+
+  _changeEventMode() {
+    Object.values(this._eventPresenters).forEach((it) => it.resetView());
   }
 
   init(events, destinations) {

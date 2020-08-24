@@ -5,9 +5,10 @@ import EventView from '~/view/event/event';
 import {EventMode} from './common';
 
 class Event {
-  constructor(dayContainerNode, changeEvent) {
+  constructor(dayContainerNode, changeEvent, changeMode) {
     this._dayContainerNode = dayContainerNode;
     this._changeEvent = changeEvent;
+    this._changeMode = changeMode;
 
     this.eventMode = EventMode.PREVIEW;
 
@@ -27,6 +28,7 @@ class Event {
   _replaceEventWithForm() {
     replaceWithElement(this._eventComponent, this._eventFormComponent);
 
+    this._changeMode();
     this.eventMode = EventMode.EDIT;
   }
 
@@ -85,6 +87,12 @@ class Event {
 
     removeElement(prevEventComponent);
     removeElement(prevEventFormComponent);
+  }
+
+  resetView() {
+    if (this.eventMode !== EventMode.PREVIEW) {
+      this._replaceFormWithEvent();
+    }
   }
 
   destroy() {
