@@ -4,7 +4,10 @@ import FormEventView from '~/view/form-event/form-event';
 import EventView from '~/view/event/event';
 
 class Event {
-  constructor() {
+  constructor(dayContainerNode, changeEvent) {
+    this._dayContainerNode = dayContainerNode;
+    this._changeEvent = changeEvent;
+
     this.eventComponent = null;
     this.eventFormComponent = null;
 
@@ -13,7 +16,7 @@ class Event {
     this._onSubmitEventForm = this._onSubmitEventForm.bind(this);
   }
 
-  init(event, dayNode, cities) {
+  init(event, cities) {
     this.event = event;
 
     this._eventComponent = new EventView(event);
@@ -22,7 +25,7 @@ class Event {
     this._eventComponent.setOnEditClick(this._onEventEditClick);
     this._eventFormComponent.setOnSubmit(this._onSubmitEventForm);
 
-    renderElement(dayNode, this._eventComponent, RenderPosition.BEFORE_END);
+    renderElement(this._dayContainerNode, this._eventComponent, RenderPosition.BEFORE_END);
   }
 
   _replaceEventWithForm() {
@@ -31,6 +34,8 @@ class Event {
 
   _replaceFormWithEvent() {
     replaceWithElement(this._eventFormComponent, this._eventComponent);
+
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _onEventEditClick() {
@@ -39,10 +44,9 @@ class Event {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _onSubmitEventForm() {
+  _onSubmitEventForm(event) {
     this._replaceFormWithEvent();
-
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._changeEvent(event);
   }
 
   _onEscKeyDown(evt) {
@@ -50,8 +54,6 @@ class Event {
       evt.preventDefault();
 
       this._replaceFormWithEvent();
-
-      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 }

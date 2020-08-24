@@ -1,3 +1,4 @@
+import {getRandomId} from '~/helpers/id';
 import {getRandomNumber} from '~/helpers/number';
 import {generateEventType} from '../generate-event-type/generate-event-type.helper';
 import {generateEventCity} from '../generate-event-city/generate-event-city.helper';
@@ -20,6 +21,7 @@ const generateEvent = () => {
     destination,
     description: destination.description,
     photos: destination.photos,
+    id: getRandomId(),
     type: generateEventType(),
     price: getRandomNumber(EventPrice.MIN, EventPrice.MAX),
     offers: generateEventOffers(),

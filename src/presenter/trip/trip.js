@@ -1,5 +1,6 @@
 import {
   renderElement,
+  updateItem,
   getUniqueTripDays,
   getSortedDates,
   getFixedDate,
@@ -21,12 +22,14 @@ class Trip {
   constructor(boardContainerNode) {
     this._boardContainerNode = boardContainerNode;
     this._currentSortType = EventSortType.EVENT;
+    this._eventPresenters = {};
 
     this._noEventsComponent = new NoEventsView();
     this._sortComponent = new SortView(sorts);
     this._tripDaysComponent = new TripDaysView();
 
     this._changeSortType = this._changeSortType.bind(this);
+    this._updateEvent = this._updateEvent.bind(this);
   }
 
   _renderTripDays(events) {
@@ -67,9 +70,16 @@ class Trip {
   }
 
   _renderEvent(dayNode, event) {
-    const eventPresenter = new EventPresenter();
+    const eventPresenter = new EventPresenter(dayNode, this._updateEvent);
 
-    eventPresenter.init(event, dayNode, this._tripCities);
+    eventPresenter.init(event, this._tripCities);
+
+    this._eventPresenters[event.id] = eventPresenter;
+  }
+
+  _updateEvent(event) {
+    this._tripEvents = updateItem(this._tripEvents, event, `id`);
+    this._eventPresenters[event.id].init(event, this._tripCities);
   }
 
   _renderNoEvents() {
