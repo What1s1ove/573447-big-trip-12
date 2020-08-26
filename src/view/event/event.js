@@ -13,7 +13,7 @@ class Event extends Abstract {
   }
 
   get template() {
-    const {city, type, price, start, end, offers} = this._event;
+    const {type, price, start, end, destination, offers} = this._event;
 
     const pathLabel = getPathLabel(type);
     const duration = getDurationTime(start, end);
@@ -27,7 +27,7 @@ class Event extends Abstract {
             <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
           </div>
           <h3 class="event__title">
-            ${eventTypeToTextMap[type]} ${pathLabel} ${city}
+            ${eventTypeToTextMap[type]} ${pathLabel} ${destination.city}
           </h3>
           <div class="event__schedule">
             <p class="event__time">

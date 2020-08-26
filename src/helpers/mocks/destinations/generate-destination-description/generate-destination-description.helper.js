@@ -7,7 +7,7 @@ const DescriptionSentenceCount = {
   MAX: 5,
 };
 
-const generateEventDescription = (city) => {
+const generateDestinationDescription = (city) => {
   const description = DESCRIPTION_TEXT.split(`.`)
     .slice(
         0,
@@ -21,4 +21,4 @@ const generateEventDescription = (city) => {
   return `${city} ${description}`;
 };
 
-export {generateEventDescription};
+export {generateDestinationDescription};

@@ -3,16 +3,17 @@ import {DateFormatType} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
 
 class DestinationInfo extends Abstract {
-  constructor(cities, tripDays) {
+  constructor(destinations, tripDays) {
     super();
-    this.cities = cities;
-    this.tripDays = tripDays;
+    this._destinations = destinations;
+    this._tripDays = tripDays;
   }
 
   get template() {
+    const cities = this._destinations.map((it) => it.city);
     const uniquesDates = getUniqueDates([
-      ...this.tripDays.start,
-      ...this.tripDays.end,
+      ...this._tripDays.start,
+      ...this._tripDays.end,
     ]);
     const {min, max} = getSideDates(uniquesDates);
 
@@ -24,7 +25,7 @@ class DestinationInfo extends Abstract {
 
     return `
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${this.cities.join(` — `)}</h1>
+        <h1 class="trip-info__title">${cities.join(` — `)}</h1>
         <p class="trip-info__dates">
           ${startSideDate}
           &nbsp;&mdash;&nbsp;
