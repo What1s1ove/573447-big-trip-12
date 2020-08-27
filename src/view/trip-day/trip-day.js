@@ -19,8 +19,6 @@ class TripDay extends Abstract {
               ${getFormattedDate(DateFormatType.SHORT_MONTH_DAY, this._date)}
             </time>` : ``}
         </div>
-        <ul class="trip-events__list">
-        </ul>
       </li>
     `;
   }

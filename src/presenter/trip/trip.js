@@ -1,19 +1,16 @@
 import {
   renderElement,
-  updateItem,
   getUniqueTripDays,
   getSortedDates,
-  getFixedDate,
   getSortedEventsByPrice,
   getSortedEventsByDuration
 } from '~/helpers';
 import {RenderPosition, EventSortType, SortOrder} from '~/common/enums';
-import EventPresenter from '~/presenter/event/event';
+import TripDayPresenter from '~/presenter/trip-day/trip-day';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
-import TripDayView from '~/view/trip-day/trip-day';
-
+import {getEventsByDay} from './helpers';
 
 const sorts = Object.values(EventSortType);
 
@@ -21,7 +18,7 @@ class Trip {
   constructor(boardContainerNode) {
     this._boardContainerNode = boardContainerNode;
     this._currentSortType = EventSortType.EVENT;
-    this._eventPresenters = {};
+    this._tripDayPresenters = {};
 
     this._noEventsComponent = new NoEventsView();
     this._sortComponent = new SortView(sorts);
@@ -32,20 +29,33 @@ class Trip {
     this._changeEventMode = this._changeEventMode.bind(this);
   }
 
+  _updateEvent(eventDayNumber, event) {
+
+  }
+
   _renderTripDays(events) {
     const tripDays = getUniqueTripDays(events);
     const sortedStartDays = getSortedDates(SortOrder.ASC, tripDays.start);
 
     sortedStartDays.forEach((day, idx) => {
       const tripDayNumber = idx + 1;
-      const eventsByDay = events.filter((event) => {
-        const isMathDate = getFixedDate(event.start).getTime() === getFixedDate(day).getTime();
-
-        return isMathDate;
-      });
+      const eventsByDay = getEventsByDay(events, day);
 
       this._renderTripDay(eventsByDay, day, tripDayNumber);
     });
+  }
+
+  _renderTripDay(events, day, tripDayNumber) {
+    const tripDayPresenter = new TripDayPresenter(
+        this._tripDaysComponent,
+        this._tripDestinations,
+        day,
+        tripDayNumber
+    );
+
+    tripDayPresenter.init(events);
+
+    this._tripDayPresenters[tripDayNumber] = tripDayPresenter;
   }
 
   _sortEvents(sortType) {
@@ -53,7 +63,7 @@ class Trip {
       case EventSortType.TIME: {
         const sortedEvents = getSortedEventsByDuration(SortOrder.ASC, this._tripEvents);
 
-        this._renderTripDay(sortedEvents);
+        this._renderTripDay(sortedEvents, null, null);
         break;
       }
       case EventSortType.PRICE: {
@@ -67,19 +77,6 @@ class Trip {
     }
 
     this._currentSortType = sortType;
-  }
-
-  _renderEvent(dayNode, event) {
-    const eventPresenter = new EventPresenter(dayNode, this._updateEvent, this._changeEventMode);
-
-    eventPresenter.init(event, this._tripDestinations);
-
-    this._eventPresenters[event.id] = eventPresenter;
-  }
-
-  _updateEvent(event) {
-    this._tripEvents = updateItem(this._tripEvents, event, `id`);
-    this._eventPresenters[event.id].init(event, this._tripDestinations);
   }
 
   _renderNoEvents() {
@@ -98,19 +95,10 @@ class Trip {
 
   _clearTripDaysList() {
     Object
-    .values(this._eventPresenters)
+    .values(this._tripDayPresenters)
     .forEach((it) => it.destroy());
 
-    this._eventPresenters = {};
-  }
-
-  _renderTripDay(events, day, dayNumber) {
-    const tripDayComponent = new TripDayView(day, dayNumber);
-    const eventsListNode = tripDayComponent.node.querySelector(`.trip-events__list`);
-
-    renderElement(this._tripDaysComponent, tripDayComponent, RenderPosition.BEFORE_END);
-
-    events.forEach((it) => this._renderEvent(eventsListNode, it));
+    this._tripDayPresenters = {};
   }
 
   _renderTrip() {
