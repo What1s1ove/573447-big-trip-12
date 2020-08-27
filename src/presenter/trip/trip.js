@@ -1,25 +1,19 @@
 import {
   renderElement,
-  replaceWithElement,
+  updateItem,
   getUniqueTripDays,
   getSortedDates,
   getFixedDate,
-  getUniqueCities,
   getSortedEventsByPrice,
   getSortedEventsByDuration
 } from '~/helpers';
-import {
-  RenderPosition,
-  EventSortType,
-  KeyboardKey,
-  SortOrder,
-} from '~/common/enums';
+import {RenderPosition, EventSortType, SortOrder} from '~/common/enums';
+import EventPresenter from '~/presenter/event/event';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
 import TripDayView from '~/view/trip-day/trip-day';
-import FormEventView from '~/view/form-event/form-event';
-import EventView from '~/view/event/event';
+
 
 const sorts = Object.values(EventSortType);
 
@@ -27,12 +21,15 @@ class Trip {
   constructor(boardContainerNode) {
     this._boardContainerNode = boardContainerNode;
     this._currentSortType = EventSortType.EVENT;
+    this._eventPresenters = {};
 
     this._noEventsComponent = new NoEventsView();
     this._sortComponent = new SortView(sorts);
     this._tripDaysComponent = new TripDaysView();
 
     this._changeSortType = this._changeSortType.bind(this);
+    this._updateEvent = this._updateEvent.bind(this);
+    this._changeEventMode = this._changeEventMode.bind(this);
   }
 
   _renderTripDays(events) {
@@ -73,32 +70,16 @@ class Trip {
   }
 
   _renderEvent(dayNode, event) {
-    const eventComponent = new EventView(event);
-    const eventFormComponent = new FormEventView(event, this._tripCities);
+    const eventPresenter = new EventPresenter(dayNode, this._updateEvent, this._changeEventMode);
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === KeyboardKey.ESCAPE) {
-        evt.preventDefault();
+    eventPresenter.init(event, this._tripDestinations);
 
-        replaceWithElement(eventFormComponent, eventComponent);
+    this._eventPresenters[event.id] = eventPresenter;
+  }
 
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    eventComponent.setOnEditClick(() => {
-      replaceWithElement(eventComponent, eventFormComponent);
-
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventFormComponent.setOnSubmit(() => {
-      replaceWithElement(eventFormComponent, eventComponent);
-
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    renderElement(dayNode, eventComponent, RenderPosition.BEFORE_END);
+  _updateEvent(event) {
+    this._tripEvents = updateItem(this._tripEvents, event, `id`);
+    this._eventPresenters[event.id].init(event, this._tripDestinations);
   }
 
   _renderNoEvents() {
@@ -116,7 +97,11 @@ class Trip {
   }
 
   _clearTripDaysList() {
-    this._tripDaysComponent.node.innerHTML = ``;
+    Object
+    .values(this._eventPresenters)
+    .forEach((it) => it.destroy());
+
+    this._eventPresenters = {};
   }
 
   _renderTripDay(events, day, dayNumber) {
@@ -129,7 +114,7 @@ class Trip {
   }
 
   _renderTrip() {
-    const hasEvents = Boolean(this._initialTasks.length);
+    const hasEvents = Boolean(this._tripEvents.length);
 
     if (!hasEvents) {
       this._renderNoEvents();
@@ -151,10 +136,13 @@ class Trip {
     this._sortEvents(sortType);
   }
 
-  init(events) {
+  _changeEventMode() {
+    Object.values(this._eventPresenters).forEach((it) => it.resetView());
+  }
+
+  init(events, destinations) {
     this._tripEvents = events.slice();
-    this._initialTasks = events.slice();
-    this._tripCities = getUniqueCities(events);
+    this._tripDestinations = destinations.slice();
 
     this._renderTrip();
   }

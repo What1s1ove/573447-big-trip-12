@@ -1,11 +1,12 @@
 import {
   renderElement,
+  generateDestinations,
   generateEvents,
   getTotalPrice,
   getUniqueTripDays,
-  getUniqueCities,
 } from '~/helpers';
 import {RenderPosition, AppNavigation, EventFilerType} from '~/common/enums';
+import {EVENT_CITIES} from '~/common/constants';
 import Trip from '~/presenter/trip/trip';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
@@ -15,15 +16,15 @@ import TripInfoView from '~/view/trip-info/trip-info';
 
 const EVENTS_COUNT = 20;
 
-const events = generateEvents(EVENTS_COUNT);
+const destinations = generateDestinations(EVENT_CITIES);
+const events = generateEvents(destinations, EVENTS_COUNT);
 const tripDays = getUniqueTripDays(events);
-const cities = getUniqueCities(events);
 const siteMenuItems = Object.values(AppNavigation);
 const filters = Object.values(EventFilerType);
 const totalPrice = getTotalPrice(events);
 
 const tripInfoComponent = new TripInfoView();
-const destinationInfoComponent = new DestinationInfoView(cities, tripDays).node;
+const destinationInfoComponent = new DestinationInfoView(destinations, tripDays).node;
 const tripPriceComponent = new TripPriceView(totalPrice);
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 const filterComponent = new FilterView(filters);
@@ -39,4 +40,4 @@ renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterComponent, RenderPosition.AFTER_END);
 
-new Trip(eventsContainerNode).init(events);
+new Trip(eventsContainerNode).init(events, destinations);
