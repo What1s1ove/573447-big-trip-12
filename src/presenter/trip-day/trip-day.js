@@ -2,7 +2,8 @@ import {updateItem, removeElement, renderElement} from '~/helpers';
 import {RenderPosition} from '~/common/enums';
 import EventPresenter from '~/presenter/event/event';
 import TripDayView from '~/view/trip-day/trip-day';
-import TripDayEventsList from '~/view/trip-day-events-list/trip-day-events-list';
+import TripDayEventsListView from '~/view/trip-day-events-list/trip-day-events-list';
+import TripDayEventsItemView from '~/view/trip-day-events-item/trip-day-event-item';
 
 class TripDay {
   constructor(daysContainerNode, tripDestinations, day, dayNumber) {
@@ -19,10 +20,17 @@ class TripDay {
   }
 
   _renderEvent(event) {
+    const tripDayEventsItemComponent = new TripDayEventsItemView();
     const eventPresenter = new EventPresenter(
-        this._tripDayEventsListComponent,
+        tripDayEventsItemComponent.node,
         this._updateEvent,
         this._changeEventMode
+    );
+
+    renderElement(
+        this._tripDayEventsListComponent,
+        tripDayEventsItemComponent,
+        RenderPosition.BEFORE_END
     );
 
     eventPresenter.init(event, this._tripDestinations);
@@ -32,6 +40,7 @@ class TripDay {
 
   _updateEvent(event) {
     this._tripEvents = updateItem(this._tripEvents, event, `id`);
+
     this._eventPresenters[event.id].init(event, this._tripDestinations);
   }
 
@@ -49,7 +58,7 @@ class TripDay {
     this._events = events;
 
     this._tripDayComponent = new TripDayView(this._day, this._dayNumber);
-    this._tripDayEventsListComponent = new TripDayEventsList();
+    this._tripDayEventsListComponent = new TripDayEventsListView();
 
     renderElement(
         this._daysContainerNode,

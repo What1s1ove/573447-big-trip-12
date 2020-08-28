@@ -21,36 +21,34 @@ class Event extends Abstract {
     const offersTemplate = createListOffersTemplate(offers);
 
     return `
-      <li class="trip-events__item">
-        <div class="event">
-          <div class="event__type">
-            <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
-          </div>
-          <h3 class="event__title">
-            ${eventTypeToTextMap[type]} ${pathLabel} ${destination.city}
-          </h3>
-          <div class="event__schedule">
-            <p class="event__time">
-              <time class="event__start-time" datetime="${start.toISOString()}">
-                ${getFormattedTime(TimeFormatType.SHORT, start)}
-              </time>
-              —
-              <time class="event__end-time" datetime="${end.toISOString()}">
-                ${getFormattedTime(TimeFormatType.SHORT, end)}
-              </time>
-            </p>
-            <p class="event__duration">${duration}</p>
-          </div>
-          <p class="event__price">
-            €&nbsp;<span class="event__price-value">${price}</span>
-          </p>
-          <h4 class="visually-hidden">Offers:</h4>
-          ${offersTemplate}
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+      <div class="event">
+        <div class="event__type">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-      </li>
+        <h3 class="event__title">
+          ${eventTypeToTextMap[type]} ${pathLabel} ${destination.city}
+        </h3>
+        <div class="event__schedule">
+          <p class="event__time">
+            <time class="event__start-time" datetime="${start.toISOString()}">
+              ${getFormattedTime(TimeFormatType.SHORT, start)}
+            </time>
+            —
+            <time class="event__end-time" datetime="${end.toISOString()}">
+              ${getFormattedTime(TimeFormatType.SHORT, end)}
+            </time>
+          </p>
+          <p class="event__duration">${duration}</p>
+        </div>
+        <p class="event__price">
+          €&nbsp;<span class="event__price-value">${price}</span>
+        </p>
+        <h4 class="visually-hidden">Offers:</h4>
+        ${offersTemplate}
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
+      </div>
     `;
   }
 
