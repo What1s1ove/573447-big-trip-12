@@ -1,4 +1,5 @@
 import {
+  updateItem,
   renderElement,
   getUniqueTripDays,
   getSortedDates,
@@ -25,12 +26,14 @@ class Trip {
     this._tripDaysComponent = new TripDaysView();
 
     this._changeSortType = this._changeSortType.bind(this);
-    this._updateEvent = this._updateEvent.bind(this);
-    this._changeEventMode = this._changeEventMode.bind(this);
+    this._onEventChange = this._onEventChange.bind(this);
+    this._onEventModeChange = this._onEventModeChange.bind(this);
   }
 
-  _updateEvent(eventDayNumber, event) {
+  _onEventChange(dayNumber, event) {
+    this._tripEvents = updateItem(this._tripEvents, event, `id`);
 
+    this._tripDayPresenters[dayNumber].updateEvent(event);
   }
 
   _renderTripDays(events) {
@@ -45,17 +48,19 @@ class Trip {
     });
   }
 
-  _renderTripDay(events, day, tripDayNumber) {
-    const tripDayPresenter = new TripDayPresenter(
-        this._tripDaysComponent,
-        this._tripDestinations,
-        day,
-        tripDayNumber
-    );
+  _renderTripDay(events, day, dayNumber) {
+    const tripDayPresenter = new TripDayPresenter({
+      day,
+      dayNumber,
+      containerNode: this._tripDaysComponent,
+      destinations: this._destinations,
+      onEventChange: this._onEventChange,
+      onEventModeChange: this._onEventModeChange
+    });
 
     tripDayPresenter.init(events);
 
-    this._tripDayPresenters[tripDayNumber] = tripDayPresenter;
+    this._tripDayPresenters[dayNumber] = tripDayPresenter;
   }
 
   _sortEvents(sortType) {
@@ -124,13 +129,13 @@ class Trip {
     this._sortEvents(sortType);
   }
 
-  _changeEventMode() {
-    Object.values(this._eventPresenters).forEach((it) => it.resetView());
+  _onEventModeChange() {
+    Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
   init(events, destinations) {
     this._tripEvents = events.slice();
-    this._tripDestinations = destinations.slice();
+    this._destinations = destinations.slice();
 
     this._renderTrip();
   }

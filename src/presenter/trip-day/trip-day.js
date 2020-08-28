@@ -1,4 +1,4 @@
-import {updateItem, removeElement, renderElement} from '~/helpers';
+import {removeElement, renderElement} from '~/helpers';
 import {RenderPosition} from '~/common/enums';
 import EventPresenter from '~/presenter/event/event';
 import TripDayView from '~/view/trip-day/trip-day';
@@ -6,26 +6,36 @@ import TripDayEventsListView from '~/view/trip-day-events-list/trip-day-events-l
 import TripDayEventsItemView from '~/view/trip-day-events-item/trip-day-event-item';
 
 class TripDay {
-  constructor(daysContainerNode, tripDestinations, day, dayNumber) {
-    this._daysContainerNode = daysContainerNode;
+  constructor({
+    containerNode,
+    destinations,
+    day,
+    dayNumber,
+    onEventChange,
+    onEventModeChange,
+  }) {
+    this._containerNode = containerNode;
     this._day = day;
     this._dayNumber = dayNumber;
-    this._tripDestinations = tripDestinations;
-    this._eventPresenters = {};
+    this._destinations = destinations;
+    this._onEventChange = onEventChange;
+    this._onEventModeChange = onEventModeChange;
 
     this._tripDayComponent = null;
     this._tripDayEventsListComponent = null;
+    this._eventPresenters = {};
 
-    this._updateEvent = this._updateEvent.bind(this);
+    this._onEventLocalChange = this._onEventLocalChange.bind(this);
   }
 
   _renderEvent(event) {
     const tripDayEventsItemComponent = new TripDayEventsItemView();
-    const eventPresenter = new EventPresenter(
-        tripDayEventsItemComponent.node,
-        this._updateEvent,
-        this._changeEventMode
-    );
+    const eventPresenter = new EventPresenter({
+      containerNode: tripDayEventsItemComponent.node,
+      destinations: this._destinations,
+      onEventChange: this._onEventLocalChange,
+      onEventModeChange: this._onEventModeChange,
+    });
 
     renderElement(
         this._tripDayEventsListComponent,
@@ -33,15 +43,13 @@ class TripDay {
         RenderPosition.BEFORE_END
     );
 
-    eventPresenter.init(event, this._tripDestinations);
+    eventPresenter.init(event);
 
     this._eventPresenters[event.id] = eventPresenter;
   }
 
-  _updateEvent(event) {
-    this._tripEvents = updateItem(this._tripEvents, event, `id`);
-
-    this._eventPresenters[event.id].init(event, this._tripDestinations);
+  _onEventLocalChange(event) {
+    this._onEventChange(this._dayNumber, event);
   }
 
   _renderEvents(events) {
@@ -54,6 +62,14 @@ class TripDay {
     this._eventPresenters = {};
   }
 
+  updateEvent(event) {
+    this._eventPresenters[event.id].init(event);
+  }
+
+  resetViews() {
+    Object.values(this._eventPresenters).forEach((it) => it.resetView());
+  }
+
   init(events) {
     this._events = events;
 
@@ -61,7 +77,7 @@ class TripDay {
     this._tripDayEventsListComponent = new TripDayEventsListView();
 
     renderElement(
-        this._daysContainerNode,
+        this._containerNode,
         this._tripDayComponent,
         RenderPosition.BEFORE_END
     );
