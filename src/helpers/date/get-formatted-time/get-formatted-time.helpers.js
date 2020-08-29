@@ -1,12 +1,11 @@
 import {TimeFormatType} from '~/common/enums';
 
 const getFormattedTime = (type, date) => {
-  const localDate = new Date(date);
   let formattedDate = null;
 
   switch (type) {
     case TimeFormatType.SHORT:
-      formattedDate = localDate.toLocaleTimeString([], {
+      formattedDate = date.toLocaleTimeString([], {
         timeStyle: `short`,
       });
       break;
