@@ -16,4 +16,17 @@ const getDestinationsPattern = (cities) => {
   return destinationsPattern;
 };
 
-export {getDestinationCities, getMatchedDestination, getDestinationsPattern};
+const mapEventInitialOffers = (tripOffer) => {
+  const mappedEventInitialOffers = tripOffer.map((it) =>
+    Object.assign({isChecked: false}, it)
+  );
+
+  return mappedEventInitialOffers;
+};
+
+export {
+  getDestinationCities,
+  getMatchedDestination,
+  getDestinationsPattern,
+  mapEventInitialOffers,
+};

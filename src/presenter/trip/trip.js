@@ -54,6 +54,7 @@ class Trip {
       dayNumber,
       containerNode: this._tripDaysComponent,
       destinations: this._destinations,
+      offers: this._offers,
       onEventChange: this._onEventChange,
       onEventModeChange: this._onEventModeChange
     });
@@ -133,9 +134,10 @@ class Trip {
     Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
-  init(events, destinations) {
+  init(events, destinations, offers) {
     this._tripEvents = events.slice();
     this._destinations = destinations.slice();
+    this._offers = offers.slice();
 
     this._renderTrip();
   }

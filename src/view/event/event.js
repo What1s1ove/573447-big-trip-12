@@ -5,7 +5,7 @@ import Abstract from '~/view/abstract/abstract';
 import {createListOffersTemplate} from './list-offers/list-offers';
 
 class Event extends Abstract {
-  constructor(event) {
+  constructor({event}) {
     super();
     this._event = event;
 

@@ -1,7 +1,8 @@
 import {getRandomNumber} from '~/helpers/number';
+import {getTripOfferByType} from '~/helpers/trip';
 
 const generateEventOffers = (eventType, offers) => {
-  const currentOffer = offers.find((it) => it.type === eventType);
+  const currentOffer = getTripOfferByType(offers, eventType);
 
   const mapOffers = currentOffer.offers.map((it) =>
     Object.assign({}, {isChecked: Boolean(getRandomNumber(0, 1))}, it)

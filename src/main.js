@@ -43,4 +43,4 @@ renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterComponent, RenderPosition.AFTER_END);
 
-new Trip(eventsContainerNode).init(events, destinations);
+new Trip(eventsContainerNode).init(events, destinations, offers);

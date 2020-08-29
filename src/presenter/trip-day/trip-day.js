@@ -9,6 +9,7 @@ class TripDay {
   constructor({
     containerNode,
     destinations,
+    offers,
     day,
     dayNumber,
     onEventChange,
@@ -18,6 +19,7 @@ class TripDay {
     this._day = day;
     this._dayNumber = dayNumber;
     this._destinations = destinations;
+    this._offers = offers;
     this._onEventChange = onEventChange;
     this._onEventModeChange = onEventModeChange;
 
@@ -33,6 +35,7 @@ class TripDay {
     const eventPresenter = new EventPresenter({
       containerNode: tripDayEventsItemComponent.node,
       destinations: this._destinations,
+      offers: this._offers,
       onEventChange: this._onEventLocalChange,
       onEventModeChange: this._onEventModeChange,
     });

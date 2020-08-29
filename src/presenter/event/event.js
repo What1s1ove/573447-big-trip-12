@@ -8,11 +8,13 @@ class Event {
   constructor({
     containerNode,
     destinations,
+    offers,
     onEventChange,
     onEventModeChange
   }) {
     this._containerNode = containerNode;
     this._destinations = destinations;
+    this._offers = offers;
     this._onEventChange = onEventChange;
     this._onEventModeChange = onEventModeChange;
 
@@ -72,8 +74,12 @@ class Event {
     const prevEventComponent = this._eventComponent;
     const prevEventFormComponent = this._eventFormComponent;
 
-    this._eventComponent = new EventView(event);
-    this._eventFormComponent = new FormEventView(event, this._destinations);
+    this._eventComponent = new EventView({event});
+    this._eventFormComponent = new FormEventView({
+      event,
+      destinations: this._destinations,
+      offers: this._offers
+    });
 
     this._initListeners();
 
