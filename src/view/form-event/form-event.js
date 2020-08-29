@@ -36,7 +36,7 @@ class FormEvent extends Smart {
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
 
     const eventTypeTemplate = createEventKindsTemplate(type);
-    const eventOffersTemplate = createEventOffersTemplate(offers);
+    const eventOffersTemplate = createEventOffersTemplate(type, offers);
     const eventPhotosTemplate = createEventPhotosTemplate(destination.photos);
 
     return `

@@ -9,15 +9,17 @@ const EventPrice = {
   MAX: 140,
 };
 
-const generateEvent = (destination) => {
+const generateEvent = (destination, tripOffers) => {
   const dates = generateEventDate();
+  const type = generateEventType();
+  const offers = generateEventOffers(type, tripOffers);
 
   return {
+    type,
     destination,
+    offers,
     id: getRandomId(),
-    type: generateEventType(),
     price: getRandomNumber(EventPrice.MIN, EventPrice.MAX),
-    offers: generateEventOffers(),
     start: dates.startDate,
     end: dates.endDate,
     isFavorite: Boolean(getRandomNumber(0, 1)),

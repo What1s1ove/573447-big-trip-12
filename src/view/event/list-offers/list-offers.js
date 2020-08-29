@@ -10,7 +10,7 @@ const createListOffersTemplate = (offerList) => {
         ([...acc, `
           <li class="event__offer">
             <span class="event__offer-title">
-              ${it.title}
+              ${it.name}
             </span>
             +€&nbsp;
             <span class="event__offer-price">

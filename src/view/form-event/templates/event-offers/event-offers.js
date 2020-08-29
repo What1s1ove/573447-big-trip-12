@@ -1,14 +1,16 @@
-const createEventOffersTemplate = (offers) => {
-  const offerTemplates = offers.reduce((acc, it) => (acc += `
+const createEventOffersTemplate = (eventType, offers) => {
+
+  const offerTemplates = offers.reduce((acc, it, idx) => (acc += `
     <div class="event__offer-selector">
       <input
-        id="event-offer-${it.type}-1"
-        type="checkbox" name="event-offer-${it.type}"
+        id="event-offer-${eventType}${idx}"
+        type="checkbox"
+        name="event-offer-${eventType}"
         ${it.isChecked ? `checked` : ``}
         class="event__offer-checkbox visually-hidden"
       >
-      <label class="event__offer-label" for="event-offer-${it.type}-1">
-        <span class="event__offer-title">${it.title}</span>
+      <label class="event__offer-label" for="event-offer-${eventType}${idx}">
+        <span class="event__offer-title">${it.name}</span>
         +
         €&nbsp;<span class="event__offer-price">${it.price}</span>
       </label>
