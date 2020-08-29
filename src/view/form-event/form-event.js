@@ -1,3 +1,4 @@
+import flatpickr from 'flatpickr';
 import {getPathLabel, getFormattedDate, getTripOfferByType} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
@@ -10,8 +11,9 @@ import {
   getMatchedDestination,
   getDestinationsPattern,
   mapEventInitialOffers,
+  resetDatepicker,
 } from './helpers';
-import {EMPTY_EVENT, EventFormMode} from './common';
+import {EMPTY_EVENT, FLATPICKR_OPTIONS, EventFormMode} from './common';
 
 class FormEvent extends Smart {
   constructor({event, destinations, offers}) {
@@ -21,12 +23,18 @@ class FormEvent extends Smart {
     this._destinations = destinations;
     this._offers = offers;
 
+    this._datepickerStartDate = null;
+    this._datepickerEndDate = null;
+
     this._onSubmit = this._onSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
+    this._setDatepicker = this._setDatepicker.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
     this._onDestinationInput = this._onDestinationInput.bind(this);
     this._onEventTypeChange = this._onEventTypeChange.bind(this);
+    this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
+    this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
 
     this._restoreListeners();
   }
@@ -138,6 +146,7 @@ class FormEvent extends Smart {
     this._initInnerListeners();
 
     this.setOnSubmit(this._callbacks.onSubmit);
+    this._setDatepicker();
   }
 
   _initInnerListeners() {
@@ -148,6 +157,31 @@ class FormEvent extends Smart {
     favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
     destinationInput.addEventListener(`input`, this._onDestinationInput);
     typeList.addEventListener(`change`, this._onEventTypeChange);
+  }
+
+  _setDatepicker() {
+    resetDatepicker(this._datepickerStartDate);
+    resetDatepicker(this._datepickerEndDate);
+
+    const eventStartTimeNode = this.node.querySelector(`#event-start-time-1`);
+    const eventEndTimeNode = this.node.querySelector(`#event-end-time-1`);
+
+    this._datepickerStartDate = flatpickr(
+        eventStartTimeNode,
+        Object.assign({}, FLATPICKR_OPTIONS, {
+          defaultDate: this._data.start,
+          onChange: this._onEventStartDateChange,
+        })
+    );
+
+    this._datepickerEndDate = flatpickr(
+        eventEndTimeNode,
+        Object.assign({}, FLATPICKR_OPTIONS, {
+          minDate: this._data.start,
+          defaultDate: this._data.end,
+          onChange: this._onEventEndDateChange,
+        })
+    );
   }
 
   _onFavoriteChange() {
@@ -177,6 +211,18 @@ class FormEvent extends Smart {
     this.updateData({
       type: value,
       offers: mappedEventOffers,
+    });
+  }
+
+  _onEventStartDateChange([date]) {
+    this.updateData({
+      start: date
+    });
+  }
+
+  _onEventEndDateChange([date]) {
+    this.updateData({
+      end: date
     });
   }
 

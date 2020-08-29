@@ -24,9 +24,17 @@ const mapEventInitialOffers = (tripOffer) => {
   return mappedEventInitialOffers;
 };
 
+const resetDatepicker = (datepicker) => {
+  if (datepicker) {
+    datepicker.destroy();
+    datepicker = null;
+  }
+};
+
 export {
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,
   mapEventInitialOffers,
+  resetDatepicker,
 };
