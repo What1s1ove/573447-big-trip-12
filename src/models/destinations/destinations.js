@@ -1,6 +1,6 @@
 import {Observer} from '~/helpers';
 
-class Destination extends Observer {
+class Destinations extends Observer {
   constructor() {
     super();
 
@@ -16,4 +16,4 @@ class Destination extends Observer {
   }
 }
 
-export default Destination;
+export default Destinations;

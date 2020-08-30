@@ -18,6 +18,9 @@ const renderElement = (container, child, place) => {
     case RenderPosition.BEFORE_END:
       container.append(child);
       break;
+    case RenderPosition.AFTER_END:
+      container.parentNode.insertBefore(child, container.nextSibling);
+      break;
   }
 };
 

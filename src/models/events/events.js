@@ -1,6 +1,6 @@
 import {Observer} from '~/helpers';
 
-class Event extends Observer {
+class Events extends Observer {
   constructor() {
     super();
 
@@ -34,4 +34,4 @@ class Event extends Observer {
   }
 }
 
-export default Event;
+export default Events;

@@ -6,3 +6,4 @@ export * from './date';
 export * from './event';
 export * from './trip';
 export * from './id';
+export * from './class';

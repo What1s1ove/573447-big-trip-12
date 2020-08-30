@@ -8,11 +8,11 @@ class Observer {
   }
 
   addObserver(observer) {
-    this.observers.push(observer);
+    this._observers.push(observer);
   }
 
   removeObserver(observer) {
-    this.observers = this.observers.filter((existedObserver) => existedObserver !== observer);
+    this._observers = this._observers.filter((existedObserver) => existedObserver !== observer);
   }
 }
 

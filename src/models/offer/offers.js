@@ -1,6 +1,6 @@
 import {Observer} from '~/helpers';
 
-class Offer extends Observer {
+class Offers extends Observer {
   constructor() {
     super();
 
@@ -16,4 +16,4 @@ class Offer extends Observer {
   }
 }
 
-export default Offer;
+export default Offers;
