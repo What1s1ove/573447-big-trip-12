@@ -1,5 +1,10 @@
 import {renderElement, replaceWithElement, removeElement} from '~/helpers';
-import {RenderPosition, KeyboardKey} from '~/common/enums';
+import {
+  RenderPosition,
+  KeyboardKey,
+  UserAction,
+  UpdateType,
+} from '~/common/enums';
 import FormEventView from '~/view/form-event/form-event';
 import EventView from '~/view/event/event';
 import {EventMode} from './common';
@@ -9,15 +14,14 @@ class Event {
     containerNode,
     destinations,
     offers,
-    onEventChange,
-    onEventModeChange
+    changeEvent,
+    changeEventMode,
   }) {
     this._containerNode = containerNode;
     this._destinations = destinations;
     this._offers = offers;
-    this._onEventChange = onEventChange;
-    this._onEventModeChange = onEventModeChange;
-
+    this._changeEvent = changeEvent;
+    this._changeEventMode = changeEventMode;
 
     this.eventMode = EventMode.PREVIEW;
 
@@ -25,19 +29,19 @@ class Event {
     this.eventFormComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._onEventEditClick = this._onEventEditClick.bind(this);
-    this._onEventFormSubmit = this._onEventFormSubmit.bind(this);
+    this._editEvent = this._editEvent.bind(this);
+    this._submitForm = this._submitForm.bind(this);
   }
 
   _initListeners() {
-    this._eventComponent.setOnEditClick(this._onEventEditClick);
-    this._eventFormComponent.setOnSubmit(this._onEventFormSubmit);
+    this._eventComponent.setOnEditClick(this._editEvent);
+    this._eventFormComponent.setOnSubmit(this._submitForm);
   }
 
   _replaceEventWithForm() {
     replaceWithElement(this._eventComponent, this._eventFormComponent);
 
-    this._onEventModeChange();
+    this._changeEventMode();
     this.eventMode = EventMode.EDIT;
   }
 
@@ -49,15 +53,15 @@ class Event {
     this.eventMode = EventMode.PREVIEW;
   }
 
-  _onEventEditClick() {
+  _editEvent() {
     this._replaceEventWithForm();
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _onEventFormSubmit(event) {
+  _submitForm(event) {
     this._replaceFormWithEvent();
-    this._onEventChange(event);
+    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.PATCH, event);
   }
 
   _onEscKeyDown(evt) {
@@ -78,13 +82,17 @@ class Event {
     this._eventFormComponent = new FormEventView({
       event,
       destinations: this._destinations,
-      offers: this._offers
+      offers: this._offers,
     });
 
     this._initListeners();
 
     if (!prevEventComponent || !prevEventFormComponent) {
-      renderElement(this._containerNode, this._eventComponent, RenderPosition.BEFORE_END);
+      renderElement(
+          this._containerNode,
+          this._eventComponent,
+          RenderPosition.BEFORE_END
+      );
 
       return;
     }

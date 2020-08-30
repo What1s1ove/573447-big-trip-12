@@ -4,7 +4,7 @@ class Observer {
   }
 
   notify(event, payload) {
-    this.observers.forEach((observer) => observer(event, payload));
+    this._observers.forEach((observer) => observer(event, payload));
   }
 
   addObserver(observer) {

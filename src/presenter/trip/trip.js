@@ -1,11 +1,11 @@
 import {
-  updateItem,
   renderElement,
   getUniqueTripDays,
   getSortedDates,
   getSortedEventsByPrice,
   getSortedEventsByDuration,
-  removeElement
+  removeElement,
+  getFixedDate
 } from '~/helpers';
 import {
   RenderPosition,
@@ -36,8 +36,9 @@ class Trip {
     this._tripDaysComponent = new TripDaysView();
 
     this._changeSortType = this._changeSortType.bind(this);
-    this._onEventChange = this._onEventChange.bind(this);
-    this._onEventModeChange = this._onEventModeChange.bind(this);
+    this._changeEventMode = this._changeEventMode.bind(this);
+    this._changeViewAction = this._changeViewAction.bind(this);
+    this._changeModelEvent = this._changeModelEvent.bind(this);
   }
 
   get events() {
@@ -60,12 +61,6 @@ class Trip {
 
   get offers() {
     return this._offersModel.offers;
-  }
-
-  _onEventChange(dayNumber, event) {
-    this._tripEvents = updateItem(this._tripEvents, event, `id`);
-
-    this._tripDayPresenters[dayNumber].updateEvent(event);
   }
 
   _renderEvents(events) {
@@ -99,21 +94,13 @@ class Trip {
       containerNode: this._tripDaysComponent,
       destinations: this.destinations,
       offers: this.offers,
-      onEventChange: this._onEventChange,
-      onEventModeChange: this._onEventModeChange,
+      changeEvent: this._changeViewAction,
+      changeEventMode: this._changeEventMode,
     });
 
     tripDayPresenter.init(events);
 
-    this._tripDayPresenters[dayNumber] = tripDayPresenter;
-  }
-
-  _renderNoEvents() {
-    renderElement(
-        this._boardContainerNode,
-        this._noEventsComponent,
-        RenderPosition.BEFORE_END
-    );
+    this._tripDayPresenters[day] = tripDayPresenter;
   }
 
   _renderSorts() {
@@ -138,7 +125,11 @@ class Trip {
     const hasEvents = Boolean(this.events.length);
 
     if (!hasEvents) {
-      this._renderNoEvents();
+      renderElement(
+          this._boardContainerNode,
+          this._noEventsComponent,
+          RenderPosition.BEFORE_END
+      );
 
       return;
     }
@@ -170,29 +161,30 @@ class Trip {
     this._renderTrip();
   }
 
-  _onEventModeChange() {
+  _changeEventMode() {
     Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
-  changeViewAction(actionType, updateType, task) {
+  _changeViewAction(actionType, updateType, event) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.eventsModel.updateTask(updateType, task);
+        this._eventsModel.updateEvent(updateType, event);
         break;
       case UserAction.ADD_EVENT:
-        this.eventsModel.addTasks(updateType, task);
+        this._eventsModel.addEvent(updateType, event);
         break;
       case UserAction.DELETE_EVENT:
-        this.eventsModel.deleteTasks(updateType, task);
+        this._eventsModel.deleteEvent(updateType, event);
         break;
     }
   }
 
-  _changeModelEvent(updateType, updateOptions) {
+  _changeModelEvent(updateType, update) {
     switch (updateType) {
       case UpdateType.PATCH: {
-        const {dayNumber, event} = updateOptions;
-        this._tripDayPresenters[dayNumber].updateEvent(event);
+        const day = getFixedDate(update.start);
+
+        this._tripDayPresenters[day].updateEvent(update);
         break;
       }
       case UpdateType.MINOR: {
