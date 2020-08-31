@@ -1,4 +1,3 @@
-import {EventFilerType} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
 
 class Filter extends Abstract {

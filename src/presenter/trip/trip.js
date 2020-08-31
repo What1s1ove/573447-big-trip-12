@@ -19,6 +19,7 @@ import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
 import {getEventsByDay} from './helpers';
+import { FilterTypeToFilterCbMap } from '~/common/map/filter/filter-type-to-filter-cb.map';
 
 const sorts = Object.values(EventSortType);
 
@@ -49,17 +50,20 @@ class Trip {
   }
 
   get events() {
-    const events = this._eventsModel.events;
+    const {events} = this._eventsModel;
+    const filterType = this._filterModel.filter;
+    const filteredEvents = FilterTypeToFilterCbMap[filterType](events);
+
     switch (this._currentSortType) {
       case EventSortType.TIME: {
-        return getSortedEventsByDuration(SortOrder.ASC, events);
+        return getSortedEventsByDuration(SortOrder.ASC, filteredEvents);
       }
       case EventSortType.PRICE: {
-        return getSortedEventsByPrice(SortOrder.DESK, events);
+        return getSortedEventsByPrice(SortOrder.DESK, filteredEvents);
       }
     }
 
-    return events;
+    return filteredEvents;
   }
 
   get destinations() {

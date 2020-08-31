@@ -1,8 +1,8 @@
 import {renderElement, removeElement, replaceWithElement} from '~/helpers';
-import {UpdateType, EventFilerType, RenderPosition} from '~/common/enums';
+import {UpdateType, EventFilterType, RenderPosition} from '~/common/enums';
 import FilterView from '~/view/filter/filter';
 
-const filters = Object.values(EventFilerType);
+const filters = Object.values(EventFilterType);
 
 class Filter {
   constructor({containerNode, filterModel}) {

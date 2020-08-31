@@ -1,11 +1,11 @@
 import {Observer} from '~/helpers';
-import {EventFilerType} from '~/common/enums';
+import {EventFilterType} from '~/common/enums';
 
 class Filter extends Observer {
   constructor() {
     super();
 
-    this._currentFilter = EventFilerType.EVERYTHING;
+    this._currentFilter = EventFilterType.EVERYTHING;
   }
 
   setFilter(updateType, filter) {
