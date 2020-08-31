@@ -5,10 +5,19 @@ import EventView from '~/view/event/event';
 import {EventMode} from './common';
 
 class Event {
-  constructor(dayContainerNode, changeEvent, changeMode) {
-    this._dayContainerNode = dayContainerNode;
-    this._changeEvent = changeEvent;
-    this._changeMode = changeMode;
+  constructor({
+    containerNode,
+    destinations,
+    offers,
+    onEventChange,
+    onEventModeChange
+  }) {
+    this._containerNode = containerNode;
+    this._destinations = destinations;
+    this._offers = offers;
+    this._onEventChange = onEventChange;
+    this._onEventModeChange = onEventModeChange;
+
 
     this.eventMode = EventMode.PREVIEW;
 
@@ -17,18 +26,18 @@ class Event {
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._onEventEditClick = this._onEventEditClick.bind(this);
-    this._onSubmitEventForm = this._onSubmitEventForm.bind(this);
+    this._onEventFormSubmit = this._onEventFormSubmit.bind(this);
   }
 
   _initListeners() {
     this._eventComponent.setOnEditClick(this._onEventEditClick);
-    this._eventFormComponent.setOnSubmit(this._onSubmitEventForm);
+    this._eventFormComponent.setOnSubmit(this._onEventFormSubmit);
   }
 
   _replaceEventWithForm() {
     replaceWithElement(this._eventComponent, this._eventFormComponent);
 
-    this._changeMode();
+    this._onEventModeChange();
     this.eventMode = EventMode.EDIT;
   }
 
@@ -46,9 +55,9 @@ class Event {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _onSubmitEventForm(event) {
+  _onEventFormSubmit(event) {
     this._replaceFormWithEvent();
-    this._changeEvent(event);
+    this._onEventChange(event);
   }
 
   _onEscKeyDown(evt) {
@@ -59,19 +68,23 @@ class Event {
     }
   }
 
-  init(event, destinations) {
+  init(event) {
     this.event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventFormComponent = this._eventFormComponent;
 
-    this._eventComponent = new EventView(event);
-    this._eventFormComponent = new FormEventView(event, destinations);
+    this._eventComponent = new EventView({event});
+    this._eventFormComponent = new FormEventView({
+      event,
+      destinations: this._destinations,
+      offers: this._offers
+    });
 
     this._initListeners();
 
     if (!prevEventComponent || !prevEventFormComponent) {
-      renderElement(this._dayContainerNode, this._eventComponent, RenderPosition.BEFORE_END);
+      renderElement(this._containerNode, this._eventComponent, RenderPosition.BEFORE_END);
 
       return;
     }

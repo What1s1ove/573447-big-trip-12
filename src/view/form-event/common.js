@@ -15,8 +15,8 @@ const EMPTY_EVENT = {
   destination: {
     city: DEFAULT_EVENT_CITY,
     photos: [],
-    description: ``
-  }
+    description: ``,
+  },
 };
 
 const EventFormMode = {
@@ -24,4 +24,13 @@ const EventFormMode = {
   EDITING: `editing`,
 };
 
-export {EMPTY_EVENT, EventFormMode};
+// ! because of camelcase eslint rule
+const FLATPICKR_OPTIONS = {
+  'allowInput': true,
+  'altInput': true,
+  'enableTime': true,
+  'altFormat': `d/m/y H:i`,
+  'time_24hr': true,
+};
+
+export {EMPTY_EVENT, EventFormMode, FLATPICKR_OPTIONS};

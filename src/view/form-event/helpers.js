@@ -16,4 +16,25 @@ const getDestinationsPattern = (cities) => {
   return destinationsPattern;
 };
 
-export {getDestinationCities, getMatchedDestination, getDestinationsPattern};
+const mapEventInitialOffers = (tripOffer) => {
+  const mappedEventInitialOffers = tripOffer.map((it) =>
+    Object.assign({isChecked: false}, it)
+  );
+
+  return mappedEventInitialOffers;
+};
+
+const resetDatepicker = (datepicker) => {
+  if (datepicker) {
+    datepicker.destroy();
+    datepicker = null;
+  }
+};
+
+export {
+  getDestinationCities,
+  getMatchedDestination,
+  getDestinationsPattern,
+  mapEventInitialOffers,
+  resetDatepicker,
+};

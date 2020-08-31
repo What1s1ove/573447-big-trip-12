@@ -2,6 +2,7 @@ import {RenderPosition} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
 
 const renderElement = (container, child, place) => {
+
   if (container instanceof Abstract) {
     container = container.node;
   }

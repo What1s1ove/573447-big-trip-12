@@ -1,41 +1,16 @@
-const getDaysDiff = (seconds) => {
-  const daysDiff = Math.floor(seconds / 60 / 60 / 24);
-
-  return daysDiff;
-};
-
-const getHoursDiff = (seconds) => {
-  const hoursDiff = Math.floor((seconds / 60 / 60) % 24);
-
-  return hoursDiff;
-};
-
-const getMinutesDiff = (seconds) => {
-  const minutesDiff = Math.floor((seconds / 60) % 60);
-
-  return minutesDiff;
-};
-
-const getTwoDigitalTime = (number) => {
-  const twoDigitalFormatted = number < 10 ? `0${number}` : number;
-
-  return twoDigitalFormatted;
-};
+import moment from 'moment';
 
 const getDurationTime = (start, end) => {
-  const diffInSeconds = Math.abs(new Date(end) - new Date(start)) / 1000;
+  const a = moment(start);
+  const b = moment(end);
 
-  const times = [
-    {label: `D`, time: getDaysDiff(diffInSeconds)},
-    {label: `H`, time: getHoursDiff(diffInSeconds)},
-    {label: `M`, time: getMinutesDiff(diffInSeconds)},
-  ];
+  const duration = moment.duration(b.diff(a));
 
-  return times.reduce(
-      (acc, {time, label}) =>
-        time ? (acc += `${getTwoDigitalTime(time)}${label} `) : ``
-      , ``
-  );
+  const day = duration.get(`day`);
+  const hours = duration.get(`hour`);
+  const minutes = duration.get(`minutes`);
+
+  return `${day > 0 ? `${day}D` : ``} ${hours > 0 ? `${hours}H` : ``} ${minutes}M`;
 };
 
 export {getDurationTime};
