@@ -5,17 +5,17 @@ class Filter extends Observer {
   constructor() {
     super();
 
-    this._activeFilter = EventFilerType.EVERYTHING;
+    this._currentFilter = EventFilerType.EVERYTHING;
   }
 
-  setOffers(updateType, filter) {
-    this._activeFilter = filter;
+  setFilter(updateType, filter) {
+    this._currentFilter = filter;
 
     this._notify(updateType, filter);
   }
 
-  get offers() {
-    return this._offers;
+  get filter() {
+    return this._currentFilter;
   }
 }
 

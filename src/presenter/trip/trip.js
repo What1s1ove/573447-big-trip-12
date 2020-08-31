@@ -23,11 +23,18 @@ import {getEventsByDay} from './helpers';
 const sorts = Object.values(EventSortType);
 
 class Trip {
-  constructor({containerNode, destinationsModel, offersModel, eventsModel}) {
+  constructor({
+    containerNode,
+    destinationsModel,
+    offersModel,
+    eventsModel,
+    filterModel,
+  }) {
     this._boardContainerNode = containerNode;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._eventsModel = eventsModel;
+    this._filterModel = filterModel;
     this._currentSortType = EventSortType.EVENT;
     this._tripDayPresenters = {};
 
@@ -194,7 +201,6 @@ class Trip {
       }
       case UpdateType.MAJOR: {
         this._clearTrip({
-          isResetRenderedTaskCount: true,
           isResetSortType: true,
         });
         this._renderTrip();
@@ -214,6 +220,7 @@ class Trip {
     this._eventsModel.removeObserver(this._changeModelEvent);
     this._offersModel.removeObserver(this._changeModelEvent);
     this._destinationsModel.removeObserver(this._changeModelEvent);
+    this._filterModel.removeObserver(this._changeModelEvent);
   }
 
   init() {
@@ -222,6 +229,7 @@ class Trip {
     this._eventsModel.addObserver(this._changeModelEvent);
     this._offersModel.addObserver(this._changeModelEvent);
     this._destinationsModel.addObserver(this._changeModelEvent);
+    this._filterModel.addObserver(this._changeModelEvent);
   }
 }
 
