@@ -14,12 +14,13 @@ import {
   UpdateType,
   UserAction
 } from '~/common/enums';
+import {FilterTypeToFilterCbMap} from '~/common/map';
 import TripDayPresenter from '~/presenter/trip-day/trip-day';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
 import {getEventsByDay} from './helpers';
-import { FilterTypeToFilterCbMap } from '~/common/map/filter/filter-type-to-filter-cb.map';
+
 
 const sorts = Object.values(EventSortType);
 
@@ -39,9 +40,9 @@ class Trip {
     this._currentSortType = EventSortType.EVENT;
     this._tripDayPresenters = {};
 
-    this._noEventsComponent = new NoEventsView();
-    this._sortComponent = new SortView(sorts);
+    this._sortComponent = null;
     this._tripDaysComponent = new TripDaysView();
+    this._noEventsComponent = new NoEventsView();
 
     this._changeSortType = this._changeSortType.bind(this);
     this._changeEventMode = this._changeEventMode.bind(this);
@@ -115,6 +116,15 @@ class Trip {
   }
 
   _renderSorts() {
+    if (!this._sortComponent) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView({
+      sorts,
+      currentSortType: this._currentSortType,
+    });
+
     renderElement(
         this._boardContainerNode,
         this._sortComponent,
@@ -156,6 +166,7 @@ class Trip {
     this._tripDayPresenters = {};
 
     removeElement(this._noEventsComponent);
+    removeElement(this._sortComponent);
 
     if (isResetSortType) {
       this._currentSortType = EventSortType.EVENT;
@@ -218,7 +229,6 @@ class Trip {
       isResetSortType: true,
     });
 
-    removeElement(this._sortComponent);
     removeElement(this._tripDaysComponent);
 
     this._eventsModel.removeObserver(this._changeModelEvent);

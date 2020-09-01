@@ -44,9 +44,9 @@ class Filter {
 
     if (!prevFilterComponent) {
       renderElement(
-        this._filterContainerNode,
-        this._filterComponent,
-        RenderPosition.AFTER_END
+          this._filterContainerNode,
+          this._filterComponent,
+          RenderPosition.AFTER_END
       );
 
       return;

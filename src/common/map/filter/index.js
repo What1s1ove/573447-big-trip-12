@@ -1,1 +1,1 @@
-import {EventFilterType} from '~/common/enums'
+export * from './filter-type-to-filter-cb.map';

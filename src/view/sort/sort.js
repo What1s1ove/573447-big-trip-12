@@ -1,13 +1,15 @@
-import {EventSortType} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
 
 const SORT_INPUT_NAME = `trip-sort`;
 
 class Sort extends Abstract {
-  constructor(sorts) {
+  constructor({
+    sorts,
+    currentSortType
+  }) {
     super();
     this._sorts = sorts;
-    this._activeSort = EventSortType.EVENT;
+    this._currentSortType = currentSortType;
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
   }
@@ -24,7 +26,7 @@ class Sort extends Abstract {
               <input
                 id="sort-${it}"
                 value="${it}"
-                ${it === this._activeSort ? `checked` : ``}
+                ${it === this._currentSortType ? `checked` : ``}
                 class="trip-sort__input  visually-hidden"
                 type="radio"
                 name="${SORT_INPUT_NAME}"
