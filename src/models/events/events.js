@@ -18,19 +18,19 @@ class Events extends Observer {
   updateEvent(updateType, event) {
     this._events = this._events.map((it) => (it.id === event.id ? event : it));
 
-    this.notify(updateType, event);
+    this._notify(updateType, event);
   }
 
   addEvent(updateType, event) {
     this._events = [event, ...this._events];
 
-    this.notify(updateType, event);
+    this._notify(updateType, event);
   }
 
   deleteEvent(updateType, event) {
     this._events = this._events.filter((it) => it.id !== event.id);
 
-    this.notify(updateType, event);
+    this._notify(updateType, event);
   }
 }
 

@@ -30,12 +30,14 @@ class Event {
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._editEvent = this._editEvent.bind(this);
+    this._deleteEvent = this._deleteEvent.bind(this);
     this._submitForm = this._submitForm.bind(this);
   }
 
   _initListeners() {
     this._eventComponent.setOnEditClick(this._editEvent);
     this._eventFormComponent.setOnSubmit(this._submitForm);
+    this._eventFormComponent.setOnDeleteClick(this._deleteEvent);
   }
 
   _replaceEventWithForm() {
@@ -57,6 +59,10 @@ class Event {
     this._replaceEventWithForm();
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  _deleteEvent(event) {
+    this._changeEvent(UserAction.DELETE_EVENT, UpdateType.MINOR, event);
   }
 
   _submitForm(event) {

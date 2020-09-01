@@ -35,6 +35,7 @@ class FormEvent extends Smart {
     this._onEventTypeChange = this._onEventTypeChange.bind(this);
     this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
     this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
+    this._onDeleteClick = this._onDeleteClick.bind(this);
 
     this._restoreListeners();
   }
@@ -111,8 +112,8 @@ class FormEvent extends Smart {
             <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
           ${isEditMode ? `
+            <button class="event__reset-btn" type="reset">Delete</button>
             <input
               ${isFavorite ? `checked` : ``}
               class="event__favorite-checkbox  visually-hidden"
@@ -128,7 +129,7 @@ class FormEvent extends Smart {
             </label>
             <button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Close event</span>
-            </button>` : ``}
+            </button>` : `<button class="event__reset-btn" type="reset">Cancel</button>`}
         </header>
         <section class="event__details">
           ${offers.length ? eventOffersTemplate : ``}
@@ -226,18 +227,30 @@ class FormEvent extends Smart {
     });
   }
 
+  _onDeleteClick(evt) {
+    evt.preventDefault();
+
+    this._callbacks.onDeleteClick(this._data);
+  }
+
   _onSubmit(evt) {
     evt.preventDefault();
 
     this._callbacks.onSubmit(this._data);
   }
 
-  setOnSubmit(callback) {
-    const formNode = this.node;
+  setOnDeleteClick(callback) {
+    this._callbacks.onDeleteClick = callback;
 
+    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
+
+    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+  }
+
+  setOnSubmit(callback) {
     this._callbacks.onSubmit = callback;
 
-    formNode.addEventListener(`submit`, this._onSubmit);
+    this.node.addEventListener(`submit`, this._onSubmit);
   }
 }
 
