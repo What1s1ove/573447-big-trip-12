@@ -23,7 +23,6 @@ import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
 import {getEventsByDay} from './helpers';
 
-
 const sorts = Object.values(EventSortType);
 
 class Trip {
