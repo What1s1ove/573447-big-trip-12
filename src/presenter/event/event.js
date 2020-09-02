@@ -67,7 +67,7 @@ class Event {
 
   _submitForm(event) {
     this._replaceFormWithEvent();
-    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.PATCH, event);
+    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MINOR, event);
   }
 
   _onEscKeyDown(evt) {

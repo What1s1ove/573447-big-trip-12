@@ -12,9 +12,11 @@ import {
   EventSortType,
   SortOrder,
   UpdateType,
-  UserAction
+  UserAction,
+  EventFilterType
 } from '~/common/enums';
 import {FilterTypeToFilterCbMap} from '~/common/map';
+import NewEventPresenter from '~/presenter/new-event/new-event';
 import TripDayPresenter from '~/presenter/trip-day/trip-day';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
@@ -41,6 +43,7 @@ class Trip {
     this._tripDayPresenters = {};
 
     this._sortComponent = null;
+
     this._tripDaysComponent = new TripDaysView();
     this._noEventsComponent = new NoEventsView();
 
@@ -48,6 +51,13 @@ class Trip {
     this._changeEventMode = this._changeEventMode.bind(this);
     this._changeViewAction = this._changeViewAction.bind(this);
     this._changeModelEvent = this._changeModelEvent.bind(this);
+
+    this._newEventPresenter = new NewEventPresenter({
+      container: this._tripDaysComponent,
+      offers: this.offers,
+      destinations: this.destinations,
+      changeTripAction: this._changeViewAction,
+    });
   }
 
   get events() {
@@ -161,8 +171,9 @@ class Trip {
   }
 
   _clearTrip({isResetSortType = false} = {}) {
-    Object.values(this._tripDayPresenters).forEach((it) => it.destroy());
+    this._newEventPresenter.destroy();
 
+    Object.values(this._tripDayPresenters).forEach((it) => it.destroy());
     this._tripDayPresenters = {};
 
     removeElement(this._noEventsComponent);
@@ -184,6 +195,8 @@ class Trip {
   }
 
   _changeEventMode() {
+    this._newEventPresenter.destroy();
+
     Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
@@ -222,6 +235,14 @@ class Trip {
         break;
       }
     }
+  }
+
+  createEvent(destroyCallback) {
+    if (this._filterModel.filter !== EventFilterType.EVERYTHING) {
+      this._filterModel.setFilter(UpdateType.MINOR, EventFilterType.EVERYTHING);
+    }
+
+    this._newEventPresenter.init(destroyCallback);
   }
 
   destroy() {

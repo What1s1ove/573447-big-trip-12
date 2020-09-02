@@ -12,6 +12,9 @@ const renderElement = (container, child, place) => {
   }
 
   switch (place) {
+    case RenderPosition.BEFORE_BEGIN:
+      container.parentNode.insertBefore(child);
+      break;
     case RenderPosition.AFTER_BEGIN:
       container.prepend(child);
       break;

@@ -43,10 +43,15 @@ const destinationInfoComponent = new DestinationInfoView(destinations, tripDays)
 const tripPriceComponent = new TripPriceView(totalPrice);
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 
+const newEventNode = document.querySelector(`.trip-main__event-add-btn`);
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
 const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
+
+const closeNewEventForm = () => {
+  newEventNode.disabled = false;
+};
 
 const filterPresenter = new FilterPresenter({
   containerNode: filterTitleNode,
@@ -68,3 +73,9 @@ renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 
 filterPresenter.init();
 tripPresenter.init();
+
+newEventNode.addEventListener(`click`, () => {
+  tripPresenter.createEvent(closeNewEventForm);
+
+  newEventNode.disabled = true;
+});
