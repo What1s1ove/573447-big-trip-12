@@ -1,25 +1,40 @@
-import {getPathLabel, getFormattedDate} from '~/helpers';
+import flatpickr from 'flatpickr';
+import {getPathLabel, getFormattedDate, getTripOfferByType} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
 import Smart from '~/view/smart/smart';
 import {createEventKindsTemplate} from './templates/event-kinds/event-kinds';
 import {createEventOffersTemplate} from './templates/event-offers/event-offers';
 import {createEventPhotosTemplate} from './templates/event-photos/event-photos';
-import {getDestinationCities, getMatchedDestination, getDestinationsPattern} from './helpers';
-import {EMPTY_EVENT, EventFormMode} from './common';
+import {
+  getDestinationCities,
+  getMatchedDestination,
+  getDestinationsPattern,
+  mapEventInitialOffers,
+  resetDatepicker,
+} from './helpers';
+import {EMPTY_EVENT, FLATPICKR_OPTIONS, EventFormMode} from './common';
 
 class FormEvent extends Smart {
-  constructor(event, destinations) {
+  constructor({event, destinations, offers}) {
     super();
     this._data = event || EMPTY_EVENT;
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._destinations = destinations;
+    this._offers = offers;
+
+    this._datepickerStartDate = null;
+    this._datepickerEndDate = null;
 
     this._onSubmit = this._onSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
+    this._setDatepicker = this._setDatepicker.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
     this._onDestinationInput = this._onDestinationInput.bind(this);
+    this._onEventTypeChange = this._onEventTypeChange.bind(this);
+    this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
+    this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
 
     this._restoreListeners();
   }
@@ -36,7 +51,7 @@ class FormEvent extends Smart {
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
 
     const eventTypeTemplate = createEventKindsTemplate(type);
-    const eventOffersTemplate = createEventOffersTemplate(offers);
+    const eventOffersTemplate = createEventOffersTemplate(type, offers);
     const eventPhotosTemplate = createEventPhotosTemplate(destination.photos);
 
     return `
@@ -131,14 +146,42 @@ class FormEvent extends Smart {
     this._initInnerListeners();
 
     this.setOnSubmit(this._callbacks.onSubmit);
+    this._setDatepicker();
   }
 
   _initInnerListeners() {
     const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
     const destinationInput = this.node.querySelector(`.event__input--destination`);
+    const typeList = this.node.querySelector(`.event__type-list`);
 
     favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
     destinationInput.addEventListener(`input`, this._onDestinationInput);
+    typeList.addEventListener(`change`, this._onEventTypeChange);
+  }
+
+  _setDatepicker() {
+    resetDatepicker(this._datepickerStartDate);
+    resetDatepicker(this._datepickerEndDate);
+
+    const eventStartTimeNode = this.node.querySelector(`#event-start-time-1`);
+    const eventEndTimeNode = this.node.querySelector(`#event-end-time-1`);
+
+    this._datepickerStartDate = flatpickr(
+        eventStartTimeNode,
+        Object.assign({}, FLATPICKR_OPTIONS, {
+          defaultDate: this._data.start,
+          onChange: this._onEventStartDateChange,
+        })
+    );
+
+    this._datepickerEndDate = flatpickr(
+        eventEndTimeNode,
+        Object.assign({}, FLATPICKR_OPTIONS, {
+          minDate: this._data.start,
+          defaultDate: this._data.end,
+          onChange: this._onEventEndDateChange,
+        })
+    );
   }
 
   _onFavoriteChange() {
@@ -155,7 +198,31 @@ class FormEvent extends Smart {
     }
 
     this.updateData({
-      destination
+      destination,
+    });
+  }
+
+  _onEventTypeChange({target}) {
+    const {value} = target;
+
+    const tripOffer = getTripOfferByType(this._offers, value);
+    const mappedEventOffers = mapEventInitialOffers(tripOffer.offers);
+
+    this.updateData({
+      type: value,
+      offers: mappedEventOffers,
+    });
+  }
+
+  _onEventStartDateChange([date]) {
+    this.updateData({
+      start: date
+    });
+  }
+
+  _onEventEndDateChange([date]) {
+    this.updateData({
+      end: date
     });
   }
 

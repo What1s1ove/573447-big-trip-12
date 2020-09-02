@@ -1,11 +1,13 @@
+import 'flatpickr/dist/flatpickr.min.css';
 import {
   renderElement,
   generateDestinations,
+  generateDestinationOffers,
   generateEvents,
   getTotalPrice,
   getUniqueTripDays,
 } from '~/helpers';
-import {RenderPosition, AppNavigation, EventFilerType} from '~/common/enums';
+import {RenderPosition, AppNavigation, EventFilerType, EventType} from '~/common/enums';
 import {EVENT_CITIES} from '~/common/constants';
 import Trip from '~/presenter/trip/trip';
 import DestinationInfoView from '~/view/destination-info/destination-info';
@@ -15,9 +17,11 @@ import FilterView from '~/view/filter/filter';
 import TripInfoView from '~/view/trip-info/trip-info';
 
 const EVENTS_COUNT = 20;
+const eventTypes = Object.values(EventType);
 
 const destinations = generateDestinations(EVENT_CITIES);
-const events = generateEvents(destinations, EVENTS_COUNT);
+const offers = generateDestinationOffers(eventTypes);
+const events = generateEvents(EVENTS_COUNT, destinations, offers);
 const tripDays = getUniqueTripDays(events);
 const siteMenuItems = Object.values(AppNavigation);
 const filters = Object.values(EventFilerType);
@@ -40,4 +44,4 @@ renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 renderElement(filterTitleNode, filterComponent, RenderPosition.AFTER_END);
 
-new Trip(eventsContainerNode).init(events, destinations);
+new Trip(eventsContainerNode).init(events, destinations, offers);
