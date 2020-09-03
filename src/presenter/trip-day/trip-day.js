@@ -12,22 +12,20 @@ class TripDay {
     offers,
     day,
     dayNumber,
-    onEventChange,
-    onEventModeChange,
+    changeEvent,
+    changeEventMode,
   }) {
     this._containerNode = containerNode;
     this._day = day;
     this._dayNumber = dayNumber;
     this._destinations = destinations;
     this._offers = offers;
-    this._onEventChange = onEventChange;
-    this._onEventModeChange = onEventModeChange;
+    this._changeEvent = changeEvent;
+    this._changeEventMode = changeEventMode;
 
     this._tripDayComponent = null;
     this._tripDayEventsListComponent = null;
     this._eventPresenters = {};
-
-    this._onEventLocalChange = this._onEventLocalChange.bind(this);
   }
 
   _renderEvent(event) {
@@ -36,8 +34,8 @@ class TripDay {
       containerNode: tripDayEventsItemComponent.node,
       destinations: this._destinations,
       offers: this._offers,
-      onEventChange: this._onEventLocalChange,
-      onEventModeChange: this._onEventModeChange,
+      changeEvent: this._changeEvent,
+      changeEventMode: this._changeEventMode,
     });
 
     renderElement(
@@ -49,10 +47,6 @@ class TripDay {
     eventPresenter.init(event);
 
     this._eventPresenters[event.id] = eventPresenter;
-  }
-
-  _onEventLocalChange(event) {
-    this._onEventChange(this._dayNumber, event);
   }
 
   _renderEvents(events) {

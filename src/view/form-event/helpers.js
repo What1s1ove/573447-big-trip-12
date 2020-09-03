@@ -1,3 +1,5 @@
+import {getTripOfferByType} from '~/helpers';
+
 const getDestinationCities = (destinations) => {
   const cities = destinations.map((it) => it.city);
 
@@ -24,6 +26,13 @@ const mapEventInitialOffers = (tripOffer) => {
   return mappedEventInitialOffers;
 };
 
+const getInitialOffersByType = (tripOffer, type) => {
+  const tripOfferByType = getTripOfferByType(tripOffer, type);
+  const mappedOffers = mapEventInitialOffers(tripOfferByType.offers);
+
+  return mappedOffers;
+};
+
 const resetDatepicker = (datepicker) => {
   if (datepicker) {
     datepicker.destroy();
@@ -37,4 +46,5 @@ export {
   getDestinationsPattern,
   mapEventInitialOffers,
   resetDatepicker,
+  getInitialOffersByType,
 };

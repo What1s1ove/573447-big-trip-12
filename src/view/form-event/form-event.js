@@ -10,6 +10,7 @@ import {
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,
+  getInitialOffersByType,
   mapEventInitialOffers,
   resetDatepicker,
 } from './helpers';
@@ -35,6 +36,7 @@ class FormEvent extends Smart {
     this._onEventTypeChange = this._onEventTypeChange.bind(this);
     this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
     this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
+    this._onDeleteClick = this._onDeleteClick.bind(this);
 
     this._restoreListeners();
   }
@@ -49,10 +51,7 @@ class FormEvent extends Smart {
     const destinationPattern = getDestinationsPattern(destinationCities);
     const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
-
-    const eventTypeTemplate = createEventKindsTemplate(type);
-    const eventOffersTemplate = createEventOffersTemplate(type, offers);
-    const eventPhotosTemplate = createEventPhotosTemplate(destination.photos);
+    const eventOffers = offers.length ? offers : getInitialOffersByType(this._offers, type);
 
     return `
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -63,20 +62,21 @@ class FormEvent extends Smart {
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-            ${eventTypeTemplate}
+            ${createEventKindsTemplate(type)}
           </div>
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
               ${eventTypeToTextMap[type]} ${pathLabel}
             </label>
             <input
-              value="${destination.city}"
+              value="${destination ? destination.city : ``}"
               pattern="${destinationPattern}"
               class="event__input event__input--destination"
               id="event-destination-1"
               type="text"
               name="event-destination"
               list="destination-list-1"
+              required
             >
             <datalist id="destination-list-1">
               ${destinationCities.reduce((acc, it) => (acc.concat(`<option value="${it}" />`)), ``)}
@@ -89,8 +89,10 @@ class FormEvent extends Smart {
             <input
               value="${eventStartDate}"
               class="event__input  event__input--time"
-              id="event-start-time-1" type="text"
+              id="event-start-time-1"
+              type="text"
               name="event-start-time"
+              required
             >
             —
             <label class="visually-hidden" for="event-end-time-1">
@@ -99,8 +101,10 @@ class FormEvent extends Smart {
             <input
               value="${eventEndDate}"
               class="event__input  event__input--time"
-              id="event-end-time-1" type="text"
+              id="event-end-time-1"
+              type="text"
               name="event-end-time"
+              required
             >
           </div>
           <div class="event__field-group  event__field-group--price">
@@ -108,11 +112,18 @@ class FormEvent extends Smart {
               <span class="visually-hidden">Price</span>
               €
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input
+              value="${price}"
+              class="event__input  event__input--price"
+              id="event-price-1"
+              type="text"
+              name="event-price"
+              required
+            >
           </div>
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
           ${isEditMode ? `
+            <button class="event__reset-btn" type="reset">Delete</button>
             <input
               ${isFavorite ? `checked` : ``}
               class="event__favorite-checkbox  visually-hidden"
@@ -128,15 +139,16 @@ class FormEvent extends Smart {
             </label>
             <button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Close event</span>
-            </button>` : ``}
+            </button>` : `<button class="event__reset-btn" type="reset">Cancel</button>`}
         </header>
         <section class="event__details">
-          ${offers.length ? eventOffersTemplate : ``}
-          <section class="event__section  event__section--destination">
-            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destination.description}</p>
-            ${destination.photos.length ? eventPhotosTemplate : ``}
-          </section>
+          ${createEventOffersTemplate(type, eventOffers)}
+          ${destination ? `
+            <section class="event__section  event__section--destination">
+              <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+              <p class="event__destination-description">${destination.description}</p>
+              ${createEventPhotosTemplate(destination.photos)}
+            </section>` : ``}
         </section>
       </form>
     `;
@@ -150,13 +162,17 @@ class FormEvent extends Smart {
   }
 
   _initInnerListeners() {
+    const isEditMode = this._mode === EventFormMode.EDITING;
     const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
     const destinationInput = this.node.querySelector(`.event__input--destination`);
     const typeList = this.node.querySelector(`.event__type-list`);
 
-    favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
     destinationInput.addEventListener(`input`, this._onDestinationInput);
     typeList.addEventListener(`change`, this._onEventTypeChange);
+
+    if (isEditMode) {
+      favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
+    }
   }
 
   _setDatepicker() {
@@ -226,18 +242,30 @@ class FormEvent extends Smart {
     });
   }
 
+  _onDeleteClick(evt) {
+    evt.preventDefault();
+
+    this._callbacks.onDeleteClick(this._data);
+  }
+
   _onSubmit(evt) {
     evt.preventDefault();
 
     this._callbacks.onSubmit(this._data);
   }
 
-  setOnSubmit(callback) {
-    const formNode = this.node;
+  setOnDeleteClick(callback) {
+    this._callbacks.onDeleteClick = callback;
 
+    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
+
+    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+  }
+
+  setOnSubmit(callback) {
     this._callbacks.onSubmit = callback;
 
-    formNode.addEventListener(`submit`, this._onSubmit);
+    this.node.addEventListener(`submit`, this._onSubmit);
   }
 }
 

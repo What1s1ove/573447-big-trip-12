@@ -1,7 +1,7 @@
-const EventFilerType = {
+const EventFilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,
 };
 
-export {EventFilerType};
+export {EventFilterType};
