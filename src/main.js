@@ -66,6 +66,22 @@ const tripPresenter = new TripPresenter({
   filterModel,
 });
 
+const changeMenuItem = (menuItem) => {
+
+  switch (menuItem) {
+    case AppNavigation.TABLE:
+      tripPresenter.init();
+      break;
+    case AppNavigation.STATS:
+      tripPresenter.destroy();
+      break;
+  }
+
+  siteMenuComponent.setMenuItem(menuItem);
+};
+
+siteMenuComponent.setOnItemClick(changeMenuItem);
+
 renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripMaiNode, tripInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
@@ -78,4 +94,6 @@ newEventNode.addEventListener(`click`, () => {
   tripPresenter.createEvent(closeNewEventForm);
 
   newEventNode.disabled = true;
+
+  changeMenuItem(AppNavigation.TABLE);
 });
