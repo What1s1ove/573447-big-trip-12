@@ -1,6 +1,21 @@
 import Abstract from '~/view/abstract/abstract';
+import {
+  initMoneyChart,
+  initTransportChart,
+  initTimeSpendChart,
+} from './helpers';
 
 class Statistics extends Abstract {
+  constructor({events}) {
+    super();
+    this._events = events;
+
+    this._moneyCart = null;
+    this._transportChart = null;
+    this._timeSpendChart = null;
+
+    this.setCharts();
+  }
 
   get template() {
     return `
@@ -20,6 +35,30 @@ class Statistics extends Abstract {
         </div>
       </section>
     `;
+  }
+
+  _resetCharts() {
+    if (this._moneyCart || this._transportChart || this._timeSpendChart) {
+      this._moneyCart = null;
+      this._transportChart = null;
+      this._timeSpendChart = null;
+    }
+  }
+
+  setCharts() {
+    const moneyStatsNode = this.node.querySelector(`.statistics__chart--money`);
+    const transportStatsNode = this.node.querySelector(`.statistics__chart--transport`);
+    const timeSpendStatsNode = this.node.querySelector(`.statistics__chart--time`);
+
+    this._moneyCart = initMoneyChart(moneyStatsNode, this._events);
+    this._transportChart = initTransportChart(transportStatsNode, this._events);
+    this._timeSpendChart = initTimeSpendChart(timeSpendStatsNode, this._events);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    this._resetCharts();
   }
 }
 
