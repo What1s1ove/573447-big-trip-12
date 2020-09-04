@@ -1,6 +1,7 @@
 import 'flatpickr/dist/flatpickr.min.css';
 import {
   renderElement,
+  removeElement,
   generateDestinations,
   generateDestinationOffers,
   generateEvents,
@@ -19,6 +20,7 @@ import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
 import SiteMenuView from '~/view/site-menu/site-menu';
 import TripInfoView from '~/view/trip-info/trip-info';
+import StatisticsView from '~/view/statistics/statistics';
 
 const EVENTS_COUNT = 20;
 const eventTypes = Object.values(EventType);
@@ -66,6 +68,29 @@ const tripPresenter = new TripPresenter({
   filterModel,
 });
 
+let statisticsComponent = null;
+
+const changeMenuItem = (menuItem) => {
+
+  switch (menuItem) {
+    case AppNavigation.TABLE:
+      tripPresenter.init();
+      removeElement(statisticsComponent);
+      break;
+    case AppNavigation.STATS:
+      tripPresenter.destroy();
+      statisticsComponent = new StatisticsView({
+        events: eventsModel.events
+      });
+      renderElement(eventsContainerNode, statisticsComponent, RenderPosition.BEFORE_END);
+      break;
+  }
+
+  siteMenuComponent.setMenuItem(menuItem);
+};
+
+siteMenuComponent.setOnItemClick(changeMenuItem);
+
 renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripMaiNode, tripInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
@@ -78,4 +103,6 @@ newEventNode.addEventListener(`click`, () => {
   tripPresenter.createEvent(closeNewEventForm);
 
   newEventNode.disabled = true;
+
+  changeMenuItem(AppNavigation.TABLE);
 });

@@ -1,10 +1,7 @@
-import moment from 'moment';
+import {getDuration} from '../get-duration/get-duration.helper';
 
 const getDurationTime = (start, end) => {
-  const a = moment(start);
-  const b = moment(end);
-
-  const duration = moment.duration(b.diff(a));
+  const duration = getDuration(start, end);
 
   const day = duration.get(`day`);
   const hours = duration.get(`hour`);
