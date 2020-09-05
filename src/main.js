@@ -42,14 +42,14 @@ const tripInfoComponent = new TripInfoView();
 const tripPriceComponent = new TripPriceView(totalPrice);
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 
-const newEventNode = document.querySelector(`.trip-main__event-add-btn`);
+const newEventBtnNode = document.querySelector(`.trip-main__event-add-btn`);
 const tripMaiNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
 const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
 const closeNewEventForm = () => {
-  newEventNode.disabled = false;
+  newEventBtnNode.disabled = false;
 };
 
 const filterPresenter = new FilterPresenter({
@@ -96,10 +96,10 @@ renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 filterPresenter.init();
 tripPresenter.init();
 
-newEventNode.addEventListener(`click`, () => {
+newEventBtnNode.addEventListener(`click`, () => {
   tripPresenter.createEvent(closeNewEventForm);
 
-  newEventNode.disabled = true;
+  newEventBtnNode.disabled = true;
 
   changeMenuItem(AppNavigation.TABLE);
 });
@@ -116,4 +116,6 @@ Promise.all([api.events, api.destinations, api.offers])
     offersModel.offers = [];
     eventsModel.setEvents(UpdateType.INIT, []);
   })
-  .finally(() => {});
+  .finally(() => {
+    newEventBtnNode.disabled = false;
+  });
