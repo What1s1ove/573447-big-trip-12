@@ -8,3 +8,4 @@ export * from './trip';
 export * from './id';
 export * from './class';
 export * from './filter';
+export * from './statistics';
