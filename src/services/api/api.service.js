@@ -1,7 +1,9 @@
 import {SuccessHTTPStatusRange, ApiMethod} from '~/common/enums';
+import EventsModel from '~/models/events/events';
+import DestinationsModel from '~/models/destinations/destinations';
 
 class Api {
-  constructor(endPoint, authorization) {
+  constructor({endPoint, authorization}) {
     this._endPoint = endPoint;
     this._authorization = authorization;
   }
@@ -26,15 +28,19 @@ class Api {
   }
 
   get events() {
-    return this._load({url: `points`}).then(Api.toJSON);
+    return this._load({url: `points`})
+      .then(Api.toJSON)
+      .then((events) => events.map(EventsModel.adaptToClient));
   }
 
   get destinations() {
-    this._load({url: `destinations`}).then(Api.toJSON);
+    return this._load({url: `destinations`})
+      .then(Api.toJSON)
+      .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
   }
 
   get offers() {
-    this._load({url: `offers`}).then(Api.toJSON);
+    return this._load({url: `offers`}).then(Api.toJSON);
   }
 
   _load({url, method = ApiMethod.GET, body = null, headers = new Headers()}) {

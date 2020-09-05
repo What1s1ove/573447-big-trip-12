@@ -40,6 +40,7 @@ class Trip {
     this._filterModel = filterModel;
     this._currentSortType = EventSortType.EVENT;
     this._tripDayPresenters = {};
+    this._isLoading = true;
 
     this._sortComponent = null;
 
@@ -143,6 +144,14 @@ class Trip {
     this._sortComponent.setOnSortTypeChange(this._changeSortType);
   }
 
+  _renderNoEvents() {
+    renderElement(
+        this._boardContainerNode,
+        this._noEventsComponent,
+        RenderPosition.BEFORE_END
+    );
+  }
+
   _renderTripDaysList() {
     renderElement(
         this._boardContainerNode,
@@ -152,14 +161,14 @@ class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      return;
+    }
+
     const hasEvents = Boolean(this.events.length);
 
     if (!hasEvents) {
-      renderElement(
-          this._boardContainerNode,
-          this._noEventsComponent,
-          RenderPosition.BEFORE_END
-      );
+      this.__renderNoEvents();
 
       return;
     }
@@ -230,6 +239,11 @@ class Trip {
         this._clearTrip({
           isResetSortType: true,
         });
+        this._renderTrip();
+        break;
+      }
+      case UpdateType.INIT: {
+        this._isLoading = false;
         this._renderTrip();
         break;
       }

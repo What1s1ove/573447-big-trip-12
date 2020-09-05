@@ -1,15 +1,12 @@
 import 'flatpickr/dist/flatpickr.min.css';
+import {Api} from './services';
 import {
   renderElement,
   removeElement,
-  generateDestinations,
-  generateDestinationOffers,
-  generateEvents,
   getTotalPrice,
   getUniqueTripDays,
 } from '~/helpers';
-import {RenderPosition, AppNavigation, EventType} from '~/common/enums';
-import {EVENT_CITIES} from '~/common/constants';
+import {RenderPosition, AppNavigation, UpdateType} from '~/common/enums';
 import TripPresenter from '~/presenter/trip/trip';
 import FilterPresenter from '~/presenter/filter/filter';
 import EventsModel from '~/models/events/events';
@@ -22,26 +19,26 @@ import SiteMenuView from '~/view/site-menu/site-menu';
 import TripInfoView from '~/view/trip-info/trip-info';
 import StatisticsView from '~/view/statistics/statistics';
 
-const EVENTS_COUNT = 20;
-const eventTypes = Object.values(EventType);
+const AUTHORIZATION = `Basic 14881337322`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip/`;
 
-const destinations = generateDestinations(EVENT_CITIES);
-const offers = generateDestinationOffers(eventTypes);
-const events = generateEvents(EVENTS_COUNT, destinations, offers);
-const tripDays = getUniqueTripDays(events);
+const api = new Api({
+  endPoint: END_POINT,
+  authorization: AUTHORIZATION,
+});
+
 const siteMenuItems = Object.values(AppNavigation);
-const totalPrice = getTotalPrice(events);
 
 const destinationsModel = new DestinationsModel();
-destinationsModel.destinations = destinations;
 const offersModel = new OffersModel();
-offersModel.offers = offers;
 const eventsModel = new EventsModel();
-eventsModel.events = events;
 const filterModel = new FilterModel();
 
+const tripDays = getUniqueTripDays(eventsModel.events);
+const totalPrice = getTotalPrice(eventsModel.events);
+
 const tripInfoComponent = new TripInfoView();
-const destinationInfoComponent = new DestinationInfoView(destinations, tripDays).node;
+// const destinationInfoComponent = new DestinationInfoView(destinationsModel.destinations, tripDays);
 const tripPriceComponent = new TripPriceView(totalPrice);
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 
@@ -91,7 +88,7 @@ const changeMenuItem = (menuItem) => {
 
 siteMenuComponent.setOnItemClick(changeMenuItem);
 
-renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
+// renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripMaiNode, tripInfoComponent, RenderPosition.AFTER_BEGIN);
 renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
@@ -106,3 +103,17 @@ newEventNode.addEventListener(`click`, () => {
 
   changeMenuItem(AppNavigation.TABLE);
 });
+
+
+Promise.all([api.events, api.destinations, api.offers])
+  .then(([events, destinations, offers]) => {
+    destinationsModel.destinations = destinations;
+    offersModel.offers = offers;
+    eventsModel.setEvents(UpdateType.INIT, events);
+  })
+  .catch(() => {
+    destinationsModel.destinations = [];
+    offersModel.offers = [];
+    eventsModel.setEvents(UpdateType.INIT, []);
+  })
+  .finally(() => {});
