@@ -21,6 +21,7 @@ import TripDayPresenter from '~/presenter/trip-day/trip-day';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
+import LoaderView from '~/view/loader/loader';
 import {getEventsByDay} from './helpers';
 
 const sorts = Object.values(EventSortType);
@@ -46,6 +47,7 @@ class Trip {
 
     this._tripDaysComponent = new TripDaysView();
     this._noEventsComponent = new NoEventsView();
+    this._loaderComponent = new LoaderView();
 
     this._changeSortType = this._changeSortType.bind(this);
     this._changeEventMode = this._changeEventMode.bind(this);
@@ -152,6 +154,14 @@ class Trip {
     );
   }
 
+  _renderLoader() {
+    renderElement(
+        this._boardContainerNode,
+        this._loaderComponent,
+        RenderPosition.BEFORE_END
+    );
+  }
+
   _renderTripDaysList() {
     renderElement(
         this._boardContainerNode,
@@ -162,13 +172,15 @@ class Trip {
 
   _renderTrip() {
     if (this._isLoading) {
+      this._renderLoader();
+
       return;
     }
 
     const hasEvents = Boolean(this.events.length);
 
     if (!hasEvents) {
-      this.__renderNoEvents();
+      this._renderNoEvents();
 
       return;
     }
@@ -185,6 +197,7 @@ class Trip {
     this._tripDayPresenters = {};
 
     removeElement(this._noEventsComponent);
+    removeElement(this._loaderComponent);
     removeElement(this._sortComponent);
 
     if (isResetSortType) {
@@ -244,6 +257,7 @@ class Trip {
       }
       case UpdateType.INIT: {
         this._isLoading = false;
+        removeElement(this._loaderComponent);
         this._renderTrip();
         break;
       }
