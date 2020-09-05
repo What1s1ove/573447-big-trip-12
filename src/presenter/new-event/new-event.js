@@ -1,4 +1,4 @@
-import {removeElement, getRandomId, renderElement} from '~/helpers';
+import {removeElement, renderElement} from '~/helpers';
 import {
   KeyboardKey,
   UserAction,
@@ -33,12 +33,7 @@ class NewEvent {
     this._changeTripAction(
         UserAction.ADD_EVENT,
         UpdateType.MINOR,
-        Object.assign(
-            {
-              id: getRandomId(),
-            },
-            event
-        )
+        event
     );
 
     this.destroy();

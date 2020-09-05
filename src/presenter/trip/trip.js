@@ -21,6 +21,7 @@ import TripDayPresenter from '~/presenter/trip-day/trip-day';
 import NoEventsView from '~/view/no-events/no-events';
 import SortView from '~/view/sort/sort';
 import TripDaysView from '~/view/trip-days/trip-days';
+import LoaderView from '~/view/loader/loader';
 import {getEventsByDay} from './helpers';
 
 const sorts = Object.values(EventSortType);
@@ -32,31 +33,30 @@ class Trip {
     offersModel,
     eventsModel,
     filterModel,
+    api
   }) {
     this._boardContainerNode = containerNode;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._api = api;
+
     this._currentSortType = EventSortType.EVENT;
     this._tripDayPresenters = {};
+    this._isLoading = true;
 
     this._sortComponent = null;
+    this._newEventPresenter = null;
 
     this._tripDaysComponent = new TripDaysView();
     this._noEventsComponent = new NoEventsView();
+    this._loaderComponent = new LoaderView();
 
     this._changeSortType = this._changeSortType.bind(this);
     this._changeEventMode = this._changeEventMode.bind(this);
     this._changeViewAction = this._changeViewAction.bind(this);
     this._changeModelEvent = this._changeModelEvent.bind(this);
-
-    this._newEventPresenter = new NewEventPresenter({
-      container: this._tripDaysComponent,
-      offers: this.offers,
-      destinations: this.destinations,
-      changeTripAction: this._changeViewAction,
-    });
   }
 
   get events() {
@@ -143,6 +143,22 @@ class Trip {
     this._sortComponent.setOnSortTypeChange(this._changeSortType);
   }
 
+  _renderNoEvents() {
+    renderElement(
+        this._boardContainerNode,
+        this._noEventsComponent,
+        RenderPosition.BEFORE_END
+    );
+  }
+
+  _renderLoader() {
+    renderElement(
+        this._boardContainerNode,
+        this._loaderComponent,
+        RenderPosition.BEFORE_END
+    );
+  }
+
   _renderTripDaysList() {
     renderElement(
         this._boardContainerNode,
@@ -152,14 +168,16 @@ class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderLoader();
+
+      return;
+    }
+
     const hasEvents = Boolean(this.events.length);
 
     if (!hasEvents) {
-      renderElement(
-          this._boardContainerNode,
-          this._noEventsComponent,
-          RenderPosition.BEFORE_END
-      );
+      this._renderNoEvents();
 
       return;
     }
@@ -176,6 +194,7 @@ class Trip {
     this._tripDayPresenters = {};
 
     removeElement(this._noEventsComponent);
+    removeElement(this._loaderComponent);
     removeElement(this._sortComponent);
 
     if (isResetSortType) {
@@ -199,16 +218,22 @@ class Trip {
     Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
-  _changeViewAction(actionType, updateType, event) {
+  _changeViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, event);
+        this._api.updateEvent(update).then((event) => {
+          this._eventsModel.updateEvent(updateType, event);
+        });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, event);
+        this._api.addEvent(update).then((event) => {
+          this._eventsModel.addEvent(updateType, event);
+        });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, event);
+        this._api.deleteEvent(update).then((event) => {
+          this._eventsModel.deleteEvent(updateType, event);
+        });
         break;
     }
   }
@@ -230,6 +255,21 @@ class Trip {
         this._clearTrip({
           isResetSortType: true,
         });
+        this._renderTrip();
+        break;
+      }
+      case UpdateType.INIT: {
+        this._isLoading = false;
+
+        removeElement(this._loaderComponent);
+
+        this._newEventPresenter = new NewEventPresenter({
+          container: this._tripDaysComponent,
+          offers: this.offers,
+          destinations: this.destinations,
+          changeTripAction: this._changeViewAction,
+        });
+
         this._renderTrip();
         break;
       }

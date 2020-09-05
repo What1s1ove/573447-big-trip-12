@@ -10,7 +10,7 @@ const createEventOffersTemplate = (eventType, offers) => {
         class="event__offer-checkbox visually-hidden"
       >
       <label class="event__offer-label" for="event-offer-${eventType}${idx}">
-        <span class="event__offer-title">${it.name}</span>
+        <span class="event__offer-title">${it.title}</span>
         +
         €&nbsp;<span class="event__offer-price">${it.price}</span>
       </label>
