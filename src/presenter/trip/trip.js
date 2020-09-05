@@ -226,7 +226,7 @@ class Trip {
         });
         break;
       case UserAction.ADD_EVENT:
-        this._api.deleteEvent(update).then((event) => {
+        this._api.addEvent(update).then((event) => {
           this._eventsModel.addEvent(updateType, event);
         });
         break;

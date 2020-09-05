@@ -33,6 +33,7 @@ class FormEvent extends Smart {
     this._setDatepicker = this._setDatepicker.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
     this._onDestinationInput = this._onDestinationInput.bind(this);
+    this._onPriceInput = this._onPriceInput.bind(this);
     this._onEventTypeChange = this._onEventTypeChange.bind(this);
     this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
     this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
@@ -114,9 +115,9 @@ class FormEvent extends Smart {
             </label>
             <input
               value="${price}"
-              class="event__input  event__input--price"
+              class="event__input event__input--price"
               id="event-price-1"
-              type="text"
+              type="number"
               name="event-price"
               required
             >
@@ -163,15 +164,17 @@ class FormEvent extends Smart {
 
   _initInnerListeners() {
     const isEditMode = this._mode === EventFormMode.EDITING;
-    const favoriteBtn = this.node.querySelector(`.event__favorite-checkbox`);
-    const destinationInput = this.node.querySelector(`.event__input--destination`);
-    const typeList = this.node.querySelector(`.event__type-list`);
+    const favoriteBtnNode = this.node.querySelector(`.event__favorite-checkbox`);
+    const destinationInputNode = this.node.querySelector(`.event__input--destination`);
+    const typeListNode = this.node.querySelector(`.event__type-list`);
+    const priceInputNode = this.node.querySelector(`.event__input--price`);
 
-    destinationInput.addEventListener(`input`, this._onDestinationInput);
-    typeList.addEventListener(`change`, this._onEventTypeChange);
+    destinationInputNode.addEventListener(`input`, this._onDestinationInput);
+    typeListNode.addEventListener(`change`, this._onEventTypeChange);
+    priceInputNode.addEventListener(`input`, this._onPriceInput);
 
     if (isEditMode) {
-      favoriteBtn.addEventListener(`change`, this._onFavoriteChange);
+      favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
     }
   }
 
@@ -228,6 +231,12 @@ class FormEvent extends Smart {
       type: value,
       offers: mappedEventOffers,
     });
+  }
+
+  _onPriceInput({target}) {
+    this.updateData({
+      price: target.valueAsNumber
+    }, true);
   }
 
   _onEventStartDateChange([date]) {

@@ -7,8 +7,12 @@ class Smart extends Abstract {
     this._data = {};
   }
 
-  updateData(update) {
+  updateData(update, isJustDataUpdating = false) {
     this._data = Object.assign({}, this._data, update);
+
+    if (isJustDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
