@@ -20,7 +20,7 @@ import TripInfoView from '~/view/trip-info/trip-info';
 import StatisticsView from '~/view/statistics/statistics';
 
 const AUTHORIZATION = `Basic 14881337322`;
-const END_POINT = `https://12.ecmascript.pages.academy/big-trip/`;
+const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 
 const api = new Api({
   endPoint: END_POINT,
@@ -63,6 +63,7 @@ const tripPresenter = new TripPresenter({
   offersModel,
   eventsModel,
   filterModel,
+  api
 });
 
 let statisticsComponent = null;
@@ -71,6 +72,7 @@ const changeMenuItem = (menuItem) => {
 
   switch (menuItem) {
     case AppNavigation.TABLE:
+      tripPresenter.destroy();
       tripPresenter.init();
       removeElement(statisticsComponent);
       break;
@@ -97,11 +99,11 @@ filterPresenter.init();
 tripPresenter.init();
 
 newEventBtnNode.addEventListener(`click`, () => {
+  changeMenuItem(AppNavigation.TABLE);
+
   tripPresenter.createEvent(closeNewEventForm);
 
   newEventBtnNode.disabled = true;
-
-  changeMenuItem(AppNavigation.TABLE);
 });
 
 

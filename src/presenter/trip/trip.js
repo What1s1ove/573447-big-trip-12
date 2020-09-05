@@ -33,17 +33,21 @@ class Trip {
     offersModel,
     eventsModel,
     filterModel,
+    api
   }) {
     this._boardContainerNode = containerNode;
     this._destinationsModel = destinationsModel;
     this._offersModel = offersModel;
     this._eventsModel = eventsModel;
     this._filterModel = filterModel;
+    this._api = api;
+
     this._currentSortType = EventSortType.EVENT;
     this._tripDayPresenters = {};
     this._isLoading = true;
 
     this._sortComponent = null;
+    this._newEventPresenter = null;
 
     this._tripDaysComponent = new TripDaysView();
     this._noEventsComponent = new NoEventsView();
@@ -53,13 +57,6 @@ class Trip {
     this._changeEventMode = this._changeEventMode.bind(this);
     this._changeViewAction = this._changeViewAction.bind(this);
     this._changeModelEvent = this._changeModelEvent.bind(this);
-
-    this._newEventPresenter = new NewEventPresenter({
-      container: this._tripDaysComponent,
-      offers: this.offers,
-      destinations: this.destinations,
-      changeTripAction: this._changeViewAction,
-    });
   }
 
   get events() {
@@ -221,16 +218,22 @@ class Trip {
     Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
   }
 
-  _changeViewAction(actionType, updateType, event) {
+  _changeViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this._eventsModel.updateEvent(updateType, event);
+        this._api.updateEvent(update).then((event) => {
+          this._eventsModel.updateEvent(updateType, event);
+        });
         break;
       case UserAction.ADD_EVENT:
-        this._eventsModel.addEvent(updateType, event);
+        this._api.deleteEvent(update).then((event) => {
+          this._eventsModel.addEvent(updateType, event);
+        });
         break;
       case UserAction.DELETE_EVENT:
-        this._eventsModel.deleteEvent(updateType, event);
+        this._api.deleteEvent(update).then((event) => {
+          this._eventsModel.deleteEvent(updateType, event);
+        });
         break;
     }
   }
@@ -257,7 +260,16 @@ class Trip {
       }
       case UpdateType.INIT: {
         this._isLoading = false;
+
         removeElement(this._loaderComponent);
+
+        this._newEventPresenter = new NewEventPresenter({
+          container: this._tripDaysComponent,
+          offers: this.offers,
+          destinations: this.destinations,
+          changeTripAction: this._changeViewAction,
+        });
+
         this._renderTrip();
         break;
       }

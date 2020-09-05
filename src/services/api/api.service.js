@@ -50,6 +50,35 @@ class Api {
       .then(Api.checkStatus)
       .catch(Api.catchError);
   }
+
+  updateEvent(event) {
+    return this._load({
+      url: `points/${event.id}`,
+      method: ApiMethod.PUT,
+      body: JSON.stringify(EventsModel.adaptToServer(event)),
+      headers: new Headers({'Content-Type': `application/json`}),
+    })
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
+  }
+
+  addEvent(event) {
+    return this._load({
+      url: `points`,
+      method: ApiMethod.POST,
+      body: JSON.stringify(EventsModel.adaptToServer(event)),
+      headers: new Headers({'Content-Type': `application/json`}),
+    })
+      .then(Api.toJSON)
+      .then(EventsModel.adaptToClient);
+  }
+
+  deleteEvent(event) {
+    return this._load({
+      url: `points/${event.id}`,
+      method: ApiMethod.DELETE,
+    });
+  }
 }
 
 export default Api;

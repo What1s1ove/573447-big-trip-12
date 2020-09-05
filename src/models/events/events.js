@@ -25,6 +25,7 @@ class Events extends Observer {
 
   static adaptToServer(event) {
     const adaptedEvent = {
+      // ! because of camelcase eslint rul
       'id': event.id,
       'destination': DestinationsModel.adaptToServer(event.destination),
       'base_price': event.price,

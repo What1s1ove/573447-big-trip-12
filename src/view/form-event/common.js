@@ -15,8 +15,8 @@ const EventFormMode = {
   EDITING: `editing`,
 };
 
-// ! because of camelcase eslint rule
 const FLATPICKR_OPTIONS = {
+  // ! because of camelcase eslint rule
   'allowInput': true,
   'altInput': true,
   'enableTime': true,
