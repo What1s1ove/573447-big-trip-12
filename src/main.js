@@ -1,22 +1,15 @@
 import 'flatpickr/dist/flatpickr.min.css';
 import {Api} from './services';
-import {
-  renderElement,
-  removeElement,
-  getTotalPrice,
-  getUniqueTripDays,
-} from '~/helpers';
+import {renderElement, removeElement} from '~/helpers';
 import {RenderPosition, AppNavigation, UpdateType} from '~/common/enums';
-import TripPresenter from '~/presenter/trip/trip';
+import DestinationInfoPresenter from '~/presenter/destination-info/destination-info';
 import FilterPresenter from '~/presenter/filter/filter';
+import TripPresenter from '~/presenter/trip/trip';
 import EventsModel from '~/models/events/events';
 import DestinationsModel from '~/models/destinations/destinations';
 import OffersModel from '~/models/offer/offers';
 import FilterModel from '~/models/filter/filter';
-import DestinationInfoView from '~/view/destination-info/destination-info';
-import TripPriceView from '~/view/trip-price/trip-price';
 import SiteMenuView from '~/view/site-menu/site-menu';
-import TripInfoView from '~/view/trip-info/trip-info';
 import StatisticsView from '~/view/statistics/statistics';
 
 const AUTHORIZATION = `Basic 14881337322`;
@@ -34,23 +27,23 @@ const offersModel = new OffersModel();
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
 
-const tripDays = getUniqueTripDays(eventsModel.events);
-const totalPrice = getTotalPrice(eventsModel.events);
-
-const tripInfoComponent = new TripInfoView();
-// const destinationInfoComponent = new DestinationInfoView(destinationsModel.destinations, tripDays);
-const tripPriceComponent = new TripPriceView(totalPrice);
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 
 const newEventBtnNode = document.querySelector(`.trip-main__event-add-btn`);
-const tripMaiNode = document.querySelector(`.trip-main`);
-const menuTitleNode = tripMaiNode.querySelector(`.trip-main__menu-title`);
-const filterTitleNode = tripMaiNode.querySelector(`.trip-main__filter-title`);
+const tripMainNode = document.querySelector(`.trip-main`);
+const menuTitleNode = tripMainNode.querySelector(`.trip-main__menu-title`);
+const filterTitleNode = tripMainNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
 
 const closeNewEventForm = () => {
   newEventBtnNode.disabled = false;
 };
+
+const destinationInfoPresenter = new DestinationInfoPresenter({
+  containerNode: tripMainNode,
+  destinationsModel,
+  eventsModel,
+});
 
 const filterPresenter = new FilterPresenter({
   containerNode: filterTitleNode,
@@ -90,11 +83,9 @@ const changeMenuItem = (menuItem) => {
 
 siteMenuComponent.setOnItemClick(changeMenuItem);
 
-// renderElement(tripInfoComponent, destinationInfoComponent, RenderPosition.AFTER_BEGIN);
-renderElement(tripMaiNode, tripInfoComponent, RenderPosition.AFTER_BEGIN);
-renderElement(tripInfoComponent, tripPriceComponent, RenderPosition.BEFORE_END);
 renderElement(menuTitleNode, siteMenuComponent, RenderPosition.AFTER_END);
 
+destinationInfoPresenter.init();
 filterPresenter.init();
 tripPresenter.init();
 
