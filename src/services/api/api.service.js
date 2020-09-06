@@ -79,6 +79,16 @@ class Api {
       method: ApiMethod.DELETE,
     });
   }
+
+  syncEvents(data) {
+    return this._load({
+      url: `/points/sync`,
+      method: ApiMethod.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
+  }
 }
 
 export default Api;
