@@ -1,6 +1,6 @@
 import {SuccessHTTPStatusRange, ApiMethod} from '~/common/enums';
-import EventsModel from '~/models/events/events';
-import DestinationsModel from '~/models/destinations/destinations';
+import EventsModel from '~/models/event/events';
+import DestinationsModel from '~/models/destination/destination';
 
 class Api {
   constructor({endPoint, authorization}) {

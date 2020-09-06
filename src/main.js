@@ -1,26 +1,45 @@
 import 'flatpickr/dist/flatpickr.min.css';
-import {Api} from './services';
+import {Api, Provider, Store} from './services';
 import {renderElement, removeElement} from '~/helpers';
 import {RenderPosition, AppNavigation, UpdateType} from '~/common/enums';
 import DestinationInfoPresenter from '~/presenter/destination-info/destination-info';
 import FilterPresenter from '~/presenter/filter/filter';
 import TripPresenter from '~/presenter/trip/trip';
-import EventsModel from '~/models/events/events';
-import DestinationsModel from '~/models/destinations/destinations';
-import OffersModel from '~/models/offer/offers';
+import EventsModel from '~/models/event/events';
+import DestinationsModel from '~/models/destination/destination';
+import OffersModel from '~/models/offer/offer';
 import FilterModel from '~/models/filter/filter';
 import SiteMenuView from '~/view/site-menu/site-menu';
 import StatisticsView from '~/view/statistics/statistics';
 
 const AUTHORIZATION = `Basic 14881337322`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
+const STORE_PREFIX = `bigtrip-localstorage`;
+const STORE_VER = `v12`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
+const newEventBtnNode = document.querySelector(`.trip-main__event-add-btn`);
+const tripMainNode = document.querySelector(`.trip-main`);
+const menuTitleNode = tripMainNode.querySelector(`.trip-main__menu-title`);
+const filterTitleNode = tripMainNode.querySelector(`.trip-main__filter-title`);
+const eventsContainerNode = document.querySelector(`.trip-events`);
+
+const siteMenuItems = Object.values(AppNavigation);
 
 const api = new Api({
   endPoint: END_POINT,
   authorization: AUTHORIZATION,
 });
 
-const siteMenuItems = Object.values(AppNavigation);
+const store = new Store({
+  key: STORE_NAME,
+  storage: window.localStorage,
+});
+
+const apiWithProvider = new Provider({
+  api,
+  store,
+});
 
 const destinationsModel = new DestinationsModel();
 const offersModel = new OffersModel();
@@ -28,12 +47,6 @@ const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
 
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
-
-const newEventBtnNode = document.querySelector(`.trip-main__event-add-btn`);
-const tripMainNode = document.querySelector(`.trip-main`);
-const menuTitleNode = tripMainNode.querySelector(`.trip-main__menu-title`);
-const filterTitleNode = tripMainNode.querySelector(`.trip-main__filter-title`);
-const eventsContainerNode = document.querySelector(`.trip-events`);
 
 const closeNewEventForm = () => {
   newEventBtnNode.disabled = false;
@@ -56,7 +69,7 @@ const tripPresenter = new TripPresenter({
   offersModel,
   eventsModel,
   filterModel,
-  api
+  api: apiWithProvider
 });
 
 let statisticsComponent = null;
@@ -98,7 +111,11 @@ newEventBtnNode.addEventListener(`click`, () => {
 });
 
 
-Promise.all([api.events, api.destinations, api.offers])
+Promise.all([
+  apiWithProvider.events,
+  apiWithProvider.destinations,
+  apiWithProvider.offers,
+])
   .then(([events, destinations, offers]) => {
     destinationsModel.destinations = destinations;
     offersModel.offers = offers;
@@ -120,4 +137,13 @@ window.addEventListener(`load`, () => {
     }).catch(() => {
       console.error(`ServiceWorker isn't available`); // eslint-disable-line
     });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.syncEvents();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
 });

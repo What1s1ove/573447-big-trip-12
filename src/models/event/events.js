@@ -1,5 +1,5 @@
 import {Observer} from '~/helpers';
-import DestinationsModel from '../destinations/destinations';
+import DestinationsModel from '../destination/destination';
 
 class Events extends Observer {
   constructor() {
