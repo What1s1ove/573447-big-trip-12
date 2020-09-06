@@ -1,4 +1,4 @@
-const createEventOffersTemplate = (eventType, offers) => {
+const createEventOffersTemplate = (eventType, offers, isDisabled) => {
 
   const offerTemplates = offers.reduce((acc, it, idx) => (acc += `
     <div class="event__offer-selector">
@@ -7,6 +7,7 @@ const createEventOffersTemplate = (eventType, offers) => {
         type="checkbox"
         name="event-offer-${eventType}"
         ${it.isChecked ? `checked` : ``}
+        ${isDisabled ? `disabled` : ``}
         class="event__offer-checkbox visually-hidden"
       >
       <label class="event__offer-label" for="event-offer-${eventType}${idx}">

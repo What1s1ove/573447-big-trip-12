@@ -1,9 +1,15 @@
-import {renderElement, replaceWithElement, removeElement, checkIsDateEqual} from '~/helpers';
+import {
+  renderElement,
+  replaceWithElement,
+  removeElement,
+  checkIsDateEqual,
+} from '~/helpers';
 import {
   RenderPosition,
   KeyboardKey,
   UserAction,
   UpdateType,
+  EventState,
 } from '~/common/enums';
 import FormEventView from '~/view/form-event/form-event';
 import EventView from '~/view/event/event';
@@ -24,10 +30,10 @@ class Event {
     this._changeEventMode = changeEventMode;
 
     this._even = null;
-    this.eventMode = EventMode.PREVIEW;
+    this._eventMode = EventMode.PREVIEW;
 
-    this.eventComponent = null;
-    this.eventFormComponent = null;
+    this._eventComponent = null;
+    this._eventFormComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._editEvent = this._editEvent.bind(this);
@@ -45,7 +51,7 @@ class Event {
     replaceWithElement(this._eventComponent, this._eventFormComponent);
 
     this._changeEventMode();
-    this.eventMode = EventMode.EDIT;
+    this._eventMode = EventMode.EDIT;
   }
 
   _replaceFormWithEvent() {
@@ -53,7 +59,7 @@ class Event {
 
     document.removeEventListener(`keydown`, this._onEscKeyDown);
 
-    this.eventMode = EventMode.PREVIEW;
+    this._eventMode = EventMode.PREVIEW;
   }
 
   _editEvent() {
@@ -69,8 +75,6 @@ class Event {
   _submitForm(updatedEvent) {
     const isPatchUpdate = checkIsDateEqual(this._event.start, updatedEvent.start)
       & checkIsDateEqual(this._event.end, updatedEvent.end);
-
-    this._replaceFormWithEvent();
 
     this._changeEvent(
         UserAction.UPDATE_EVENT,
@@ -112,12 +116,13 @@ class Event {
       return;
     }
 
-    switch (this.eventMode) {
+    switch (this._eventMode) {
       case EventMode.PREVIEW:
         replaceWithElement(prevEventComponent, this._eventComponent);
         break;
       case EventMode.EDIT:
-        replaceWithElement(prevEventFormComponent, this._eventFormComponent);
+        replaceWithElement(prevEventFormComponent, this._eventComponent);
+        this._eventMode = EventMode.PREVIEW;
         break;
     }
 
@@ -125,8 +130,37 @@ class Event {
     removeElement(prevEventFormComponent);
   }
 
+  setViewState(state) {
+    const resetFormState = () => {
+      this._eventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case EventState.SAVING:
+        this._eventFormComponent.updateData({
+          isDisabled: true,
+          isSaving: true
+        });
+        break;
+      case EventState.DELETING:
+        this._eventFormComponent.updateData({
+          isDisabled: true,
+          isDeleting: true
+        });
+        break;
+      case EventState.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventFormComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   resetView() {
-    if (this.eventMode !== EventMode.PREVIEW) {
+    if (this._eventMode !== EventMode.PREVIEW) {
       this._replaceFormWithEvent();
     }
   }
