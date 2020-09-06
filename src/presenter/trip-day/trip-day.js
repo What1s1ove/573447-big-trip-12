@@ -67,6 +67,10 @@ class TripDay {
     Object.values(this._eventPresenters).forEach((it) => it.resetView());
   }
 
+  setEventView(event, eventState) {
+    this._eventPresenters[event.id].setViewState(eventState);
+  }
+
   init(events) {
     this._events = events;
 

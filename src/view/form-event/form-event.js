@@ -13,13 +13,15 @@ import {
   getInitialOffersByType,
   mapEventInitialOffers,
   resetDatepicker,
+  getRawEvent,
+  getClearEvent,
 } from './helpers';
 import {EMPTY_EVENT, FLATPICKR_OPTIONS, EventFormMode} from './common';
 
 class FormEvent extends Smart {
   constructor({event, destinations, offers}) {
     super();
-    this._data = event || EMPTY_EVENT;
+    this._data = FormEvent.parseEventToData(event || EMPTY_EVENT);
     this._mode = event ? EventFormMode.EDITING : EventFormMode.CREATING;
     this._destinations = destinations;
     this._offers = offers;
@@ -42,8 +44,31 @@ class FormEvent extends Smart {
     this._restoreListeners();
   }
 
+  static parseEventToData(event) {
+    const parsedData = getRawEvent(event);
+
+    return parsedData;
+  }
+
+  static parseDataToEvent(event) {
+    const parsedEvent = getClearEvent(event);
+
+    return parsedEvent;
+  }
+
   get template() {
-    const {type, price, start, end, offers, destination, isFavorite} = this._data;
+    const {
+      type,
+      price,
+      start,
+      end,
+      offers,
+      destination,
+      isFavorite,
+      isSaving,
+      isDeleting,
+      isDisabled
+    } = this._data;
 
     const isEditMode = this._mode === EventFormMode.EDITING;
 
@@ -62,7 +87,13 @@ class FormEvent extends Smart {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input
+              class="event__type-toggle
+              visually-hidden"
+              id="event-type-toggle-1"
+              type="checkbox"
+              ${isDisabled ? `disabled` : ``}
+            >
             ${createEventKindsTemplate(type)}
           </div>
           <div class="event__field-group  event__field-group--destination">
@@ -72,6 +103,7 @@ class FormEvent extends Smart {
             <input
               value="${destination ? destination.city : ``}"
               pattern="${destinationPattern}"
+              ${isDisabled ? `disabled` : ``}
               class="event__input event__input--destination"
               id="event-destination-1"
               type="text"
@@ -89,6 +121,7 @@ class FormEvent extends Smart {
             </label>
             <input
               value="${eventStartDate}"
+              ${isDisabled ? `disabled` : ``}
               class="event__input  event__input--time"
               id="event-start-time-1"
               type="text"
@@ -101,6 +134,7 @@ class FormEvent extends Smart {
             </label>
             <input
               value="${eventEndDate}"
+              ${isDisabled ? `disabled` : ``}
               class="event__input  event__input--time"
               id="event-end-time-1"
               type="text"
@@ -115,6 +149,7 @@ class FormEvent extends Smart {
             </label>
             <input
               value="${price}"
+              ${isDisabled ? `disabled` : ``}
               class="event__input event__input--price"
               id="event-price-1"
               type="number"
@@ -122,11 +157,23 @@ class FormEvent extends Smart {
               required
             >
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button
+            ${isDisabled ? `disabled` : ``}
+            class="event__save-btn  btn  btn--blue"
+            type="submit"
+          >
+            ${isSaving ? `Saving...` : `Save`}
+          </button>
           ${isEditMode ? `
-            <button class="event__reset-btn" type="reset">Delete</button>
+            <button
+              ${isDisabled ? `disabled` : ``}
+              class="event__reset-btn" type="reset"
+            >
+              ${isDeleting ? `Deleting...` : `Delete`}
+            </button>
             <input
               ${isFavorite ? `checked` : ``}
+              ${isDisabled ? `disabled` : ``}
               class="event__favorite-checkbox  visually-hidden"
               id="event-favorite-1"
               type="checkbox"
@@ -140,10 +187,16 @@ class FormEvent extends Smart {
             </label>
             <button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Close event</span>
-            </button>` : `<button class="event__reset-btn" type="reset">Cancel</button>`}
+            </button>` : `
+            <button
+              ${isDisabled ? `disabled` : ``}
+              class="event__reset-btn" type="reset"
+            >
+              Cancel
+            </button>`}
         </header>
         <section class="event__details">
-          ${createEventOffersTemplate(type, eventOffers)}
+          ${createEventOffersTemplate(type, eventOffers, isDisabled)}
           ${destination ? `
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -259,8 +312,7 @@ class FormEvent extends Smart {
 
   _onSubmit(evt) {
     evt.preventDefault();
-
-    this._callbacks.onSubmit(this._data);
+    this._callbacks.onSubmit(FormEvent.parseDataToEvent(this._data));
   }
 
   setOnDeleteClick(callback) {
