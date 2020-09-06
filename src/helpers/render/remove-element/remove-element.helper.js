@@ -3,7 +3,11 @@ import Abstract from '~/view/abstract/abstract';
 const removeElement = (component) => {
   const isAbstractInstance = component instanceof Abstract;
 
-  if (!isAbstractInstance || !component) {
+  if (!component) {
+    return;
+  }
+
+  if (!isAbstractInstance) {
     throw new Error(`Can remove only components`);
   }
 

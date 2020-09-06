@@ -1,4 +1,4 @@
-import {renderElement, replaceWithElement, removeElement} from '~/helpers';
+import {renderElement, replaceWithElement, removeElement, checkIsDateEqual} from '~/helpers';
 import {
   RenderPosition,
   KeyboardKey,
@@ -23,6 +23,7 @@ class Event {
     this._changeEvent = changeEvent;
     this._changeEventMode = changeEventMode;
 
+    this._even = null;
     this.eventMode = EventMode.PREVIEW;
 
     this.eventComponent = null;
@@ -65,9 +66,17 @@ class Event {
     this._changeEvent(UserAction.DELETE_EVENT, UpdateType.MINOR, event);
   }
 
-  _submitForm(event) {
+  _submitForm(updatedEvent) {
+    const isPatchUpdate = checkIsDateEqual(this._event.start, updatedEvent.start)
+      & checkIsDateEqual(this._event.end, updatedEvent.end);
+
     this._replaceFormWithEvent();
-    this._changeEvent(UserAction.UPDATE_EVENT, UpdateType.MINOR, event);
+
+    this._changeEvent(
+        UserAction.UPDATE_EVENT,
+        isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+        updatedEvent
+    );
   }
 
   _onEscKeyDown(evt) {
@@ -79,7 +88,7 @@ class Event {
   }
 
   init(event) {
-    this.event = event;
+    this._event = event;
 
     const prevEventComponent = this._eventComponent;
     const prevEventFormComponent = this._eventFormComponent;

@@ -6,3 +6,4 @@ export * from './sort';
 export * from './array';
 export * from './app';
 export * from './dom-event';
+export * from './api';

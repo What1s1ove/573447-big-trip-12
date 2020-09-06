@@ -7,3 +7,4 @@ export * from './get-unique-dates/get-unique-dates.helper';
 export * from './get-side-dates/get-side-dates.helper';
 export * from './get-time-diff/get-time-diff.helper';
 export * from './get-duration/get-duration.helper';
+export * from './check-is-dates-equal/check-is-dates-equal.helper';
