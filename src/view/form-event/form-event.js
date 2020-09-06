@@ -212,6 +212,7 @@ class FormEvent extends Smart {
     this._initInnerListeners();
 
     this.setOnSubmit(this._callbacks.onSubmit);
+    this.setOnDeleteClick(this._callbacks.onDeleteClick);
     this._setDatepicker();
   }
 

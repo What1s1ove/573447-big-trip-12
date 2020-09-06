@@ -225,21 +225,36 @@ class Trip {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
         this._tripDayPresenters[eventDay].setEventView(update, EventState.SAVING);
-        this._api.updateEvent(update).then((event) => {
-          this._eventsModel.updateEvent(updateType, event);
-        });
+        this._api
+          .updateEvent(update)
+          .then((event) => {
+            this._eventsModel.updateEvent(updateType, event);
+          })
+          .catch(() => {
+            this._tripDayPresenters[eventDay].setEventView(update, EventState.ABORTING);
+          });
         break;
       case UserAction.ADD_EVENT:
         this._newEventPresenter.setSaving();
-        this._api.addEvent(update).then((event) => {
-          this._eventsModel.addEvent(updateType, event);
-        });
+        this._api
+          .addEvent(update)
+          .then((event) => {
+            this._eventsModel.addEvent(updateType, event);
+          })
+          .catch(() => {
+            this._newEventPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_EVENT:
         this._tripDayPresenters[eventDay].setEventView(update, EventState.DELETING);
-        this._api.deleteEvent(update).then(() => {
-          this._eventsModel.deleteEvent(updateType, update);
-        });
+        this._api
+          .deleteEvent(update)
+          .then(() => {
+            this._eventsModel.deleteEvent(updateType, update);
+          })
+          .catch(() => {
+            this._tripDayPresenters[eventDay].setEventView(update, EventState.ABORTING);
+          });
         break;
     }
   }

@@ -131,6 +131,14 @@ class Event {
   }
 
   setViewState(state) {
+    const resetFormState = () => {
+      this._eventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
     switch (state) {
       case EventState.SAVING:
         this._eventFormComponent.updateData({
@@ -143,6 +151,10 @@ class Event {
           isDisabled: true,
           isDeleting: true
         });
+        break;
+      case EventState.ABORTING:
+        this._eventComponent.shake(resetFormState);
+        this._eventFormComponent.shake(resetFormState);
         break;
     }
   }

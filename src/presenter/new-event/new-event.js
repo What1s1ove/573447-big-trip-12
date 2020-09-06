@@ -48,6 +48,18 @@ class NewEvent {
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this._eventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._eventFormComponent.shake(resetFormState);
+  }
+
   destroy() {
     if (!this._eventFormComponent) {
       return;
