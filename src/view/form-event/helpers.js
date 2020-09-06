@@ -1,5 +1,25 @@
 import {getTripOfferByType} from '~/helpers';
 
+const getRawEvent = (event) => {
+  const rawEvent = Object.assign({}, event, {
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false
+  });
+
+  return rawEvent;
+};
+
+const getClearEvent = (event) => {
+  const clearEvent = Object.assign({}, event);
+
+  delete clearEvent.isDisabled;
+  delete clearEvent.isSaving;
+  delete clearEvent.isDeleting;
+
+  return clearEvent;
+};
+
 const getDestinationCities = (destinations) => {
   const cities = destinations.map((it) => it.city);
 
@@ -41,6 +61,8 @@ const resetDatepicker = (datepicker) => {
 };
 
 export {
+  getRawEvent,
+  getClearEvent,
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,

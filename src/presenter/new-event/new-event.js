@@ -14,7 +14,7 @@ class NewEvent {
     this._offers = offers;
     this._changeTripAction = changeTripAction;
 
-    this.eventFormComponent = null;
+    this._eventFormComponent = null;
 
     this._submitForm = this._submitForm.bind(this);
     this._closeForm = this._closeForm.bind(this);
@@ -35,12 +35,29 @@ class NewEvent {
         UpdateType.MINOR,
         event
     );
-
-    this.destroy();
   }
 
   _closeForm() {
     this.destroy();
+  }
+
+  setSaving() {
+    this._eventFormComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._eventFormComponent.shake(resetFormState);
   }
 
   destroy() {
