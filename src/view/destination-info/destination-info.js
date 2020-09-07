@@ -1,16 +1,16 @@
 import {getUniqueDates, getSideDates, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import Abstract from '~/view/abstract/abstract';
+import {getCitiesLabel} from './helpers';
 
 class DestinationInfo extends Abstract {
-  constructor(destinations, tripDays) {
+  constructor({cities, tripDays}) {
     super();
-    this._destinations = destinations;
+    this._cities = cities;
     this._tripDays = tripDays;
   }
 
   get template() {
-    const cities = this._destinations.map((it) => it.city);
     const uniquesDates = getUniqueDates([
       ...this._tripDays.start,
       ...this._tripDays.end,
@@ -25,7 +25,7 @@ class DestinationInfo extends Abstract {
 
     return `
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${cities.join(` — `)}</h1>
+        <h1 class="trip-info__title">${getCitiesLabel(this._cities)}</h1>
         <p class="trip-info__dates">
           ${startSideDate}
           &nbsp;&mdash;&nbsp;

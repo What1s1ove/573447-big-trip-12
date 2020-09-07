@@ -54,7 +54,6 @@ const closeNewEventForm = () => {
 
 const destinationInfoPresenter = new DestinationInfoPresenter({
   containerNode: tripMainNode,
-  destinationsModel,
   eventsModel,
 });
 

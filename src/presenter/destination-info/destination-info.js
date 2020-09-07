@@ -9,11 +9,11 @@ import {RenderPosition} from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
 import TripInfoView from '~/view/trip-info/trip-info';
+import { getUniqueEventCities } from './helpers';
 
 class DestinationInfo {
-  constructor({containerNode, destinationsModel, eventsModel}) {
+  constructor({containerNode, eventsModel}) {
     this._containerNode = containerNode;
-    this._destinationsModel = destinationsModel;
     this._eventsModel = eventsModel;
 
     this._destinationInfoComponent = null;
@@ -25,11 +25,6 @@ class DestinationInfo {
     this._changeDestinationModel = this._changeDestinationModel.bind(this);
 
     this._eventsModel.addObserver(this._changeEventsModel);
-    this._destinationsModel.addObserver(this._changeDestinationModel);
-  }
-
-  get destinations() {
-    return this._destinationsModel.destinations;
   }
 
   get events() {
@@ -44,10 +39,10 @@ class DestinationInfo {
     const tripDays = getUniqueTripDays(this.events);
     const prevDestinationInfoComponent = this._destinationInfoComponent;
 
-    this._destinationInfoComponent = new DestinationInfoView(
-        this.destinations,
-        tripDays
-    );
+    this._destinationInfoComponent = new DestinationInfoView({
+      cities: getUniqueEventCities(this.events),
+      tripDays
+    });
 
     if (!prevDestinationInfoComponent) {
       renderElement(
