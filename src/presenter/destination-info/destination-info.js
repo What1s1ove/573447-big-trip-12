@@ -1,15 +1,14 @@
 import {
   renderElement,
-  getTotalPrice,
-  getUniqueTripDays,
   replaceWithElement,
   removeElement,
+  getUniqueTripDays,
 } from '~/helpers';
 import {RenderPosition} from '~/common/enums';
 import DestinationInfoView from '~/view/destination-info/destination-info';
 import TripPriceView from '~/view/trip-price/trip-price';
 import TripInfoView from '~/view/trip-info/trip-info';
-import { getUniqueEventCities } from './helpers';
+import {getUniqueEventCities, getTotalPrice} from './helpers';
 
 class DestinationInfo {
   constructor({containerNode, eventsModel}) {
@@ -63,7 +62,9 @@ class DestinationInfo {
     const totalPrice = getTotalPrice(this.events);
     const prevTripPriceComponent = this._tripPriceComponent;
 
-    this._tripPriceComponent = new TripPriceView(totalPrice);
+    this._tripPriceComponent = new TripPriceView({
+      price: totalPrice,
+    });
 
     if (!prevTripPriceComponent) {
       renderElement(
