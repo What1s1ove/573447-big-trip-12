@@ -11,8 +11,8 @@ import {
   UpdateType,
   EventState,
 } from '~/common/enums';
-import FormEventView from '~/view/form-event/form-event';
 import EventView from '~/view/event/event';
+import FormEventView from '~/view/form-event/form-event';
 import {EventMode} from './common';
 
 class Event {

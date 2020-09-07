@@ -5,7 +5,7 @@ const MENU_ITEM_DATA_ATTR = `data-menu-item`;
 const ACTIVE_ITEM_CLASS = `trip-tabs__btn--active`;
 
 class SiteMenu extends Abstract {
-  constructor(menuItems) {
+  constructor({menuItems}) {
     super();
     this._menuItems = menuItems;
     this._activeItem = AppNavigation.TABLE;

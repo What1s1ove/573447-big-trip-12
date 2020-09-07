@@ -50,7 +50,9 @@ const offersModel = new OffersModel();
 const eventsModel = new EventsModel();
 const filterModel = new FilterModel();
 
-const siteMenuComponent = new SiteMenuView(siteMenuItems);
+const siteMenuComponent = new SiteMenuView({
+  menuItems: siteMenuItems
+});
 
 const destinationInfoPresenter = new DestinationInfoPresenter({
   containerNode: tripMainNode,
