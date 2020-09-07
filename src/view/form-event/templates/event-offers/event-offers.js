@@ -5,7 +5,6 @@ const createEventOffersTemplate = (offersByType, eventOffers, isDisabled) => {
     <div class="event__offer-selector">
       <input
         id="event-offer-${idx}"
-        ${it.isChecked ? `checked` : ``}
         ${isDisabled ? `disabled` : ``}
         ${checkIsOfferSelected(eventOffers, it) ? `checked` : ``}
         value="${it.title}"

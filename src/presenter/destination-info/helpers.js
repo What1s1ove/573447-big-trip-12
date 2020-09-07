@@ -12,8 +12,7 @@ const getUniqueEventCities = (events) => {
 const getTotalPrice = (events) => {
   const totalPrice = events.reduce((totalPriceAcc, event) => {
     const offersPrice = event.offers.reduce(
-        (offersPriceAcc, offer) =>
-          (offersPriceAcc += offer.isChecked ? offer.price : DEFAULT_PRICE),
+        (offersPriceAcc, offer) => (offersPriceAcc += offer.price),
         DEFAULT_PRICE
     );
 
