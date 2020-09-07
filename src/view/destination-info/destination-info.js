@@ -17,19 +17,13 @@ class DestinationInfo extends Abstract {
     ]);
     const {min, max} = getSideDates(uniquesDates);
 
-    const startSideDate = getFormattedDate(DateFormatType.SHORT_MONTH_DAY, min);
-    const endSideDate =
-      min.getMonth() !== max.getMonth()
-        ? getFormattedDate(DateFormatType.SHORT_MONTH_DAY, max)
-        : max.getDate();
-
     return `
       <div class="trip-info__main">
         <h1 class="trip-info__title">${getCitiesLabel(this._cities)}</h1>
         <p class="trip-info__dates">
-          ${startSideDate}
+          ${getFormattedDate(DateFormatType.SHORT_MONTH_DAY, min)}
           &nbsp;&mdash;&nbsp;
-          ${endSideDate}
+          ${getFormattedDate(DateFormatType.SHORT_MONTH_DAY, max)}
         </p>
       </div>
     `;
