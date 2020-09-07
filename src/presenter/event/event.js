@@ -117,13 +117,15 @@ class Event {
     }
 
     switch (this._eventMode) {
-      case EventMode.PREVIEW:
+      case EventMode.PREVIEW: {
         replaceWithElement(prevEventComponent, this._eventComponent);
         break;
-      case EventMode.EDIT:
+      }
+      case EventMode.EDIT: {
         replaceWithElement(prevEventFormComponent, this._eventComponent);
         this._eventMode = EventMode.PREVIEW;
         break;
+      }
     }
 
     removeElement(prevEventComponent);
@@ -140,22 +142,25 @@ class Event {
     };
 
     switch (state) {
-      case EventState.SAVING:
+      case EventState.SAVING: {
         this._eventFormComponent.updateData({
           isDisabled: true,
           isSaving: true
         });
         break;
-      case EventState.DELETING:
+      }
+      case EventState.DELETING: {
         this._eventFormComponent.updateData({
           isDisabled: true,
           isDeleting: true
         });
         break;
-      case EventState.ABORTING:
+      }
+      case EventState.ABORTING: {
         this._eventComponent.shake(resetFormState);
         this._eventFormComponent.shake(resetFormState);
         break;
+      }
     }
   }
 

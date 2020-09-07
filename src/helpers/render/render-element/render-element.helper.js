@@ -12,18 +12,22 @@ const renderElement = (container, child, place) => {
   }
 
   switch (place) {
-    case RenderPosition.BEFORE_BEGIN:
+    case RenderPosition.BEFORE_BEGIN: {
       container.parentNode.insertBefore(child);
       break;
-    case RenderPosition.AFTER_BEGIN:
+    }
+    case RenderPosition.AFTER_BEGIN: {
       container.prepend(child);
       break;
-    case RenderPosition.BEFORE_END:
+    }
+    case RenderPosition.BEFORE_END: {
       container.append(child);
       break;
-    case RenderPosition.AFTER_END:
+    }
+    case RenderPosition.AFTER_END: {
       container.parentNode.insertBefore(child, container.nextSibling);
       break;
+    }
   }
 };
 

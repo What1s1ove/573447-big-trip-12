@@ -77,18 +77,20 @@ let statisticsComponent = null;
 const changeMenuItem = (menuItem) => {
 
   switch (menuItem) {
-    case AppNavigation.TABLE:
+    case AppNavigation.TABLE: {
       tripPresenter.destroy();
       tripPresenter.init();
       removeElement(statisticsComponent);
       break;
-    case AppNavigation.STATS:
+    }
+    case AppNavigation.STATS: {
       tripPresenter.destroy();
       statisticsComponent = new StatisticsView({
         events: eventsModel.events
       });
       renderElement(eventsContainerNode, statisticsComponent, RenderPosition.BEFORE_END);
       break;
+    }
   }
 
   siteMenuComponent.setMenuItem(menuItem);
