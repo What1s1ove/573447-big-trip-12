@@ -1,13 +1,16 @@
 import {renderElement, removeElement, replaceWithElement} from '~/helpers';
 import {UpdateType, EventFilterType, RenderPosition} from '~/common/enums';
+import {FilterTypeToFilterCbMap} from '~/common/map';
 import FilterView from '~/view/filter/filter';
 
 const filters = Object.values(EventFilterType);
 
 class Filter {
-  constructor({containerNode, filterModel}) {
+  constructor({containerNode, filterModel, eventsModel}) {
     this._filterContainerNode = containerNode;
     this._filterModel = filterModel;
+    this._eventsModel = eventsModel;
+
     this._currentFilter = null;
 
     this._filterComponent = null;
@@ -16,6 +19,7 @@ class Filter {
     this._changeFilterType = this._changeFilterType.bind(this);
 
     this._filterModel.addObserver(this._changeModelEvent);
+    this._eventsModel.addObserver(this._changeModelEvent);
   }
 
   _changeModelEvent() {
@@ -30,13 +34,25 @@ class Filter {
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
+  _getFilterEntities() {
+    const {events} = this._eventsModel;
+
+    const filterEntities = filters.map((it) => ({
+      name: it,
+      isDisabled: !FilterTypeToFilterCbMap[it](events).length,
+    }));
+
+    return filterEntities;
+  }
+
   init() {
     this._currentFilter = this._filterModel.filter;
 
+    const filterEntities = this._getFilterEntities();
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new FilterView({
-      filters,
+      filters: filterEntities,
       currentFilter: this._currentFilter,
     });
 

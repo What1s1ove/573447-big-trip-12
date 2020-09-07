@@ -60,7 +60,8 @@ const destinationInfoPresenter = new DestinationInfoPresenter({
 
 const filterPresenter = new FilterPresenter({
   containerNode: filterTitleNode,
-  filterModel
+  eventsModel,
+  filterModel,
 });
 
 const tripPresenter = new TripPresenter({
@@ -69,7 +70,7 @@ const tripPresenter = new TripPresenter({
   offersModel,
   eventsModel,
   filterModel,
-  api: apiWithProvider
+  api: apiWithProvider,
 });
 
 let statisticsComponent = null;
