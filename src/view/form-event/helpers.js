@@ -48,12 +48,12 @@ const getOfferByTitle = (offers, title) => {
   return offerByTitle;
 };
 
-const toggleEventOffers = (eventOffers, newOffer) => {
-  const hasAlreadyOffer = eventOffers.some((it) => it.title === newOffer.title);
+const toggleEventOffers = (eventOffers, offer) => {
+  const hasSuchOffer = eventOffers.some((it) => it.title === offer.title);
 
-  const toggledEventOffers = hasAlreadyOffer
-    ? eventOffers.filter((it) => it.title !== newOffer.title)
-    : [...eventOffers, newOffer];
+  const toggledEventOffers = hasSuchOffer
+    ? eventOffers.filter((it) => it.title !== offer.title)
+    : [...eventOffers, offer];
 
   return toggledEventOffers;
 };
