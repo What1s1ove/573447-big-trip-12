@@ -1,6 +1,6 @@
 import {SuccessHTTPStatusRange, ApiMethod} from '~/common/enums';
-import EventsModel from '~/models/events/events';
-import DestinationsModel from '~/models/destinations/destinations';
+import EventsModel from '~/models/event/events';
+import DestinationsModel from '~/models/destination/destination';
 
 class Api {
   constructor({endPoint, authorization}) {
@@ -78,6 +78,16 @@ class Api {
       url: `points/${event.id}`,
       method: ApiMethod.DELETE,
     });
+  }
+
+  syncEvents(data) {
+    return this._load({
+      url: `/points/sync`,
+      method: ApiMethod.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
   }
 }
 
