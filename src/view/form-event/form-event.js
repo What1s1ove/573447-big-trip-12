@@ -184,7 +184,7 @@ class FormEvent extends Smart {
             </button>`}
         </header>
         <section class="event__details">
-          ${createEventOffersTemplate(type, eventOffers, isDisabled)}
+          ${eventOffers.length ? createEventOffersTemplate(type, eventOffers, isDisabled) : ``}
           ${destination ? `
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
