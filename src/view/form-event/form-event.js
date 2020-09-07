@@ -210,17 +210,28 @@ class FormEvent extends Smart {
     this.node.addEventListener(`submit`, this._onFormSubmit);
   }
 
+  setOnFavoriteChange(callback) {
+    this._callbacks.onFavoriteChange = callback;
+
+    const favoriteBtnNode = this.node.querySelector(`.event__favorite-checkbox`);
+
+    favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
+  }
+
   _restoreListeners() {
+    const isEditMode = this._mode === EventFormMode.EDITING;
     this._initInnerListeners();
 
     this.setOnSubmit(this._callbacks.onSubmit);
     this.setOnDeleteClick(this._callbacks.onDeleteClick);
     this._setDatepicker();
+
+    if (isEditMode) {
+      this.setOnFavoriteChange(this._callbacks.onFavoriteChange);
+    }
   }
 
   _initInnerListeners() {
-    const isEditMode = this._mode === EventFormMode.EDITING;
-    const favoriteBtnNode = this.node.querySelector(`.event__favorite-checkbox`);
     const destinationInputNode = this.node.querySelector(`.event__input--destination`);
     const typeListNode = this.node.querySelector(`.event__type-list`);
     const priceInputNode = this.node.querySelector(`.event__input--price`);
@@ -228,10 +239,6 @@ class FormEvent extends Smart {
     destinationInputNode.addEventListener(`input`, this._onDestinationInput);
     typeListNode.addEventListener(`change`, this._onEventTypeChange);
     priceInputNode.addEventListener(`input`, this._onPriceInput);
-
-    if (isEditMode) {
-      favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
-    }
   }
 
   _setDatepicker() {
@@ -257,12 +264,6 @@ class FormEvent extends Smart {
           onChange: this._onEventEndDateChange,
         })
     );
-  }
-
-  _onFavoriteChange() {
-    this.updateData({
-      isFavorite: !this._data.isFavorite
-    });
   }
 
   _onDestinationInput({target}) {
@@ -307,10 +308,14 @@ class FormEvent extends Smart {
     });
   }
 
+  _onFavoriteChange() {
+    this._callbacks.onFavoriteChange();
+  }
+
   _onDeleteClick(evt) {
     evt.preventDefault();
 
-    this._callbacks.onDeleteClick(this._data);
+    this._callbacks.onDeleteClick(FormEvent.parseDataToEvent(this._data));
   }
 
   _onFormSubmit(evt) {

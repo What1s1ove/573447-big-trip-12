@@ -39,9 +39,11 @@ class Event {
     this._editEvent = this._editEvent.bind(this);
     this._deleteEvent = this._deleteEvent.bind(this);
     this._submitForm = this._submitForm.bind(this);
+    this._addToFavorite = this._addToFavorite.bind(this);
   }
 
   init(event) {
+    const wasFavoriteUpdate = Boolean(this._event && this._event.isFavorite !== event.isFavorite);
     this._event = event;
 
     const prevEventComponent = this._eventComponent;
@@ -72,8 +74,14 @@ class Event {
         break;
       }
       case EventMode.EDIT: {
-        replaceWithElement(prevEventFormComponent, this._eventComponent);
-        this._eventMode = EventMode.PREVIEW;
+        replaceWithElement(
+            prevEventFormComponent,
+            wasFavoriteUpdate ? this._eventFormComponent : this._eventComponent
+        );
+
+        if (!wasFavoriteUpdate) {
+          this._eventMode = EventMode.PREVIEW;
+        }
         break;
       }
     }
@@ -129,6 +137,7 @@ class Event {
     this._eventComponent.setOnEditClick(this._editEvent);
     this._eventFormComponent.setOnSubmit(this._submitForm);
     this._eventFormComponent.setOnDeleteClick(this._deleteEvent);
+    this._eventFormComponent.setOnFavoriteChange(this._addToFavorite);
   }
 
   _replaceEventWithForm() {
@@ -163,6 +172,18 @@ class Event {
     this._changeEvent(
         UserAction.UPDATE_EVENT,
         isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+        updatedEvent
+    );
+  }
+
+  _addToFavorite() {
+    const updatedEvent = Object.assign({}, this._event, {
+      isFavorite: !this._event.isFavorite,
+    });
+
+    this._changeEvent(
+        UserAction.UPDATE_EVENT,
+        UpdateType.PATCH,
         updatedEvent
     );
   }

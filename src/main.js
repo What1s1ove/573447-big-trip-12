@@ -12,7 +12,7 @@ import FilterModel from '~/models/filter/filter';
 import SiteMenuView from '~/view/site-menu/site-menu';
 import StatisticsView from '~/view/statistics/statistics';
 
-const AUTHORIZATION = `Basic 14881337322`;
+const AUTHORIZATION = `Basic 14881337322228`;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `bigtrip-localstorage`;
 const STORE_VER = `v12`;
