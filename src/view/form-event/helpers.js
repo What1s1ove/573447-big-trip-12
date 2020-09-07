@@ -1,10 +1,8 @@
-import {getTripOfferByType} from '~/helpers';
-
 const getRawEvent = (event) => {
   const rawEvent = Object.assign({}, event, {
     isDisabled: false,
     isSaving: false,
-    isDeleting: false
+    isDeleting: false,
   });
 
   return rawEvent;
@@ -38,19 +36,26 @@ const getDestinationsPattern = (cities) => {
   return destinationsPattern;
 };
 
-const mapEventInitialOffers = (tripOffer) => {
-  const mappedEventInitialOffers = tripOffer.map((it) =>
-    Object.assign({isChecked: false}, it)
-  );
+const getTripOfferByType = (offers, type) => {
+  const offerByType = offers.find((it) => it.type === type);
 
-  return mappedEventInitialOffers;
+  return offerByType;
 };
 
-const getInitialOffersByType = (tripOffer, type) => {
-  const tripOfferByType = getTripOfferByType(tripOffer, type);
-  const mappedOffers = mapEventInitialOffers(tripOfferByType.offers);
+const getOfferByTitle = (offers, title) => {
+  const offerByTitle = offers.find((it) => it.title === title);
 
-  return mappedOffers;
+  return offerByTitle;
+};
+
+const toggleEventOffers = (eventOffers, newOffer) => {
+  const hasAlreadyOffer = eventOffers.some((it) => it.title === newOffer.title);
+
+  const toggledEventOffers = hasAlreadyOffer
+    ? eventOffers.filter((it) => it.title !== newOffer.title)
+    : [...eventOffers, newOffer];
+
+  return toggledEventOffers;
 };
 
 const resetDatepicker = (datepicker) => {
@@ -66,7 +71,8 @@ export {
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,
-  mapEventInitialOffers,
   resetDatepicker,
-  getInitialOffersByType,
+  getTripOfferByType,
+  toggleEventOffers,
+  getOfferByTitle,
 };

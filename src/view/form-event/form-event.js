@@ -1,5 +1,5 @@
 import flatpickr from 'flatpickr';
-import {getPathLabel, getFormattedDate, getTripOfferByType} from '~/helpers';
+import {getPathLabel, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
 import Smart from '~/view/smart/smart';
@@ -10,11 +10,12 @@ import {
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,
-  getInitialOffersByType,
-  mapEventInitialOffers,
   resetDatepicker,
   getRawEvent,
   getClearEvent,
+  getTripOfferByType,
+  getOfferByTitle,
+  toggleEventOffers,
 } from './helpers';
 import {EMPTY_EVENT, FLATPICKR_OPTIONS, EventFormMode} from './common';
 
@@ -26,13 +27,15 @@ class FormEvent extends Smart {
     this._destinations = destinations;
     this._offers = offers;
 
+    this._tripOffer = getTripOfferByType(this._offers, this._data.type);
     this._datepickerStartDate = null;
     this._datepickerEndDate = null;
 
-    this._onFormSubmit = this._onFormSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
     this._setDatepicker = this._setDatepicker.bind(this);
+    this._onOffersChange = this._onOffersChange.bind(this);
+    this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
     this._onDestinationInput = this._onDestinationInput.bind(this);
     this._onPriceInput = this._onPriceInput.bind(this);
@@ -65,7 +68,6 @@ class FormEvent extends Smart {
     const destinationPattern = getDestinationsPattern(destinationCities);
     const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
-    const eventOffers = offers.length ? offers : getInitialOffersByType(this._offers, type);
 
     return `
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -184,7 +186,7 @@ class FormEvent extends Smart {
             </button>`}
         </header>
         <section class="event__details">
-          ${eventOffers.length ? createEventOffersTemplate(type, eventOffers, isDisabled) : ``}
+          ${this._tripOffer.offers.length ? createEventOffersTemplate(this._tripOffer.offers, offers, isDisabled) : ``}
           ${destination ? `
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -235,10 +237,15 @@ class FormEvent extends Smart {
     const destinationInputNode = this.node.querySelector(`.event__input--destination`);
     const typeListNode = this.node.querySelector(`.event__type-list`);
     const priceInputNode = this.node.querySelector(`.event__input--price`);
+    const offersNode = this.node.querySelector(`.event__available-offers`);
 
     destinationInputNode.addEventListener(`input`, this._onDestinationInput);
     typeListNode.addEventListener(`change`, this._onEventTypeChange);
     priceInputNode.addEventListener(`input`, this._onPriceInput);
+
+    if (offersNode) {
+      offersNode.addEventListener(`change`, this._onOffersChange);
+    }
   }
 
   _setDatepicker() {
@@ -281,12 +288,20 @@ class FormEvent extends Smart {
   _onEventTypeChange({target}) {
     const {value} = target;
 
-    const tripOffer = getTripOfferByType(this._offers, value);
-    const mappedEventOffers = mapEventInitialOffers(tripOffer.offers);
+    this._tripOffer = getTripOfferByType(this._offers, value);
 
     this.updateData({
       type: value,
-      offers: mappedEventOffers,
+      offers: [],
+    });
+  }
+
+  _onOffersChange({target}) {
+    const offerByTitle = getOfferByTitle(this._tripOffer.offers, target.value);
+    const toggledEventOffers = toggleEventOffers(this._data.offers, offerByTitle);
+
+    this.updateData({
+      offers: toggledEventOffers,
     });
   }
 
