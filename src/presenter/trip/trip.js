@@ -85,6 +85,37 @@ class Trip {
     return this._offersModel.offers;
   }
 
+  init() {
+    this._renderTrip();
+
+    this._eventsModel.addObserver(this._changeModelEvent);
+    this._offersModel.addObserver(this._changeModelEvent);
+    this._destinationsModel.addObserver(this._changeModelEvent);
+    this._filterModel.addObserver(this._changeModelEvent);
+  }
+
+  destroy() {
+    this._clearTrip({
+      isResetSortType: true,
+    });
+
+    removeElement(this._tripDaysComponent);
+
+    this._eventsModel.removeObserver(this._changeModelEvent);
+    this._offersModel.removeObserver(this._changeModelEvent);
+    this._destinationsModel.removeObserver(this._changeModelEvent);
+    this._filterModel.removeObserver(this._changeModelEvent);
+  }
+
+  createEvent(destroyCallback) {
+    if (this._filterModel.filter !== EventFilterType.EVERYTHING) {
+      this._filterModel.setFilter(UpdateType.MINOR, EventFilterType.EVERYTHING);
+    }
+
+    this._newEventPresenter.init(destroyCallback);
+  }
+
+
   _renderEvents(events) {
     switch (this._currentSortType) {
       case EventSortType.EVENT: {
@@ -300,36 +331,6 @@ class Trip {
         break;
       }
     }
-  }
-
-  createEvent(destroyCallback) {
-    if (this._filterModel.filter !== EventFilterType.EVERYTHING) {
-      this._filterModel.setFilter(UpdateType.MINOR, EventFilterType.EVERYTHING);
-    }
-
-    this._newEventPresenter.init(destroyCallback);
-  }
-
-  destroy() {
-    this._clearTrip({
-      isResetSortType: true,
-    });
-
-    removeElement(this._tripDaysComponent);
-
-    this._eventsModel.removeObserver(this._changeModelEvent);
-    this._offersModel.removeObserver(this._changeModelEvent);
-    this._destinationsModel.removeObserver(this._changeModelEvent);
-    this._filterModel.removeObserver(this._changeModelEvent);
-  }
-
-  init() {
-    this._renderTrip();
-
-    this._eventsModel.addObserver(this._changeModelEvent);
-    this._offersModel.addObserver(this._changeModelEvent);
-    this._destinationsModel.addObserver(this._changeModelEvent);
-    this._filterModel.addObserver(this._changeModelEvent);
   }
 }
 

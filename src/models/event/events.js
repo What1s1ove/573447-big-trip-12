@@ -8,6 +8,34 @@ class Events extends Observer {
     this._events = [];
   }
 
+  get events() {
+    return this._events;
+  }
+
+  setEvents(updateType, events) {
+    this._events = events.slice();
+
+    this._notify(updateType);
+  }
+
+  updateEvent(updateType, event) {
+    this._events = this._events.map((it) => (it.id === event.id ? event : it));
+
+    this._notify(updateType, event);
+  }
+
+  addEvent(updateType, event) {
+    this._events = [event, ...this._events];
+
+    this._notify(updateType, event);
+  }
+
+  deleteEvent(updateType, event) {
+    this._events = this._events.filter((it) => it.id !== event.id);
+
+    this._notify(updateType, event);
+  }
+
   static adaptToClient(event) {
     const adaptedEvent = {
       id: event.id,
@@ -37,34 +65,6 @@ class Events extends Observer {
     };
 
     return adaptedEvent;
-  }
-
-  get events() {
-    return this._events;
-  }
-
-  setEvents(updateType, events) {
-    this._events = events.slice();
-
-    this._notify(updateType);
-  }
-
-  updateEvent(updateType, event) {
-    this._events = this._events.map((it) => (it.id === event.id ? event : it));
-
-    this._notify(updateType, event);
-  }
-
-  addEvent(updateType, event) {
-    this._events = [event, ...this._events];
-
-    this._notify(updateType, event);
-  }
-
-  deleteEvent(updateType, event) {
-    this._events = this._events.filter((it) => it.id !== event.id);
-
-    this._notify(updateType, event);
   }
 }
 

@@ -22,29 +22,6 @@ class Filter {
     this._eventsModel.addObserver(this._changeModelEvent);
   }
 
-  _changeModelEvent() {
-    this.init();
-  }
-
-  _changeFilterType(filterType) {
-    if (this._currentFilter === filterType) {
-      return;
-    }
-
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
-  _getFilterEntities() {
-    const {events} = this._eventsModel;
-
-    const filterEntities = filters.map((it) => ({
-      name: it,
-      isDisabled: !FilterTypeToFilterCbMap[it](events).length,
-    }));
-
-    return filterEntities;
-  }
-
   init() {
     this._currentFilter = this._filterModel.filter;
 
@@ -71,6 +48,29 @@ class Filter {
     replaceWithElement(prevFilterComponent, this._filterComponent);
 
     removeElement(prevFilterComponent);
+  }
+
+  _changeModelEvent() {
+    this.init();
+  }
+
+  _changeFilterType(filterType) {
+    if (this._currentFilter === filterType) {
+      return;
+    }
+
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  _getFilterEntities() {
+    const {events} = this._eventsModel;
+
+    const filterEntities = filters.map((it) => ({
+      name: it,
+      isDisabled: !FilterTypeToFilterCbMap[it](events).length,
+    }));
+
+    return filterEntities;
   }
 }
 

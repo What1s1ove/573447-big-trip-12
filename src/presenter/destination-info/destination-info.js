@@ -30,6 +30,13 @@ class DestinationInfo {
     return this._eventsModel.events;
   }
 
+  init() {
+    renderElement(this._containerNode, this._tripInfoComponent, RenderPosition.AFTER_BEGIN);
+
+    this._initDestinationInfoComponent();
+    this._initTripPriceComponent();
+  }
+
   _initDestinationInfoComponent() {
     if (!this.events.length) {
       return;
@@ -88,13 +95,6 @@ class DestinationInfo {
 
   _changeDestinationModel() {
     this._initDestinationInfoComponent();
-  }
-
-  init() {
-    renderElement(this._containerNode, this._tripInfoComponent, RenderPosition.AFTER_BEGIN);
-
-    this._initDestinationInfoComponent();
-    this._initTripPriceComponent();
   }
 }
 

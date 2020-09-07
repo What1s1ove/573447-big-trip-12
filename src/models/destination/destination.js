@@ -7,6 +7,14 @@ class Destinations extends Observer {
     this._destinations = [];
   }
 
+  set destinations(destinations) {
+    this._destinations = destinations.slice();
+  }
+
+  get destinations() {
+    return this._destinations;
+  }
+
   static adaptToClient(destination) {
     const adaptedDestination = {
       city: destination.name,
@@ -25,14 +33,6 @@ class Destinations extends Observer {
     };
 
     return adaptedDestination;
-  }
-
-  set destinations(destinations) {
-    this._destinations = destinations.slice();
-  }
-
-  get destinations() {
-    return this._destinations;
   }
 }
 

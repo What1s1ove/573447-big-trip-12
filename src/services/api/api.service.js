@@ -8,25 +8,6 @@ class Api {
     this._authorization = authorization;
   }
 
-  static checkStatus(response) {
-    if (
-      response.status < SuccessHTTPStatusRange.MIN &&
-      response.status > SuccessHTTPStatusRange.MAX
-    ) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-
-    return response;
-  }
-
-  static toJSON(response) {
-    return response.json();
-  }
-
-  static catchError(err) {
-    throw err;
-  }
-
   get events() {
     return this._load({url: `points`})
       .then(Api.toJSON)
@@ -36,19 +17,13 @@ class Api {
   get destinations() {
     return this._load({url: `destinations`})
       .then(Api.toJSON)
-      .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
+      .then((destinations) =>
+        destinations.map(DestinationsModel.adaptToClient)
+      );
   }
 
   get offers() {
     return this._load({url: `offers`}).then(Api.toJSON);
-  }
-
-  _load({url, method = ApiMethod.GET, body = null, headers = new Headers()}) {
-    headers.append(`Authorization`, this._authorization);
-
-    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
-      .then(Api.checkStatus)
-      .catch(Api.catchError);
   }
 
   updateEvent(event) {
@@ -85,9 +60,35 @@ class Api {
       url: `/points/sync`,
       method: ApiMethod.POST,
       body: JSON.stringify(data),
-      headers: new Headers({"Content-Type": `application/json`})
-    })
-      .then(Api.toJSON);
+      headers: new Headers({'Content-Type': `application/json`}),
+    }).then(Api.toJSON);
+  }
+
+  _load({url, method = ApiMethod.GET, body = null, headers = new Headers()}) {
+    headers.append(`Authorization`, this._authorization);
+
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
+      .then(Api.checkStatus)
+      .catch(Api.catchError);
+  }
+
+  static checkStatus(response) {
+    if (
+      response.status < SuccessHTTPStatusRange.MIN &&
+      response.status > SuccessHTTPStatusRange.MAX
+    ) {
+      throw new Error(`${response.status}: ${response.statusText}`);
+    }
+
+    return response;
+  }
+
+  static toJSON(response) {
+    return response.json();
+  }
+
+  static catchError(err) {
+    throw err;
   }
 }
 

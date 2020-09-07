@@ -46,6 +46,12 @@ class Sort extends Abstract {
     `;
   }
 
+  setOnSortTypeChange(callback) {
+    this._callbacks.changeSortType = callback;
+
+    this.node.addEventListener(`change`, this._onSortTypeChange);
+  }
+
   _onSortTypeChange({target}) {
     const {value, name} = target;
     const isSortChange = name.includes(SORT_INPUT_NAME);
@@ -55,12 +61,6 @@ class Sort extends Abstract {
     }
 
     this._callbacks.changeSortType(value);
-  }
-
-  setOnSortTypeChange(callback) {
-    this._callbacks.changeSortType = callback;
-
-    this.node.addEventListener(`change`, this._onSortTypeChange);
   }
 }
 

@@ -6,7 +6,7 @@ class Filter extends Abstract {
     this._filters = filters;
     this._currentFilter = currentFilter;
 
-    this._onChangeFilter = this._onChangeFilter.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   get template() {
@@ -32,14 +32,14 @@ class Filter extends Abstract {
     `;
   }
 
-  _onChangeFilter({target}) {
+  _onFilterChange({target}) {
     this._callbacks.onChangeFilter(target.value);
   }
 
   setOnChangeFilter(callback) {
     this._callbacks.onChangeFilter = callback;
 
-    this.node.addEventListener(`change`, this._onChangeFilter);
+    this.node.addEventListener(`change`, this._onFilterChange);
   }
 }
 

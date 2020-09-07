@@ -9,10 +9,6 @@ class Provider {
     this._store = store;
   }
 
-  static get isOnline() {
-    return window.navigator.onLine;
-  }
-
   get events() {
     if (Provider.isOnline) {
       return this._api.events.then((events) => {
@@ -125,6 +121,10 @@ class Provider {
     }
 
     return Promise.reject(new Error(`Sync data failed`));
+  }
+
+  static get isOnline() {
+    return window.navigator.onLine;
   }
 }
 

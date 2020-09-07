@@ -29,7 +29,7 @@ class FormEvent extends Smart {
     this._datepickerStartDate = null;
     this._datepickerEndDate = null;
 
-    this._onSubmit = this._onSubmit.bind(this);
+    this._onFormSubmit = this._onFormSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
     this._setDatepicker = this._setDatepicker.bind(this);
@@ -42,18 +42,6 @@ class FormEvent extends Smart {
     this._onDeleteClick = this._onDeleteClick.bind(this);
 
     this._restoreListeners();
-  }
-
-  static parseEventToData(event) {
-    const parsedData = getRawEvent(event);
-
-    return parsedData;
-  }
-
-  static parseDataToEvent(event) {
-    const parsedEvent = getClearEvent(event);
-
-    return parsedEvent;
   }
 
   get template() {
@@ -208,6 +196,20 @@ class FormEvent extends Smart {
     `;
   }
 
+  setOnDeleteClick(callback) {
+    this._callbacks.onDeleteClick = callback;
+
+    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
+
+    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+  }
+
+  setOnSubmit(callback) {
+    this._callbacks.onSubmit = callback;
+
+    this.node.addEventListener(`submit`, this._onFormSubmit);
+  }
+
   _restoreListeners() {
     this._initInnerListeners();
 
@@ -311,23 +313,21 @@ class FormEvent extends Smart {
     this._callbacks.onDeleteClick(this._data);
   }
 
-  _onSubmit(evt) {
+  _onFormSubmit(evt) {
     evt.preventDefault();
     this._callbacks.onSubmit(FormEvent.parseDataToEvent(this._data));
   }
 
-  setOnDeleteClick(callback) {
-    this._callbacks.onDeleteClick = callback;
+  static parseEventToData(event) {
+    const parsedData = getRawEvent(event);
 
-    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
-
-    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+    return parsedData;
   }
 
-  setOnSubmit(callback) {
-    this._callbacks.onSubmit = callback;
+  static parseDataToEvent(event) {
+    const parsedEvent = getClearEvent(event);
 
-    this.node.addEventListener(`submit`, this._onSubmit);
+    return parsedEvent;
   }
 }
 
