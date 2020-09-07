@@ -23,8 +23,12 @@ const tripMainNode = document.querySelector(`.trip-main`);
 const menuTitleNode = tripMainNode.querySelector(`.trip-main__menu-title`);
 const filterTitleNode = tripMainNode.querySelector(`.trip-main__filter-title`);
 const eventsContainerNode = document.querySelector(`.trip-events`);
-
 const siteMenuItems = Object.values(AppNavigation);
+let statisticsComponent = null;
+
+const closeNewEventForm = () => {
+  newEventBtnNode.disabled = false;
+};
 
 const api = new Api({
   endPoint: END_POINT,
@@ -48,10 +52,6 @@ const filterModel = new FilterModel();
 
 const siteMenuComponent = new SiteMenuView(siteMenuItems);
 
-const closeNewEventForm = () => {
-  newEventBtnNode.disabled = false;
-};
-
 const destinationInfoPresenter = new DestinationInfoPresenter({
   containerNode: tripMainNode,
   eventsModel,
@@ -71,8 +71,6 @@ const tripPresenter = new TripPresenter({
   filterModel,
   api: apiWithProvider,
 });
-
-let statisticsComponent = null;
 
 const changeMenuItem = (menuItem) => {
 
