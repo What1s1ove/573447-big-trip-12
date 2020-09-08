@@ -6,10 +6,6 @@ class Store {
     this._storeKey = key;
   }
 
-  _getStorageKey(prefix) {
-    return `${this._storeKey}-${prefix}`;
-  }
-
   get events() {
     try {
       return JSON.parse(this._storage.getItem(this._getStorageKey(StorageItemPrefix.EVENTS))) || {};
@@ -75,6 +71,11 @@ class Store {
 
     this._storage.setItem(this._getStorageKey(StorageItemPrefix.EVENTS), JSON.stringify(eventsStore));
   }
+
+  _getStorageKey(prefix) {
+    return `${this._storeKey}-${prefix}`;
+  }
+
 }
 
 export default Store;

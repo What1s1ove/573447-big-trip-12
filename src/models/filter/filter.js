@@ -8,14 +8,14 @@ class Filter extends Observer {
     this._currentFilter = EventFilterType.EVERYTHING;
   }
 
+  get filter() {
+    return this._currentFilter;
+  }
+
   setFilter(updateType, filter) {
     this._currentFilter = filter;
 
     this._notify(updateType, filter);
-  }
-
-  get filter() {
-    return this._currentFilter;
   }
 }
 

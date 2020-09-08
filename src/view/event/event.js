@@ -9,7 +9,7 @@ class Event extends Abstract {
     super();
     this._event = event;
 
-    this._onEditClick = this._onEditClick.bind(this);
+    this._onEditBtnClick = this._onEditBtnClick.bind(this);
   }
 
   get template() {
@@ -52,18 +52,18 @@ class Event extends Abstract {
     `;
   }
 
-  _onEditClick(evt) {
-    evt.preventDefault();
-
-    this._callbacks.onEditClick();
-  }
-
   setOnEditClick(callback) {
     const editBtnNode = this.node.querySelector(`.event__rollup-btn`);
 
     this._callbacks.onEditClick = callback;
 
-    editBtnNode.addEventListener(`click`, this._onEditClick);
+    editBtnNode.addEventListener(`click`, this._onEditBtnClick);
+  }
+
+  _onEditBtnClick(evt) {
+    evt.preventDefault();
+
+    this._callbacks.onEditClick();
   }
 }
 

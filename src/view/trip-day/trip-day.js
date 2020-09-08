@@ -5,7 +5,7 @@ import Abstract from '~/view/abstract/abstract';
 class TripDay extends Abstract {
   constructor(date, number) {
     super();
-    this._date = date ? new Date(date) : null;
+    this._date = date || null;
     this._number = number || null;
   }
 

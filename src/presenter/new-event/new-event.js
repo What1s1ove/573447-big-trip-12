@@ -21,60 +21,6 @@ class NewEvent {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  _onEscKeyDown(evt) {
-    if (evt.key === KeyboardKey.ESCAPE) {
-      evt.preventDefault();
-
-      this.destroy();
-    }
-  }
-
-  _submitForm(event) {
-    this._changeTripAction(
-        UserAction.ADD_EVENT,
-        UpdateType.MINOR,
-        event
-    );
-  }
-
-  _closeForm() {
-    this.destroy();
-  }
-
-  setSaving() {
-    this._eventFormComponent.updateData({
-      isDisabled: true,
-      isSaving: true
-    });
-  }
-
-  setAborting() {
-    const resetFormState = () => {
-      this._eventFormComponent.updateData({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false
-      });
-    };
-
-    this._eventFormComponent.shake(resetFormState);
-  }
-
-  destroy() {
-    if (!this._eventFormComponent) {
-      return;
-    }
-
-    removeElement(this._eventFormComponent);
-    this._eventFormComponent = null;
-
-    if (this._destroyCallback) {
-      this._destroyCallback();
-    }
-
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
-  }
-
   init(destroyCallback) {
     this._destroyCallback = destroyCallback;
 
@@ -98,6 +44,60 @@ class NewEvent {
     );
 
     document.addEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  destroy() {
+    if (!this._eventFormComponent) {
+      return;
+    }
+
+    removeElement(this._eventFormComponent);
+    this._eventFormComponent = null;
+
+    if (this._destroyCallback) {
+      this._destroyCallback();
+    }
+
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  setSaving() {
+    this._eventFormComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._eventFormComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._eventFormComponent.shake(resetFormState);
+  }
+
+  _submitForm(event) {
+    this._changeTripAction(
+        UserAction.ADD_EVENT,
+        UpdateType.MINOR,
+        event
+    );
+  }
+
+  _closeForm() {
+    this.destroy();
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.key === KeyboardKey.ESCAPE) {
+      evt.preventDefault();
+
+      this.destroy();
+    }
   }
 }
 

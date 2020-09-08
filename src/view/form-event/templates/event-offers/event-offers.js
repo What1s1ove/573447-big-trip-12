@@ -1,16 +1,18 @@
-const createEventOffersTemplate = (eventType, offers, isDisabled) => {
+import {checkIsOfferSelected} from './helpers';
 
-  const offerTemplates = offers.reduce((acc, it, idx) => (acc += `
+const createEventOffersTemplate = (offersByType, eventOffers, isDisabled) => {
+  const offerTemplates = offersByType.reduce((acc, it, idx) => (acc += `
     <div class="event__offer-selector">
       <input
-        id="event-offer-${eventType}${idx}"
-        type="checkbox"
-        name="event-offer-${eventType}"
-        ${it.isChecked ? `checked` : ``}
+        id="event-offer-${idx}"
         ${isDisabled ? `disabled` : ``}
+        ${checkIsOfferSelected(eventOffers, it) ? `checked` : ``}
+        value="${it.title}"
+        type="checkbox"
+        name="event-offer"
         class="event__offer-checkbox visually-hidden"
       >
-      <label class="event__offer-label" for="event-offer-${eventType}${idx}">
+      <label class="event__offer-label" for="event-offer-${idx}">
         <span class="event__offer-title">${it.title}</span>
         +
         €&nbsp;<span class="event__offer-price">${it.price}</span>

@@ -85,15 +85,48 @@ class Trip {
     return this._offersModel.offers;
   }
 
+  init() {
+    this._renderTrip();
+
+    this._eventsModel.addObserver(this._changeModelEvent);
+    this._offersModel.addObserver(this._changeModelEvent);
+    this._destinationsModel.addObserver(this._changeModelEvent);
+    this._filterModel.addObserver(this._changeModelEvent);
+  }
+
+  destroy() {
+    this._clearTrip({
+      isResetSortType: true,
+    });
+
+    removeElement(this._tripDaysComponent);
+
+    this._eventsModel.removeObserver(this._changeModelEvent);
+    this._offersModel.removeObserver(this._changeModelEvent);
+    this._destinationsModel.removeObserver(this._changeModelEvent);
+    this._filterModel.removeObserver(this._changeModelEvent);
+  }
+
+  createEvent(destroyCallback) {
+    if (this._filterModel.filter !== EventFilterType.EVERYTHING) {
+      this._filterModel.setFilter(UpdateType.MINOR, EventFilterType.EVERYTHING);
+    }
+
+    this._newEventPresenter.init(destroyCallback);
+  }
+
+
   _renderEvents(events) {
     switch (this._currentSortType) {
-      case EventSortType.EVENT:
+      case EventSortType.EVENT: {
         this._renderTripDays(events);
         break;
+      }
       case EventSortType.TIME:
-      case EventSortType.PRICE:
+      case EventSortType.PRICE: {
         this._renderTripDay(events, null, null);
         break;
+      }
     }
   }
 
@@ -223,7 +256,7 @@ class Trip {
     const eventDay = getFixedDate(update.start);
 
     switch (actionType) {
-      case UserAction.UPDATE_EVENT:
+      case UserAction.UPDATE_EVENT: {
         this._tripDayPresenters[eventDay].setEventView(update, EventState.SAVING);
         this._api
           .updateEvent(update)
@@ -234,7 +267,8 @@ class Trip {
             this._tripDayPresenters[eventDay].setEventView(update, EventState.ABORTING);
           });
         break;
-      case UserAction.ADD_EVENT:
+      }
+      case UserAction.ADD_EVENT: {
         this._newEventPresenter.setSaving();
         this._api
           .addEvent(update)
@@ -245,7 +279,8 @@ class Trip {
             this._newEventPresenter.setAborting();
           });
         break;
-      case UserAction.DELETE_EVENT:
+      }
+      case UserAction.DELETE_EVENT: {
         this._tripDayPresenters[eventDay].setEventView(update, EventState.DELETING);
         this._api
           .deleteEvent(update)
@@ -256,6 +291,7 @@ class Trip {
             this._tripDayPresenters[eventDay].setEventView(update, EventState.ABORTING);
           });
         break;
+      }
     }
   }
 
@@ -295,36 +331,6 @@ class Trip {
         break;
       }
     }
-  }
-
-  createEvent(destroyCallback) {
-    if (this._filterModel.filter !== EventFilterType.EVERYTHING) {
-      this._filterModel.setFilter(UpdateType.MINOR, EventFilterType.EVERYTHING);
-    }
-
-    this._newEventPresenter.init(destroyCallback);
-  }
-
-  destroy() {
-    this._clearTrip({
-      isResetSortType: true,
-    });
-
-    removeElement(this._tripDaysComponent);
-
-    this._eventsModel.removeObserver(this._changeModelEvent);
-    this._offersModel.removeObserver(this._changeModelEvent);
-    this._destinationsModel.removeObserver(this._changeModelEvent);
-    this._filterModel.removeObserver(this._changeModelEvent);
-  }
-
-  init() {
-    this._renderTrip();
-
-    this._eventsModel.addObserver(this._changeModelEvent);
-    this._offersModel.addObserver(this._changeModelEvent);
-    this._destinationsModel.addObserver(this._changeModelEvent);
-    this._filterModel.addObserver(this._changeModelEvent);
   }
 }
 
