@@ -1,13 +1,27 @@
 import {getDuration} from '../get-duration/get-duration.helper';
+import {LabelToMomentUtilMap} from './common';
+
+const MIN_NUMBER_FOR_TWO_DIGITAL = 10;
+
+const getTwoDigitalTime = (number) => {
+  const twoDigitalFormatted = number < MIN_NUMBER_FOR_TWO_DIGITAL ? `0${number}` : number;
+
+  return twoDigitalFormatted;
+};
 
 const getDurationTime = (start, end) => {
   const duration = getDuration(start, end);
+  const durationTime = Object.entries(LabelToMomentUtilMap).reduce(
+      (acc, [label, momentUtil]) => {
 
-  const day = duration.get(`day`);
-  const hours = duration.get(`hour`);
-  const minutes = duration.get(`minutes`);
+        const time = duration.get(momentUtil);
 
-  return `${day > 0 ? `${day}D` : ``} ${hours > 0 ? `${hours}H` : ``} ${minutes}M`;
+        return (acc += time ? `${getTwoDigitalTime(time)}${label} ` : ``);
+      },
+      ``
+  );
+
+  return durationTime;
 };
 
 export {getDurationTime};

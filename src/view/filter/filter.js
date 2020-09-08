@@ -6,7 +6,7 @@ class Filter extends Abstract {
     this._filters = filters;
     this._currentFilter = currentFilter;
 
-    this._onChangeFilter = this._onChangeFilter.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   get template() {
@@ -16,14 +16,15 @@ class Filter extends Abstract {
           .reduce((acc, it) => (acc.concat(`
             <div class="trip-filters__filter">
               <input
-                id="filter-${it}"
-                value=${it}
-                ${it === this._currentFilter ? `checked` : ``}
+                id="filter-${it.name}"
+                value=${it.name}
+                ${it.name === this._currentFilter ? `checked` : ``}
+                ${it.isDisabled ? `disabled` : ``}
                 class="trip-filters__filter-input  visually-hidden"
                 type="radio"
                 name="trip-filter"
               >
-              <label for="filter-${it}" class="trip-filters__filter-label">${it}</label>
+              <label for="filter-${it.name}" class="trip-filters__filter-label">${it.name}</label>
             </div>
           `)), ``)}
         <button class="visually-hidden" type="submit">Accept filter</button>
@@ -31,14 +32,14 @@ class Filter extends Abstract {
     `;
   }
 
-  _onChangeFilter({target}) {
+  _onFilterChange({target}) {
     this._callbacks.onChangeFilter(target.value);
   }
 
   setOnChangeFilter(callback) {
     this._callbacks.onChangeFilter = callback;
 
-    this.node.addEventListener(`change`, this._onChangeFilter);
+    this.node.addEventListener(`change`, this._onFilterChange);
   }
 }
 

@@ -1,5 +1,5 @@
 import flatpickr from 'flatpickr';
-import {getPathLabel, getFormattedDate, getTripOfferByType} from '~/helpers';
+import {getPathLabel, getFormattedDate} from '~/helpers';
 import {DateFormatType} from '~/common/enums';
 import {eventTypeToTextMap} from '~/common/map';
 import Smart from '~/view/smart/smart';
@@ -10,11 +10,12 @@ import {
   getDestinationCities,
   getMatchedDestination,
   getDestinationsPattern,
-  getInitialOffersByType,
-  mapEventInitialOffers,
   resetDatepicker,
   getRawEvent,
   getClearEvent,
+  getTripOfferByType,
+  getOfferByTitle,
+  toggleEventOffers,
 } from './helpers';
 import {EMPTY_EVENT, FLATPICKR_OPTIONS, EventFormMode} from './common';
 
@@ -26,13 +27,15 @@ class FormEvent extends Smart {
     this._destinations = destinations;
     this._offers = offers;
 
+    this._tripOffer = getTripOfferByType(this._offers, this._data.type);
     this._datepickerStartDate = null;
     this._datepickerEndDate = null;
 
-    this._onSubmit = this._onSubmit.bind(this);
     this._restoreListeners = this._restoreListeners.bind(this);
     this._initInnerListeners = this._initInnerListeners.bind(this);
     this._setDatepicker = this._setDatepicker.bind(this);
+    this._onOffersChange = this._onOffersChange.bind(this);
+    this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
     this._onDestinationInput = this._onDestinationInput.bind(this);
     this._onPriceInput = this._onPriceInput.bind(this);
@@ -42,18 +45,6 @@ class FormEvent extends Smart {
     this._onDeleteClick = this._onDeleteClick.bind(this);
 
     this._restoreListeners();
-  }
-
-  static parseEventToData(event) {
-    const parsedData = getRawEvent(event);
-
-    return parsedData;
-  }
-
-  static parseDataToEvent(event) {
-    const parsedEvent = getClearEvent(event);
-
-    return parsedEvent;
   }
 
   get template() {
@@ -77,7 +68,6 @@ class FormEvent extends Smart {
     const destinationPattern = getDestinationsPattern(destinationCities);
     const eventStartDate = start ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, start) : ``;
     const eventEndDate = end ? getFormattedDate(DateFormatType.FULL_YEAR_TIME, end) : ``;
-    const eventOffers = offers.length ? offers : getInitialOffersByType(this._offers, type);
 
     return `
       <form class="trip-events__item event event--edit" action="#" method="post">
@@ -196,7 +186,7 @@ class FormEvent extends Smart {
             </button>`}
         </header>
         <section class="event__details">
-          ${createEventOffersTemplate(type, eventOffers, isDisabled)}
+          ${this._tripOffer.offers.length ? createEventOffersTemplate(this._tripOffer.offers, offers, isDisabled) : ``}
           ${destination ? `
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -208,27 +198,53 @@ class FormEvent extends Smart {
     `;
   }
 
+  setOnDeleteClick(callback) {
+    this._callbacks.onDeleteClick = callback;
+
+    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
+
+    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+  }
+
+  setOnSubmit(callback) {
+    this._callbacks.onSubmit = callback;
+
+    this.node.addEventListener(`submit`, this._onFormSubmit);
+  }
+
+  setOnFavoriteChange(callback) {
+    this._callbacks.onFavoriteChange = callback;
+
+    const favoriteBtnNode = this.node.querySelector(`.event__favorite-checkbox`);
+
+    favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
+  }
+
   _restoreListeners() {
+    const isEditMode = this._mode === EventFormMode.EDITING;
     this._initInnerListeners();
 
     this.setOnSubmit(this._callbacks.onSubmit);
     this.setOnDeleteClick(this._callbacks.onDeleteClick);
     this._setDatepicker();
+
+    if (isEditMode) {
+      this.setOnFavoriteChange(this._callbacks.onFavoriteChange);
+    }
   }
 
   _initInnerListeners() {
-    const isEditMode = this._mode === EventFormMode.EDITING;
-    const favoriteBtnNode = this.node.querySelector(`.event__favorite-checkbox`);
     const destinationInputNode = this.node.querySelector(`.event__input--destination`);
     const typeListNode = this.node.querySelector(`.event__type-list`);
     const priceInputNode = this.node.querySelector(`.event__input--price`);
+    const offersNode = this.node.querySelector(`.event__available-offers`);
 
     destinationInputNode.addEventListener(`input`, this._onDestinationInput);
     typeListNode.addEventListener(`change`, this._onEventTypeChange);
     priceInputNode.addEventListener(`input`, this._onPriceInput);
 
-    if (isEditMode) {
-      favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
+    if (offersNode) {
+      offersNode.addEventListener(`change`, this._onOffersChange);
     }
   }
 
@@ -257,12 +273,6 @@ class FormEvent extends Smart {
     );
   }
 
-  _onFavoriteChange() {
-    this.updateData({
-      isFavorite: !this._data.isFavorite
-    });
-  }
-
   _onDestinationInput({target}) {
     const destination = getMatchedDestination(target.value, this._destinations);
 
@@ -278,12 +288,20 @@ class FormEvent extends Smart {
   _onEventTypeChange({target}) {
     const {value} = target;
 
-    const tripOffer = getTripOfferByType(this._offers, value);
-    const mappedEventOffers = mapEventInitialOffers(tripOffer.offers);
+    this._tripOffer = getTripOfferByType(this._offers, value);
 
     this.updateData({
       type: value,
-      offers: mappedEventOffers,
+      offers: [],
+    });
+  }
+
+  _onOffersChange({target}) {
+    const offerByTitle = getOfferByTitle(this._tripOffer.offers, target.value);
+    const toggledEventOffers = toggleEventOffers(this._data.offers, offerByTitle);
+
+    this.updateData({
+      offers: toggledEventOffers,
     });
   }
 
@@ -305,29 +323,31 @@ class FormEvent extends Smart {
     });
   }
 
+  _onFavoriteChange() {
+    this._callbacks.onFavoriteChange();
+  }
+
   _onDeleteClick(evt) {
     evt.preventDefault();
 
-    this._callbacks.onDeleteClick(this._data);
+    this._callbacks.onDeleteClick(FormEvent.parseDataToEvent(this._data));
   }
 
-  _onSubmit(evt) {
+  _onFormSubmit(evt) {
     evt.preventDefault();
     this._callbacks.onSubmit(FormEvent.parseDataToEvent(this._data));
   }
 
-  setOnDeleteClick(callback) {
-    this._callbacks.onDeleteClick = callback;
+  static parseEventToData(event) {
+    const parsedData = getRawEvent(event);
 
-    const deleteBtnNode = this.node.querySelector(`.event__reset-btn`);
-
-    deleteBtnNode.addEventListener(`click`, this._onDeleteClick);
+    return parsedData;
   }
 
-  setOnSubmit(callback) {
-    this._callbacks.onSubmit = callback;
+  static parseDataToEvent(event) {
+    const parsedEvent = getClearEvent(event);
 
-    this.node.addEventListener(`submit`, this._onSubmit);
+    return parsedEvent;
   }
 }
 

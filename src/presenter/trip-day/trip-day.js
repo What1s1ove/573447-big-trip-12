@@ -28,6 +28,46 @@ class TripDay {
     this._eventPresenters = {};
   }
 
+  init(events) {
+    this._events = events;
+
+    this._tripDayComponent = new TripDayView(this._day, this._dayNumber);
+    this._tripDayEventsListComponent = new TripDayEventsListView();
+
+    renderElement(
+        this._containerNode,
+        this._tripDayComponent,
+        RenderPosition.BEFORE_END
+    );
+
+    renderElement(
+        this._tripDayComponent,
+        this._tripDayEventsListComponent,
+        RenderPosition.BEFORE_END
+    );
+
+    this._renderEvents(this._events);
+  }
+
+  destroy() {
+    this._clearEvents();
+
+    removeElement(this._tripDayComponent);
+    removeElement(this._tripDayEventsListComponent);
+  }
+
+  updateEvent(event) {
+    this._eventPresenters[event.id].init(event);
+  }
+
+  resetViews() {
+    Object.values(this._eventPresenters).forEach((it) => it.resetView());
+  }
+
+  setEventView(event, eventState) {
+    this._eventPresenters[event.id].setViewState(eventState);
+  }
+
   _renderEvent(event) {
     const tripDayEventsItemComponent = new TripDayEventsItemView();
     const eventPresenter = new EventPresenter({
@@ -57,46 +97,6 @@ class TripDay {
     Object.values(this._eventPresenters).forEach((it) => it.destroy());
 
     this._eventPresenters = {};
-  }
-
-  updateEvent(event) {
-    this._eventPresenters[event.id].init(event);
-  }
-
-  resetViews() {
-    Object.values(this._eventPresenters).forEach((it) => it.resetView());
-  }
-
-  setEventView(event, eventState) {
-    this._eventPresenters[event.id].setViewState(eventState);
-  }
-
-  init(events) {
-    this._events = events;
-
-    this._tripDayComponent = new TripDayView(this._day, this._dayNumber);
-    this._tripDayEventsListComponent = new TripDayEventsListView();
-
-    renderElement(
-        this._containerNode,
-        this._tripDayComponent,
-        RenderPosition.BEFORE_END
-    );
-
-    renderElement(
-        this._tripDayComponent,
-        this._tripDayEventsListComponent,
-        RenderPosition.BEFORE_END
-    );
-
-    this._renderEvents(this._events);
-  }
-
-  destroy() {
-    this._clearEvents();
-
-    removeElement(this._tripDayComponent);
-    removeElement(this._tripDayEventsListComponent);
   }
 }
 

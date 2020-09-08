@@ -5,7 +5,7 @@ const MENU_ITEM_DATA_ATTR = `data-menu-item`;
 const ACTIVE_ITEM_CLASS = `trip-tabs__btn--active`;
 
 class SiteMenu extends Abstract {
-  constructor(menuItems) {
+  constructor({menuItems}) {
     super();
     this._menuItems = menuItems;
     this._activeItem = AppNavigation.TABLE;
@@ -29,16 +29,6 @@ class SiteMenu extends Abstract {
     `;
   }
 
-  _onItemClick({target}) {
-    const hasAttr = target.hasAttribute(MENU_ITEM_DATA_ATTR);
-
-    if (!hasAttr) {
-      return;
-    }
-
-    this._callbacks.changeMenuItem(target.getAttribute(MENU_ITEM_DATA_ATTR));
-  }
-
   setOnItemClick(callback) {
     this._callbacks.changeMenuItem = callback;
 
@@ -53,6 +43,16 @@ class SiteMenu extends Abstract {
         ? it.classList.add(ACTIVE_ITEM_CLASS)
         : it.classList.remove(ACTIVE_ITEM_CLASS)
     );
+  }
+
+  _onItemClick({target}) {
+    const hasAttr = target.hasAttribute(MENU_ITEM_DATA_ATTR);
+
+    if (!hasAttr) {
+      return;
+    }
+
+    this._callbacks.changeMenuItem(target.getAttribute(MENU_ITEM_DATA_ATTR));
   }
 }
 

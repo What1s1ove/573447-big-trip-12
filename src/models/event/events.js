@@ -8,37 +8,6 @@ class Events extends Observer {
     this._events = [];
   }
 
-  static adaptToClient(event) {
-    const adaptedEvent = {
-      id: event.id,
-      destination: DestinationsModel.adaptToClient(event.destination),
-      price: event.base_price,
-      start: new Date(event.date_from),
-      end: new Date(event.date_to),
-      isFavorite: event.is_favorite,
-      offers: event.offers,
-      type: event.type,
-    };
-
-    return adaptedEvent;
-  }
-
-  static adaptToServer(event) {
-    const adaptedEvent = {
-      // ! because of camelcase eslint rul
-      'id': event.id,
-      'destination': DestinationsModel.adaptToServer(event.destination),
-      'base_price': event.price,
-      'date_from': event.start.toISOString(),
-      'date_to': event.end.toISOString(),
-      'is_favorite': event.isFavorite,
-      'offers': event.offers,
-      'type': event.type,
-    };
-
-    return adaptedEvent;
-  }
-
   get events() {
     return this._events;
   }
@@ -65,6 +34,37 @@ class Events extends Observer {
     this._events = this._events.filter((it) => it.id !== event.id);
 
     this._notify(updateType, event);
+  }
+
+  static adaptToClient(event) {
+    const adaptedEvent = {
+      id: event.id,
+      destination: DestinationsModel.adaptToClient(event.destination),
+      price: event.base_price,
+      start: new Date(event.date_from),
+      end: new Date(event.date_to),
+      isFavorite: event.is_favorite,
+      offers: event.offers,
+      type: event.type,
+    };
+
+    return adaptedEvent;
+  }
+
+  static adaptToServer(event) {
+    const adaptedEvent = {
+      // ! because of camelcase eslint rule
+      'id': event.id,
+      'destination': DestinationsModel.adaptToServer(event.destination),
+      'base_price': event.price,
+      'date_from': event.start.toISOString(),
+      'date_to': event.end.toISOString(),
+      'is_favorite': event.isFavorite,
+      'offers': event.offers,
+      'type': event.type,
+    };
+
+    return adaptedEvent;
   }
 }
 

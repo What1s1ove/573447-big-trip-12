@@ -37,12 +37,10 @@ class Statistics extends Abstract {
     `;
   }
 
-  _resetCharts() {
-    if (this._moneyCart || this._transportChart || this._timeSpendChart) {
-      this._moneyCart = null;
-      this._transportChart = null;
-      this._timeSpendChart = null;
-    }
+  removeElement() {
+    super.removeElement();
+
+    this._resetCharts();
   }
 
   setCharts() {
@@ -55,10 +53,12 @@ class Statistics extends Abstract {
     this._timeSpendChart = initTimeSpendChart(timeSpendStatsNode, this._events);
   }
 
-  removeElement() {
-    super.removeElement();
-
-    this._resetCharts();
+  _resetCharts() {
+    if (this._moneyCart || this._transportChart || this._timeSpendChart) {
+      this._moneyCart = null;
+      this._transportChart = null;
+      this._timeSpendChart = null;
+    }
   }
 }
 

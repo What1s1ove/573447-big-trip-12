@@ -30,7 +30,7 @@ class Smart extends Abstract {
   }
 
   _restoreListeners() {
-    throw new Error(`Abstract method not implemented: resetHandlers`);
+    throw new Error(`Abstract method not implemented: restoreListeners`);
   }
 }
 
