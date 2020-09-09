@@ -55,11 +55,11 @@ class Api {
     });
   }
 
-  syncEvents(data) {
+  syncEvents(syncEventsPayload) {
     return this._load({
       url: `/points/sync`,
       method: ApiMethod.POST,
-      body: JSON.stringify(data),
+      body: JSON.stringify(syncEventsPayload),
       headers: new Headers({'Content-Type': `application/json`}),
     }).then(Api.toJSON);
   }
