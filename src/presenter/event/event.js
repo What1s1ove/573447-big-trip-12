@@ -40,6 +40,7 @@ class Event {
     this._deleteEvent = this._deleteEvent.bind(this);
     this._submitForm = this._submitForm.bind(this);
     this._addToFavorite = this._addToFavorite.bind(this);
+    this._closeFormEvent = this._closeFormEvent.bind(this);
   }
 
   init(event) {
@@ -138,6 +139,7 @@ class Event {
     this._eventFormComponent.setOnSubmit(this._submitForm);
     this._eventFormComponent.setOnDeleteClick(this._deleteEvent);
     this._eventFormComponent.setOnFavoriteChange(this._addToFavorite);
+    this._eventFormComponent.setOnCloseClick(this._closeFormEvent);
   }
 
   _replaceEventWithForm() {
@@ -192,8 +194,14 @@ class Event {
     if (evt.key === KeyboardKey.ESCAPE) {
       evt.preventDefault();
 
-      this._replaceFormWithEvent();
+      this._closeFormEvent();
     }
+  }
+
+  _closeFormEvent() {
+    this._eventFormComponent.reset(this._event);
+
+    this._replaceFormWithEvent();
   }
 }
 

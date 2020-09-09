@@ -43,6 +43,7 @@ class FormEvent extends Smart {
     this._onEventStartDateChange = this._onEventStartDateChange.bind(this);
     this._onEventEndDateChange = this._onEventEndDateChange.bind(this);
     this._onDeleteClick = this._onDeleteClick.bind(this);
+    this._onCloseClick = this._onCloseClick.bind(this);
 
     this._restoreListeners();
   }
@@ -220,6 +221,21 @@ class FormEvent extends Smart {
     favoriteBtnNode.addEventListener(`change`, this._onFavoriteChange);
   }
 
+
+  setOnCloseClick(callback) {
+    this._callbacks.onCloseClick = callback;
+
+    const closeBtnNode = this.node.querySelector(`.event__rollup-btn`);
+
+    closeBtnNode.addEventListener(`click`, this._onCloseClick);
+  }
+
+  reset(event) {
+    this.updateData(
+        FormEvent.parseEventToData(event)
+    );
+  }
+
   _restoreListeners() {
     const isEditMode = this._mode === EventFormMode.EDITING;
     this._initInnerListeners();
@@ -230,6 +246,7 @@ class FormEvent extends Smart {
 
     if (isEditMode) {
       this.setOnFavoriteChange(this._callbacks.onFavoriteChange);
+      this.setOnCloseClick(this._callbacks.onCloseClick);
     }
   }
 
@@ -325,6 +342,10 @@ class FormEvent extends Smart {
 
   _onFavoriteChange() {
     this._callbacks.onFavoriteChange();
+  }
+
+  _onCloseClick() {
+    this._callbacks.onCloseClick();
   }
 
   _onDeleteClick(evt) {
