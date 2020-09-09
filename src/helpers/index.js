@@ -1,5 +1,4 @@
 export * from './render';
-export * from './number';
 export * from './array';
 export * from './date';
 export * from './event';
