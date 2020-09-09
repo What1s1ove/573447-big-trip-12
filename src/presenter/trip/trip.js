@@ -224,7 +224,7 @@ class Trip {
   _clearTrip({isResetSortType = false} = {}) {
     this._newEventPresenter.destroy();
 
-    Object.values(this._tripDayPresenters).forEach((it) => it.destroy());
+    Object.values(this._tripDayPresenters).forEach((tripDayPresenter) => tripDayPresenter.destroy());
     this._tripDayPresenters = {};
 
     removeElement(this._noEventsComponent);
@@ -249,7 +249,7 @@ class Trip {
   _changeEventMode() {
     this._newEventPresenter.destroy();
 
-    Object.values(this._tripDayPresenters).forEach((it) => it.resetViews());
+    Object.values(this._tripDayPresenters).forEach((tripDayPresenter) => tripDayPresenter.resetViews());
   }
 
   _changeViewAction(actionType, updateType, update) {

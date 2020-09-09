@@ -1,16 +1,16 @@
 import {getDuration} from '../../date';
 
 const getEventTypeDurationTotals = (events) => {
-  const eventTypeTotalsMap = events.reduce((acc, it) => {
-    const {type, start, end} = it;
+  const eventTypeTotalsMap = events.reduce((durationAccumulator, event) => {
+    const {type, start, end} = event;
 
     const duration = getDuration(start, end);
     const hours = Math.trunc(duration.asHours());
 
-    return Object.assign({}, acc, {
+    return Object.assign({}, durationAccumulator, {
       [type]: {
         type,
-        hours: acc[type] ? acc[type].hours + hours : hours,
+        hours: durationAccumulator[type] ? durationAccumulator[type].hours + hours : hours,
       },
     });
   }, {});

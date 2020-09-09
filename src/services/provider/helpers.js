@@ -1,16 +1,19 @@
-const getSyncedEvents = (items) => {
-  const syncedEvents = items.reduce(
-      (acc, it) => (it.success ? [...acc, it.payload] : acc),
+const getSyncedEvents = (syncEventPayloads) => {
+  const syncedEvents = syncEventPayloads.reduce(
+      (eventsAccumulator, syncEventPayload) =>
+        syncEventPayload.success
+          ? [...eventsAccumulator, syncEventPayload.payload]
+          : eventsAccumulator,
       []
   );
 
   return syncedEvents;
 };
 
-const createEventStoreStructure = (items) => {
-  return items.reduce((acc, current) => {
-    return Object.assign({}, acc, {
-      [current.id]: current,
+const createEventStoreStructure = (events) => {
+  return events.reduce((eventsAccumulator, event) => {
+    return Object.assign({}, eventsAccumulator, {
+      [event.id]: event,
     });
   }, {});
 };

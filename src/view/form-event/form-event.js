@@ -103,7 +103,7 @@ class FormEvent extends Smart {
               required
             >
             <datalist id="destination-list-1">
-              ${destinationCities.reduce((acc, it) => (acc.concat(`<option value="${it}" />`)), ``)}
+              ${destinationCities.reduce((template, city) => (template.concat(`<option value="${city}" />`)), ``)}
             </datalist>
           </div>
           <div class="event__field-group  event__field-group--time">

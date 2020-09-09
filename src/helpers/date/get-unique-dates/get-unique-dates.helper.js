@@ -4,7 +4,7 @@ import {getUniqueItems} from '../../array';
 const getUniqueDates = (dates) => {
   const times = dates.map((date) => getFixedDate(date).getTime());
   const uniqueTimes = getUniqueItems(times);
-  const uniqueDays = uniqueTimes.map((it) => new Date(it));
+  const uniqueDays = uniqueTimes.map((time) => new Date(time));
 
   return uniqueDays;
 };

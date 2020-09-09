@@ -1,7 +1,7 @@
 import {eventTypeToTextMap} from '~/common/map';
 
 const createEventTypesTemplate = (types, eventType) =>
-  types.reduce((acc, type) => (acc += `
+  types.reduce((template, type) => (template += `
     <div class="event__type-item">
       <input
         id="event-type-${type}-1"

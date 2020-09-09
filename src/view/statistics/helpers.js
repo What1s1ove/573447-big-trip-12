@@ -13,8 +13,8 @@ const BAR_HEIGHT = 55;
 const initMoneyChart = (canvasNode, events) => {
   const eventTypeTotals = getEventTypePriceTotals(events);
   const sortedTotals = getSortedEntities(eventTypeTotals, (a, b) => b.price - a.price);
-  const chartLabels = getEventTypeLabels(sortedTotals.map((it) => it.type));
-  const chartPriceValues = sortedTotals.map((it) => it.price);
+  const chartLabels = getEventTypeLabels(sortedTotals.map((total) => total.type));
+  const chartPriceValues = sortedTotals.map((total) => total.price);
 
   canvasNode.height = BAR_HEIGHT * chartLabels.length;
 
@@ -93,8 +93,8 @@ const initMoneyChart = (canvasNode, events) => {
 const initTransportChart = (canvasNode, events) => {
   const eventTransportTotals = getEventTypeTransportTotals(events);
   const sortedTotals = getSortedEntities(eventTransportTotals, (a, b) => b.totals - a.totals);
-  const chartLabels = getEventTypeLabels(sortedTotals.map((it) => it.type));
-  const chartTransportValues = sortedTotals.map((it) => it.totals);
+  const chartLabels = getEventTypeLabels(sortedTotals.map((total) => total.type));
+  const chartTransportValues = sortedTotals.map((total) => total.totals);
 
   canvasNode.height = BAR_HEIGHT * chartLabels.length;
 
@@ -173,8 +173,8 @@ const initTransportChart = (canvasNode, events) => {
 const initTimeSpendChart = (canvasNode, events) => {
   const eventTypeDurationTotals = getEventTypeDurationTotals(events);
   const sortedTotals = getSortedEntities(eventTypeDurationTotals, (a, b) => b.hours - a.hours);
-  const chartLabels = getEventTypeLabels(sortedTotals.map((it) => it.type));
-  const chartTimeSpendValues = sortedTotals.map((it) => it.hours);
+  const chartLabels = getEventTypeLabels(sortedTotals.map((total) => total.type));
+  const chartTimeSpendValues = sortedTotals.map((total) => total.hours);
 
   canvasNode.height = BAR_HEIGHT * chartLabels.length;
 

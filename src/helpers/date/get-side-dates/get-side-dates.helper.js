@@ -1,8 +1,8 @@
 const getSideDates = (dates) => {
   const sideDates = dates.reduce(
-      (acc, date) => ({
-        min: new Date(Math.min(acc.min || Number.MAX_VALUE, date)),
-        max: new Date(Math.max(acc.max || Number.MIN_VALUE, date)),
+      (datesAccumulator, date) => ({
+        min: new Date(Math.min(datesAccumulator.min || Number.MAX_VALUE, date)),
+        max: new Date(Math.max(datesAccumulator.max || Number.MIN_VALUE, date)),
       }),
       {
         min: null,

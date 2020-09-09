@@ -1,21 +1,21 @@
 import {checkIsOfferSelected} from './helpers';
 
 const createEventOffersTemplate = (offersByType, eventOffers, isDisabled) => {
-  const offerTemplates = offersByType.reduce((acc, it, idx) => (acc += `
+  const offerTemplates = offersByType.reduce((template, offer, idx) => (template += `
     <div class="event__offer-selector">
       <input
         id="event-offer-${idx}"
         ${isDisabled ? `disabled` : ``}
-        ${checkIsOfferSelected(eventOffers, it) ? `checked` : ``}
-        value="${it.title}"
+        ${checkIsOfferSelected(eventOffers, offer) ? `checked` : ``}
+        value="${offer.title}"
         type="checkbox"
         name="event-offer"
         class="event__offer-checkbox visually-hidden"
       >
       <label class="event__offer-label" for="event-offer-${idx}">
-        <span class="event__offer-title">${it.title}</span>
+        <span class="event__offer-title">${offer.title}</span>
         +
-        €&nbsp;<span class="event__offer-price">${it.price}</span>
+        €&nbsp;<span class="event__offer-price">${offer.price}</span>
       </label>
     </div>
   `), ``);

@@ -1,5 +1,5 @@
 const checkIsOfferSelected = (eventOffers, offerByType) => {
-  const isSelected = eventOffers.some((it) => it.title === offerByType.title);
+  const isSelected = eventOffers.some((offer) => offer.title === offerByType.title);
 
   return isSelected;
 };

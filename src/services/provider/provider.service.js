@@ -12,9 +12,9 @@ class Provider {
   get events() {
     if (Provider.isOnline) {
       return this._api.events.then((events) => {
-        const items = createEventStoreStructure(events.map(EventsModel.adaptToServer));
+        const eventStoreStructure = createEventStoreStructure(events.map(EventsModel.adaptToServer));
 
-        this._store.events = items;
+        this._store.events = eventStoreStructure;
 
         return events;
       });
@@ -114,9 +114,9 @@ class Provider {
         const createdEvents = getSyncedEvents(response.created);
         const updatedEvents = getSyncedEvents(response.updated);
 
-        const items = createEventStoreStructure([...createdEvents, ...updatedEvents]);
+        const eventStoreStructure = createEventStoreStructure([...createdEvents, ...updatedEvents]);
 
-        this._store.events = items;
+        this._store.events = eventStoreStructure;
       });
     }
 

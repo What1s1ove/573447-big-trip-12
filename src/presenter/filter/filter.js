@@ -65,9 +65,9 @@ class Filter {
   _getFilterEntities() {
     const {events} = this._eventsModel;
 
-    const filterEntities = filters.map((it) => ({
-      name: it,
-      isDisabled: !FilterTypeToFilterCbMap[it](events).length,
+    const filterEntities = filters.map((filter) => ({
+      name: filter,
+      isDisabled: !FilterTypeToFilterCbMap[filter](events).length,
     }));
 
     return filterEntities;

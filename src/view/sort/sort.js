@@ -21,18 +21,18 @@ class Sort extends Abstract {
           Day
         </span>
         ${this._sorts
-          .reduce((acc, it) => (acc.concat(`
-            <div class="trip-sort__item  trip-sort__item--${it}">
+          .reduce((template, sort) => (template.concat(`
+            <div class="trip-sort__item  trip-sort__item--${sort}">
               <input
-                id="sort-${it}"
-                value="${it}"
-                ${it === this._currentSortType ? `checked` : ``}
+                id="sort-${sort}"
+                value="${sort}"
+                ${sort === this._currentSortType ? `checked` : ``}
                 class="trip-sort__input  visually-hidden"
                 type="radio"
                 name="${SORT_INPUT_NAME}"
               >
-              <label class="trip-sort__btn" for="sort-${it}">
-                ${it}
+              <label class="trip-sort__btn" for="sort-${sort}">
+                ${sort}
                 <svg class="trip-sort__direction-icon" width="8" height="10" viewBox="0 0 8 10">
                   <path d="M2.888 4.852V9.694H5.588V4.852L7.91 5.068L4.238 0.00999987L0.548 5.068L2.888 4.852Z"></path>
                 </svg>

@@ -13,18 +13,18 @@ class Filter extends Abstract {
     return `
       <form class="trip-filters" action="#" method="get">
         ${this._filters
-          .reduce((acc, it) => (acc.concat(`
+          .reduce((template, filter) => (template.concat(`
             <div class="trip-filters__filter">
               <input
-                id="filter-${it.name}"
-                value=${it.name}
-                ${it.name === this._currentFilter ? `checked` : ``}
-                ${it.isDisabled ? `disabled` : ``}
+                id="filter-${filter.name}"
+                value=${filter.name}
+                ${filter.name === this._currentFilter ? `checked` : ``}
+                ${filter.isDisabled ? `disabled` : ``}
                 class="trip-filters__filter-input  visually-hidden"
                 type="radio"
                 name="trip-filter"
               >
-              <label for="filter-${it.name}" class="trip-filters__filter-label">${it.name}</label>
+              <label for="filter-${filter.name}" class="trip-filters__filter-label">${filter.name}</label>
             </div>
           `)), ``)}
         <button class="visually-hidden" type="submit">Accept filter</button>

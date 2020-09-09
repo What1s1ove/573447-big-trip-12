@@ -18,10 +18,12 @@ class Events extends Observer {
     this._notify(updateType);
   }
 
-  updateEvent(updateType, event) {
-    this._events = this._events.map((it) => (it.id === event.id ? event : it));
+  updateEvent(updateType, eventToUpdate) {
+    this._events = this._events.map((event) =>
+      event.id === eventToUpdate.id ? eventToUpdate : event
+    );
 
-    this._notify(updateType, event);
+    this._notify(updateType, eventToUpdate);
   }
 
   addEvent(updateType, event) {
@@ -30,10 +32,10 @@ class Events extends Observer {
     this._notify(updateType, event);
   }
 
-  deleteEvent(updateType, event) {
-    this._events = this._events.filter((it) => it.id !== event.id);
+  deleteEvent(updateType, eventToDelete) {
+    this._events = this._events.filter((event) => event.id !== eventToDelete.id);
 
-    this._notify(updateType, event);
+    this._notify(updateType, eventToDelete);
   }
 
   static adaptToClient(event) {

@@ -2,9 +2,9 @@ import {getUniqueDates} from '../../date';
 
 const getTripDates = (events) => {
   const tripDates = events.reduce(
-      (acc, it) => ({
-        start: [...acc.start, it.start],
-        end: [...acc.end, it.end],
+      (datesAccumulator, event) => ({
+        start: [...datesAccumulator.start, event.start],
+        end: [...datesAccumulator.end, event.end],
       }),
       {
         start: [],

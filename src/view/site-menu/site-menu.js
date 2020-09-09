@@ -16,13 +16,13 @@ class SiteMenu extends Abstract {
   get template() {
     return `
       <nav class="trip-controls__trip-tabs  trip-tabs">
-        ${this._menuItems.reduce((acc, it) => (acc.concat(`
+        ${this._menuItems.reduce((template, menuItem) => (template.concat(`
           <a
-            class="trip-tabs__btn ${it === this._activeItem ? ACTIVE_ITEM_CLASS : ``}"
-            ${MENU_ITEM_DATA_ATTR}="${it}"
+            class="trip-tabs__btn ${menuItem === this._activeItem ? ACTIVE_ITEM_CLASS : ``}"
+            ${MENU_ITEM_DATA_ATTR}="${menuItem}"
             href="#"
           >
-            ${it}
+            ${menuItem}
           </a>
         `)), ``)}
       </nav>
@@ -38,10 +38,10 @@ class SiteMenu extends Abstract {
   setMenuItem(menuItem) {
     const menuItemNodes = this.node.querySelectorAll(`.trip-tabs__btn`);
 
-    menuItemNodes.forEach((it) =>
-      it.getAttribute(MENU_ITEM_DATA_ATTR) === menuItem
-        ? it.classList.add(ACTIVE_ITEM_CLASS)
-        : it.classList.remove(ACTIVE_ITEM_CLASS)
+    menuItemNodes.forEach((node) =>
+      node.getAttribute(MENU_ITEM_DATA_ATTR) === menuItem
+        ? node.classList.add(ACTIVE_ITEM_CLASS)
+        : node.classList.remove(ACTIVE_ITEM_CLASS)
     );
   }
 

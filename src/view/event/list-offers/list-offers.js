@@ -3,21 +3,21 @@ const MAX_OFFER_COUNT = 3;
 const createListOffersTemplate = (offerList) => {
   const offers = offerList
     .reduce(
-        (acc, it) =>
-          acc.length < MAX_OFFER_COUNT
+        (templates, offer) =>
+          templates.length < MAX_OFFER_COUNT
             ? [
-              ...acc, `
+              ...templates, `
               <li class="event__offer">
                 <span class="event__offer-title">
-                  ${it.title}
+                  ${offer.title}
                 </span>
                 +€&nbsp;
                 <span class="event__offer-price">
-                  ${it.price}
+                  ${offer.price}
                 </span>
               </li>`,
             ]
-            : acc,
+            : templates,
         []
     )
     .join(``);

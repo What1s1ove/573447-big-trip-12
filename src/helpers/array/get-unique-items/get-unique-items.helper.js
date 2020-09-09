@@ -1,5 +1,5 @@
-const getUniqueItems = (arr) => {
-  const uniqueItems = Array.from(new Set(arr));
+const getUniqueItems = (items) => {
+  const uniqueItems = Array.from(new Set(items));
 
   return uniqueItems;
 };

@@ -12,11 +12,11 @@ const getTwoDigitalTime = (number) => {
 const getDurationTime = (start, end) => {
   const duration = getDuration(start, end);
   const durationTime = Object.entries(LabelToMomentUtilMap).reduce(
-      (acc, [label, momentUtil]) => {
+      (template, [label, momentUtil]) => {
 
         const time = duration.get(momentUtil);
 
-        return (acc += time ? `${getTwoDigitalTime(time)}${label} ` : ``);
+        return (template += time ? `${getTwoDigitalTime(time)}${label} ` : ``);
       },
       ``
   );

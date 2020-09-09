@@ -1,11 +1,11 @@
 const getEventTypePriceTotals = (events) => {
-  const eventTypeTotalsMap = events.reduce((acc, it) => {
-    const {type, price} = it;
+  const eventTypeTotalsMap = events.reduce((priceAccumulator, event) => {
+    const {type, price} = event;
 
-    return Object.assign({}, acc, {
+    return Object.assign({}, priceAccumulator, {
       [type]: {
         type,
-        price: acc[type] ? acc[type].price + price : price,
+        price: priceAccumulator[type] ? priceAccumulator[type].price + price : price,
       },
     });
   }, {});

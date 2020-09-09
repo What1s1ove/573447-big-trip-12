@@ -3,20 +3,20 @@ import {getUniqueItems} from '~/helpers';
 const DEFAULT_PRICE = 0;
 
 const getUniqueEventCities = (events) => {
-  const cities = events.map((it) => it.destination.city);
+  const cities = events.map((event) => event.destination.city);
   const uniqueCities = getUniqueItems(cities);
 
   return uniqueCities;
 };
 
 const getTotalPrice = (events) => {
-  const totalPrice = events.reduce((totalPriceAcc, event) => {
+  const totalPrice = events.reduce((totalPriceAccumulator, event) => {
     const offersPrice = event.offers.reduce(
-        (offersPriceAcc, offer) => (offersPriceAcc += offer.price),
+        (offersPriceAccumulator, offer) => (offersPriceAccumulator += offer.price),
         DEFAULT_PRICE
     );
 
-    return (totalPriceAcc += (event.price + offersPrice));
+    return (totalPriceAccumulator += (event.price + offersPrice));
   }, DEFAULT_PRICE);
 
   return totalPrice;

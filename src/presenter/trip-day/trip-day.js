@@ -61,7 +61,7 @@ class TripDay {
   }
 
   resetViews() {
-    Object.values(this._eventPresenters).forEach((it) => it.resetView());
+    Object.values(this._eventPresenters).forEach((eventPresenter) => eventPresenter.resetView());
   }
 
   setEventView(event, eventState) {
@@ -90,11 +90,11 @@ class TripDay {
   }
 
   _renderEvents(events) {
-    events.forEach((it) => this._renderEvent(it));
+    events.forEach((event) => this._renderEvent(event));
   }
 
   _clearEvents() {
-    Object.values(this._eventPresenters).forEach((it) => it.destroy());
+    Object.values(this._eventPresenters).forEach((eventPresenter) => eventPresenter.destroy());
 
     this._eventPresenters = {};
   }

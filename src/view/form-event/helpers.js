@@ -19,15 +19,15 @@ const getClearEvent = (event) => {
 };
 
 const getDestinationCities = (destinations) => {
-  const cities = destinations.map((it) => it.city);
+  const cities = destinations.map((destination) => destination.city);
 
   return cities;
 };
 
 const getMatchedDestination = (inputValue, destinations) => {
-  const destination = destinations.find((it) => it.city === inputValue);
+  const matchedDestination = destinations.find((destination) => destination.city === inputValue);
 
-  return destination;
+  return matchedDestination;
 };
 
 const getDestinationsPattern = (cities) => {
@@ -37,23 +37,23 @@ const getDestinationsPattern = (cities) => {
 };
 
 const getTripOfferByType = (offers, type) => {
-  const offerByType = offers.find((it) => it.type === type);
+  const offerByType = offers.find((offer) => offer.type === type);
 
   return offerByType;
 };
 
 const getOfferByTitle = (offers, title) => {
-  const offerByTitle = offers.find((it) => it.title === title);
+  const offerByTitle = offers.find((offer) => offer.title === title);
 
   return offerByTitle;
 };
 
-const toggleEventOffers = (eventOffers, offer) => {
-  const hasSuchOffer = eventOffers.some((it) => it.title === offer.title);
+const toggleEventOffers = (eventOffers, offerToToggle) => {
+  const hasSuchOffer = eventOffers.some((offer) => offer.title === offerToToggle.title);
 
   const toggledEventOffers = hasSuchOffer
-    ? eventOffers.filter((it) => it.title !== offer.title)
-    : [...eventOffers, offer];
+    ? eventOffers.filter((offer) => offer.title !== offerToToggle.title)
+    : [...eventOffers, offerToToggle];
 
   return toggledEventOffers;
 };
